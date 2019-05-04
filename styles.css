@@ -1,3 +1,10 @@
+main {
+  max-width: 38rem;
+  padding: 2rem;
+  margin: auto;
+}
+
+/*   Graph styles  */
 .link {
     stroke: #777;
     stroke-width: 2px;
