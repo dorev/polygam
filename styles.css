@@ -1,0 +1,33 @@
+.link {
+    stroke: #777;
+    stroke-width: 2px;
+  }
+  
+  .node {
+    fill: #CCC;
+    stroke: #777;
+    stroke-width: 2px;
+  }
+  
+  rect {
+    fill: none;
+    stroke: #888;
+    stroke-width: 2px;
+    pointer-events: all;
+  }
+  
+  text {
+    font-family: monospace;
+    font-size: 1.25em;
+    fill : #000;
+    stroke-width: 0;
+  }
+  
+  svg {
+    background: #555;
+  }
+  
+  body {
+    background: #333;
+  }
+  
