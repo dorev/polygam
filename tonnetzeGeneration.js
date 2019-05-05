@@ -6,23 +6,30 @@ let graph = new Graph(d3.select(".container"));
 // Initialize tonnetze
 //---------------------------------------------------------------
 let names = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-for(let i = 0; i < 12; i++) graph.addNode({id:i, name:names[i], edges:[],  type:"note"});
+for(let i = 0; i < 12; i++) 
+{
+  graph.addNode({id:i, name:names[i], edges:[],  type:"note"});
+}
 
 let edges = [];
-for(let node = 0; node < 12; ++node) {  
+for(let node = 0; node < 12; ++node) 
+{  
   [{interval:7, direction:"+x"},
    {interval:4, direction:"+y"},
    {interval:9, direction:"+z"},
    {interval:5, direction:"-x"},
    {interval:8, direction:"-y"},
    {interval:3, direction:"-z"}
-  ].forEach( nodeLayout => {
+  ].forEach( nodeLayout => 
+  {
     edges.push({source: node, target: (node + nodeLayout.interval) % 12, direction: nodeLayout.direction});
   });      
 }
 
-function dirIndex(direction) {
-  switch(direction) {
+function dirIndex(direction) 
+{
+  switch(direction) 
+  {
     case "+x" : return 0;
     case "+y" : return 1;
     case "+z" : return 2;
@@ -43,39 +50,54 @@ let chordNodes = [];
 for(let originNode = 0; originNode < 12; ++originNode)
 {
   // For all edges, find all common edge node with origin
-  let neighborNodes = graph.nodes[originNode].edges.filter(edge => edge.target < 12).map(edge => edge.target); 
+  let neighborNodes = graph
+  .nodes[originNode]
+  .edges
+  .filter(edge => edge.target < 12)
+  .map(edge => edge.target); 
   
   neighborNodes.forEach(neighborNode => 
   {
     // Find neighbors of neighbors
-    let distantNodes = graph.nodes[neighborNode].edges.filter(edge => edge.target < 12).map(edge => edge.target);
+    let distantNodes = graph
+    .nodes[neighborNode]
+    .edges
+    .filter(edge => edge.target < 12)
+    .map(edge => edge.target);
 
     // Match common neighbors with origin node
     let commonNeighbors = [];
-    distantNodes.forEach( distantNode => {
-      neighborNodes.forEach( neighborNode => {
-        if(neighborNode === distantNode) commonNeighbors.push(neighborNode);
+    distantNodes.forEach( distantNode => 
+    {
+      neighborNodes.forEach( neighborNode => 
+      {
+        if(neighborNode === distantNode) 
+        {
+          commonNeighbors.push(neighborNode);
+        }
       })
     });
     
     commonNeighbors.forEach(commonNeighbor => 
     {
       // Skip augmented chord
-      if(!chordIsAugmented(originNode, neighborNode, commonNeighbor)) {
+      if(!chordIsAugmented(originNode, neighborNode, commonNeighbor)) 
+      {
         let currentChord = [names[originNode], names[neighborNode], names[commonNeighbor]].sort().join("");
         
         // Find chord in graph or add it
         let chordId;
         if(chordNodes.length === 0 
-           || !chordNodes.map(node => node.name).some(name => name === currentChord)) {
-          
+           || !chordNodes.map(node => node.name).some(name => name === currentChord)) 
+        {          
           // Set new chord id
           chordId = 12 + chordNodes.length;
           
           // Identify root of chord
           let root;
           let notesOfChord = [originNode, neighborNode,commonNeighbor];
-          notesOfChord.forEach(note => {             
+          notesOfChord.forEach(note => 
+          {             
             let noteInDirectionX = graph.nodes[note].edges[dirIndex("+x")].target;   
             if(notesOfChord.some(_note => _note === noteInDirectionX)) { root = note; }                        
           });
@@ -88,7 +110,8 @@ for(let originNode = 0; originNode < 12; ++originNode)
           
           // Create chord and add it to graph          
           let chordEdges = [];
-          notesOfChord.forEach(note => {
+          notesOfChord.forEach(note => 
+          {
             chordEdges.push({source:chordId, target: note});
           });
           
@@ -102,10 +125,14 @@ for(let originNode = 0; originNode < 12; ++originNode)
             voicing: voicing};
           
           graph.addNode(newChord);
-          chordEdges.forEach(edge => { graph.addLink(edge);});             
+          chordEdges.forEach(edge => 
+          { 
+            graph.addLink(edge);
+          });             
           chordNodes.push(graph.nodes[chordId]);
         }
-        else {
+        else 
+        {
           let indexOfChord = chordNodes.map(node => node.name).indexOf(currentChord);
           chordId = chordNodes[indexOfChord].id;
         }
@@ -120,11 +147,11 @@ for(let originNode = 0; originNode < 12; ++originNode)
 }
 
 // This function could be reviewed with new coordinates system
-function chordIsAugmented(i, j, k) {
+function chordIsAugmented(i, j, k) 
+{
   let c = [i, j, k].sort((a, b) => a - b);
   return (c[1]-c[0] === 4 && c[2]-c[0] === 8);
 }
-
 
 //---------------------------------------------------------------
 // Bind all chord nodes according to common edges
@@ -132,10 +159,14 @@ function chordIsAugmented(i, j, k) {
 for(let originNode = 0; originNode < 12; ++originNode) {
 
   // For all edges, find all common edge node with origin
-  let neighborNodes = graph.nodes[originNode].edges.filter(edge => edge.target < 12).map(edge => edge.target);  
+  let neighborNodes = graph
+  .nodes[originNode]
+  .edges
+  .filter(edge => edge.target < 12)
+  .map(edge => edge.target);  
   
-  neighborNodes.forEach(neighborNode => {
-    
+  neighborNodes.forEach(neighborNode => 
+  {    
     // Find all chords of both nodes
     let chordsOfOrigin = graph
       .nodes[originNode]
@@ -153,9 +184,14 @@ for(let originNode = 0; originNode < 12; ++originNode) {
     let commonChords = [];   
     
     // Compare each item of both chord arrays
-    chordsOfOrigin.forEach( chordOfOrigin => {
-      chordsOfNeighbor.forEach( chordOfNeighbor => {
-        if(chordOfOrigin === chordOfNeighbor) commonChords.push(graph.nodes[chordOfOrigin]);
+    chordsOfOrigin.forEach( chordOfOrigin => 
+    {
+      chordsOfNeighbor.forEach( chordOfNeighbor => 
+      {
+        if(chordOfOrigin === chordOfNeighbor) 
+        {
+          commonChords.push(graph.nodes[chordOfOrigin]);
+        }
       })
     });
     
@@ -167,9 +203,14 @@ for(let originNode = 0; originNode < 12; ++originNode) {
       let notesOfChord1 = commonChords[1].edges.map(edge => edge.target);
 
       let commonNotesId = [];      
-      notesOfChord0.forEach( noteOfChord0 => {
-        notesOfChord1.forEach( noteOfChord1 => {
-          if(noteOfChord0 === noteOfChord1) commonNotesId.push(graph.nodes[noteOfChord0].id);
+      notesOfChord0.forEach( noteOfChord0 => 
+      {
+        notesOfChord1.forEach( noteOfChord1 => 
+        {
+          if(noteOfChord0 === noteOfChord1) 
+          {
+            commonNotesId.push(graph.nodes[noteOfChord0].id);
+          }
         })
       });
       
@@ -177,27 +218,49 @@ for(let originNode = 0; originNode < 12; ++originNode) {
       let hasRoot = commonNotesId.some(note => note === commonChords[0].root);
       
       let directions = ["",""];       
-      if(!hasRoot){
-        if(commonChords[0].voicing === "major") { directions = ["-z","+z"]; } 
-        else { directions = ["+y","-y"]; }         
+      if(!hasRoot)
+      {
+        if(commonChords[0].voicing === "major") 
+        { 
+          directions = ["-z","+z"]; 
+        } 
+        else 
+        { 
+          directions = ["+y","-y"]; 
+        }         
       } 
-      else {                
+      else 
+      {                
         if( graph.nodes[commonNotesId[0]].edges[dirIndex("-x")].target === commonNotesId[1]
-         || graph.nodes[commonNotesId[1]].edges[dirIndex("-x")].target === commonNotesId[0]) {
+         || graph.nodes[commonNotesId[1]].edges[dirIndex("-x")].target === commonNotesId[0]) 
+        {
           
-          if(commonChords[0].voicing === "major") { directions = ["-x","+x"]; } 
-          else { directions = ["+x","-x"]; } 
+          if(commonChords[0].voicing === "major") 
+          { 
+            directions = ["-x","+x"]; 
+          } 
+          else 
+          { 
+            directions = ["+x","-x"]; 
+          } 
         }
         else {
           
-          if(commonChords[0].voicing === "major") { directions = ["-y","+y"]; } 
-          else { directions = ["+z","-z"]; } 
+          if(commonChords[0].voicing === "major") 
+          { 
+            directions = ["-y","+y"]; 
+          } 
+          else 
+          { 
+            directions = ["+z","-z"]; 
+          } 
         }
       }
       graph.addLink({ source: commonChords[0].id, target: commonChords[1].id, direction: directions[0] });
       graph.addLink({ source: commonChords[1].id, target: commonChords[0].id, direction: directions[1] });
     } 
-    else {
+    else 
+    {
       console.error("Unexpected number of common notes between neighbor chords");
     }    
   });  
@@ -223,7 +286,8 @@ function commonElementsOfArrays(array1, array2) {
 // Graph highlight
 //---------------------------------------------------------------
 
-graph.nodeClick = node => {  
+graph.nodeClick = node => 
+{  
   d3.selectAll(".link")
     .filter( d => d.source.id === node.id || d.target.id === node.id)
     .style("stroke", "red");
@@ -242,7 +306,8 @@ graph.nodeClick = node => {
     .style("stroke", "red");
 }
 
-graph.nodeRelease = node => {   
+graph.nodeRelease = node => 
+{   
   d3.selectAll(".node").style("stroke", "#777");
   d3.selectAll(".link").style("stroke", "#777");
 }
@@ -252,37 +317,67 @@ graph.nodeRelease = node => {
 // Clean up graph for query
 //---------------------------------------------------------------
 let tonnetze = [];
-graph.nodes.forEach(node => {
+graph.nodes.forEach(node => 
+{
   let nodeObject = {edges: {}, id: node.id, type: node.type }; 
-  if(node.type === "chord") { nodeObject.voicing = node.voicing; }
+  if(node.type === "chord") 
+  { 
+    nodeObject.voicing = node.voicing; 
+  }
   
-  node.edges.forEach(edge => {     
+  node.edges.forEach(edge => 
+  {     
     let edgeDirection = "";
     let targetIsNote = edge.target < 12;
     let edgeType = targetIsNote ? "note" : "chord";
         
-    if(node.type === "note" && targetIsNote) { 
+    if(node.type === "note" && targetIsNote) 
+    { 
       nodeObject.edges[edge.direction] = edge.target;       
-      if(!nodeObject.hasOwnProperty("neighbors")) { nodeObject.neighbors = []; }
+      if(!nodeObject.hasOwnProperty("neighbors")) 
+      { 
+        nodeObject.neighbors = []; 
+      }
       nodeObject.neighbors.push(edge.target); 
     }
-    else if(node.type === "chord" && !targetIsNote) { 
+    else if(node.type === "chord" && !targetIsNote) 
+    { 
       nodeObject.edges[edge.direction] = edge.target;      
-      if(!nodeObject.hasOwnProperty("neighbors")) { nodeObject.neighbors = []; }
+      if(!nodeObject.hasOwnProperty("neighbors")) 
+      { 
+        nodeObject.neighbors = []; 
+      }
       nodeObject.neighbors.push(edge.target);  
     } 
-    else {
-      if(node.type === "chord") {
-                
-        if(edge.target === node.root) { nodeObject.root = edge.target; }
-        else if(edge.target === (node.root + 7) % 12) { nodeObject.fifth = edge.target; }
-        else { nodeObject.third = edge.target; }
+    else 
+    {
+      if(node.type === "chord") 
+      {                
+        if(edge.target === node.root) 
+        { 
+          nodeObject.root = edge.target; 
+        }
+        else if(edge.target === (node.root + 7) % 12) 
+        { 
+          nodeObject.fifth = edge.target; 
+        }
+        else 
+        { 
+          nodeObject.third = edge.target; 
+        }
         
-        if(!nodeObject.hasOwnProperty("notes")) { nodeObject.notes = []; }
+        if(!nodeObject.hasOwnProperty("notes")) 
+        { 
+          nodeObject.notes = []; 
+        }
         nodeObject.notes.push(edge.target); 
       }
-      else {
-        if(!nodeObject.hasOwnProperty("chords")) { nodeObject.chords = []; }
+      else 
+      {
+        if(!nodeObject.hasOwnProperty("chords")) 
+        { 
+          nodeObject.chords = []; 
+        }
         nodeObject.chords.push(edge.target);      
       }
     }
@@ -297,7 +392,8 @@ console.log(tonnetze)
 // Creating scale and chords patterns
 //---------------------------------------------------------------
 
-let scalePatterns = {
+let scalePatterns = 
+{
   major:      [["+x"],["-x"],["+y"],["+z"],["+y","+x"],["+x","+x"]],
   minor:      [["+x"],["-x"],["-y"],["-z"],["-x","-x"],["+x","+x"]],
   pentaMajor: [["+x"],["+y"],["+z"],["+x","+x"]],
@@ -309,7 +405,8 @@ let scalePatterns = {
 function getScaleNotes(root, scale)
 {  
   let scaleNotes = [root];    
-  scalePatterns[scale].forEach( pattern => {
+  scalePatterns[scale].forEach( pattern => 
+  {
     let currentNode = root;
     pattern.forEach(move => currentNode = tonnetze[currentNode].edges[move]);
     scaleNotes.push(tonnetze[currentNode].id);
@@ -359,7 +456,8 @@ function getScaleChords(root, scale)
 }
 
 // Find all chords of a scale
-let chordPatterns = {
+let chordPatterns = 
+{
   major:      [["+x"],["+y"]],
   minor:      [["+x"],["-z"]],
   augmented:  [["+y"],["+y","+y"]],
@@ -378,7 +476,8 @@ function getAllScaleChords(root, scale)
   let scaleNotes = getScaleNotes(root, scale);
   let scaleChords = [];
   
-  scaleNotes.forEach( origin => { 
+  scaleNotes.forEach( origin => 
+  { 
     
     ["major","minor"].forEach(voicing => 
     {
@@ -413,7 +512,10 @@ function getAllScaleChords(root, scale)
         return !scaleNotes.includes(currentNote);
       });    
 
-      if(voicingPresent) { scaleChords.push({root: origin, voicing: voicing, extensions: []}); }       
+      if(voicingPresent) 
+      { 
+        scaleChords.push({root: origin, voicing: voicing, extensions: []}); 
+      }       
     });    
     
   }); // end of scaleNotes.forEach

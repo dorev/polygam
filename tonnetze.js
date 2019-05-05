@@ -25,7 +25,8 @@ Object.freeze(noteNamesSharp);
 // Scale patterns
 //---------------------------------------------------------------
 
-const scalePatterns = {
+const scalePatterns = 
+{
   major:      [["+x"],["-x"],["+y"],["+z"],["+y","+x"],["+x","+x"]],
   minor:      [["+x"],["-x"],["-y"],["-z"],["-x","-x"],["+x","+x"]],
   pentaMajor: [["+x"],["+y"],["+z"],["+x","+x"]],
@@ -34,15 +35,18 @@ const scalePatterns = {
 }
 Object.freeze(scalePatterns);
 
-const scaleChordsPatterns = {
-  major: { 
+const scaleChordsPatterns = 
+{
+  major: 
+  { 
     second:["-y","+z","-y"],
     third:["-z"],
     fourth:["-y","+z"],
     fifth:["-z","+y"],
     sixth:["-y"]
   },
-  minor: { 
+  minor: 
+  { 
     second:["+y","-z","+y"],
     third:["+z"],
     fourth:["+y","-z"],
@@ -57,7 +61,8 @@ Object.freeze(scaleChordsPatterns);
 function getScaleNotes(root, scale)
 {  
   let scaleNotes = [root];    
-  scalePatterns[scale].forEach( pattern => {
+  scalePatterns[scale].forEach( pattern => 
+  {
     //let currentNode = root;
     //pattern.forEach(move => currentNode = tonnetze[currentNode].edges[move]);
     scaleNotes.push(tonnetze[tonnetzeMove(root, pattern)].id);
@@ -160,7 +165,10 @@ function getAllChordsOfNote(note, root, scale)
         //pattern.forEach(move => currentNote = tonnetze[currentNote].edges[move]);
         
         // Check the resulting note
-        if(scaleNotes.includes(tonnetzeMove(note, pattern))) { extensions.push(extension); }          
+        if(scaleNotes.includes(tonnetzeMove(note, pattern))) 
+        { 
+          extensions.push(extension); 
+        }          
       }
 
       noteChords.push({root: note, voicing: voicing, extensions: extensions});        
@@ -179,7 +187,10 @@ function getAllChordsOfNote(note, root, scale)
       return !scaleNotes.includes(tonnetzeMove(note, pattern));
     });    
 
-    if(voicingIsPresent) { noteChords.push({root: note, voicing: voicing, extensions: []}); }       
+    if(voicingIsPresent) 
+    { 
+      noteChords.push({root: note, voicing: voicing, extensions: []}); 
+    }       
   });        
   
   return noteChords;
@@ -203,7 +214,10 @@ function getEdgeNameOfNote(node, note)
   edgeName = "";
   for(nodeEdge in tonnetze[node].edges) 
   { 
-    if(tonnetze[node].edges[nodeEdge] === note) { edgeName = nodeEdge; } 
+    if(tonnetze[node].edges[nodeEdge] === note) 
+    {
+      edgeName = nodeEdge; 
+    } 
   }  
   return edgeName;  
 }
@@ -222,16 +236,19 @@ function oppositeEdge(edgeName)
   }
 }
 
-function tonnetzeMove(originNode, movePattern) {
+function tonnetzeMove(originNode, movePattern) 
+{
   var currentNode = originNode;
   movePattern.forEach(move => currentNode = tonnetze[currentNode].edges[move]);
   return currentNode;
 }
 
-function tonnetzeRandomChord() {
+function tonnetzeRandomChord() 
+{
   return tonnetze[Math.floor(Math.random() * 24 + 12)];
 }
 
-function tonnetzeRandomNote() {
+function tonnetzeRandomNote() 
+{
   return tonnetze[Math.floor(Math.random() * 12)];
 }

@@ -1,53 +1,98 @@
 /* https://css-tricks.com/snippets/css/complete-guide-grid/ */
 
-main {
-  max-width: 38rem;
-  padding: 2rem;
-  margin: auto;
+/*   Graph styles  */
+.link 
+{
+  stroke: #777;
+  stroke-width: 2px;
 }
 
-/*   Graph styles  */
-.link {
-    stroke: #777;
-    stroke-width: 2px;
-  }
-  
-  .node {
-    fill: #CCC;
-    stroke: #777;
-    stroke-width: 2px;
-  }
-  
-  rect {
-    fill: none;
-    stroke: #888;
-    stroke-width: 2px;
-    pointer-events: all;
-  }
-  
-  text {
-    font-family: monospace;
-    font-size: 1.25em;
-    fill : #000;
-    stroke-width: 0;
-  }
-  
-  svg {
-    background: #555;
-  }
-  
-  body {
-    background: #333;
-  }
-  
-  /* Main page styles */
+.node 
+{
+  fill: #CCC;
+  stroke: #777;
+  stroke-width: 2px;
+}
 
-  .container {
-    display: grid;
-    grid-gap: 15px;
-    grid-template-columns: 40px 50px auto 50px 40px;
-    grid-template-rows:    25% 100px auto;
-    grid-template-areas: 
-    "<grid-area-name> | . | none | ..."
-    "...";
-  }
+rect 
+{
+  fill: none;
+  stroke: #888;
+  stroke-width: 2px;
+  pointer-events: all;
+}
+
+text 
+{
+  font-family: monospace;
+  font-size: 1.25em;
+  fill : #000;
+  stroke-width: 0;
+}
+
+svg 
+{
+  background: #555;
+}
+
+body
+{
+  margin: 0;
+  background: #444;
+}
+
+/* Main page styles */
+.container 
+{
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: auto;
+  grid-template-rows:    40px 600px 100%;
+  grid-template-areas: 
+  "header"
+  "app"
+  "blog";
+}
+
+.header 
+{
+  grid-area : header;
+  background: #444;
+  place-self: center;
+}
+
+.app 
+{
+  grid-area : app;
+  background: #555;
+}
+
+.blog 
+{
+  grid-area : blog;
+  place-self: center;
+}
+
+:root
+{
+  --poly1 : #FF0080;  
+  --poly2 : #FF8C00;
+  --poly3 : #40E0D0;
+}
+
+.rainbow 
+{
+  background-image:         gradient( linear, left top, right top, 
+                                      color-stop(0,   var(--poly1)), 
+                                      color-stop(0.5, var(--poly2)), 
+                                      color-stop(1,   var(--poly3)));
+
+  background-image: -webkit-gradient( linear, left top, right top, 
+                                      color-stop(0,   var(--poly1)), 
+                                      color-stop(0.5, var(--poly2)), 
+                                      color-stop(1,   var(--poly3)) );
+
+  color:transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
