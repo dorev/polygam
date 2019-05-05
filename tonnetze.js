@@ -16,7 +16,7 @@ const tonnetze = JSON.parse("[{\"edges\":{\"+x\":7,\"+y\":4,\"+z\":9,\"-x\":5,\"
 tonnetze.forEach(node => Object.freeze(node.edges));
 Object.freeze(tonnetze);
 
-const noteNamesFlat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+const noteNamesFlat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 const noteNamesSharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 Object.freeze(noteNamesFlat);
 Object.freeze(noteNamesSharp);
@@ -36,17 +36,17 @@ Object.freeze(scalePatterns);
 
 const scaleChordsPatterns = {
   major: { 
-    second:["-y","-z","-y"],
-    third:["+z"],
-    fourth:["-y","-z"],
-    fifth:["+z","+y"],
+    second:["-y","+z","-y"],
+    third:["-z"],
+    fourth:["-y","+z"],
+    fifth:["-z","+y"],
     sixth:["-y"]
   },
   minor: { 
-    second:["+y","+z","+y"],
-    third:["-z"],
-    fourth:["+y","+z"],
-    fifth:["-z","-y"],
+    second:["+y","-z","+y"],
+    third:["+z"],
+    fourth:["+y","-z"],
+    fifth:["+z","-y"],
     sixth:["+y"]
   }
 }

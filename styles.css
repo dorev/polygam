@@ -1,3 +1,5 @@
+/* https://css-tricks.com/snippets/css/complete-guide-grid/ */
+
 main {
   max-width: 38rem;
   padding: 2rem;
@@ -38,3 +40,14 @@ main {
     background: #333;
   }
   
+  /* Main page styles */
+
+  .container {
+    display: grid;
+    grid-gap: 15px;
+    grid-template-columns: 40px 50px auto 50px 40px;
+    grid-template-rows:    25% 100px auto;
+    grid-template-areas: 
+    "<grid-area-name> | . | none | ..."
+    "...";
+  }

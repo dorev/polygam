@@ -203,6 +203,21 @@ for(let originNode = 0; originNode < 12; ++originNode) {
   });  
 }
 
+//---------------------------------------------------------------
+// HELPER FUNCTION : commonElementsOfArrays
+//---------------------------------------------------------------
+function commonElementsOfArrays(array1, array2) {
+  
+  let returnedArray = [];   
+  array1.forEach( array1element => 
+  {
+    array2.forEach( array2element => 
+    {
+      if(array1element === array2element) returnedArray.push(array1element);
+    })
+  });
+  return returnedArray;
+}
 
 //---------------------------------------------------------------
 // Graph highlight
