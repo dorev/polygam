@@ -1,7 +1,7 @@
 //-------------------------------------------------
 // Custom sequencer element
 //-------------------------------------------------
-customElements.define("custom-sequencer", class extends HTMLElement
+customElements.define("polygam-sequencer", class extends HTMLElement
 {
   constructor()
   {
@@ -39,7 +39,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =`
-    .custom-sequencer-song 
+    .polygam-sequencer-song 
     {
       display: flex;      
       position: relative;
@@ -51,7 +51,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
       background-image: linear-gradient(45deg, #444, #333);
     }
 
-    .custom-sequencer-bar 
+    .polygam-sequencer-bar 
     {
       position: absolute;
       display: flex;
@@ -64,7 +64,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
       background-image: linear-gradient(135deg, #333, #555);
     }
 
-    .custom-sequencer-beat 
+    .polygam-sequencer-beat 
     {
       display: flex;
       flex-direction: column-reverse;
@@ -73,7 +73,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
       border-radius : inherit;
     }
 
-    .custom-sequencer-note
+    .polygam-sequencer-note
     {  
       display: flex;
       flex-direction: column;
@@ -86,83 +86,83 @@ customElements.define("custom-sequencer", class extends HTMLElement
       opacity: 0.3;
     }
 
-    .custom-sequencer-note.active
+    .polygam-sequencer-note.active
     {  
       background-image: linear-gradient(45deg, #888, #aaa);
       opacity: 0.5;
     }
 
-    .custom-sequencer-note:hover
+    .polygam-sequencer-note:hover
     {  
       opacity: 0.9;
     }
 
-    .custom-sequencer-note.root
+    .polygam-sequencer-note.root
     {  
       background : #eee;
     }
 
-    .custom-sequencer-beat.active .custom-sequencer-note
+    .polygam-sequencer-beat.active .polygam-sequencer-note
     {  
       opacity: 1;
     }
 
-    .custom-sequencer-note.active.C  
+    .polygam-sequencer-note.active.C  
     {  
       background-image: linear-gradient(#FF3333, #FF8E33);
     }
 
-    .custom-sequencer-note.active.Cs  
+    .polygam-sequencer-note.active.Cs  
     {  
       background-image: linear-gradient(#FFB833, #E4FF33);
     }
 
-    .custom-sequencer-note.active.D  
+    .polygam-sequencer-note.active.D  
     {  
       background-image: linear-gradient(#E4FF33, #94FF33);
     }
 
-    .custom-sequencer-note.active.Ds  
+    .polygam-sequencer-note.active.Ds  
     {  
       background-image: linear-gradient(#94FF33, #33FF71);
     }
 
-    .custom-sequencer-note.active.E  
+    .polygam-sequencer-note.active.E  
     {  
       background-image: linear-gradient(#33FF71, #33FFC0);
     }
 
-    .custom-sequencer-note.active.F  
+    .polygam-sequencer-note.active.F  
     {  
       background-image: linear-gradient(#33FFC0, #33FFAA);
     }
 
-    .custom-sequencer-note.active.Fs  
+    .polygam-sequencer-note.active.Fs  
     {  
       background-image: linear-gradient(#33FFAA, #33F6FF);
     }
 
-    .custom-sequencer-note.active.G 
+    .polygam-sequencer-note.active.G 
     {  
       background-image: linear-gradient(#33F6FF, #337CFF);
     }
 
-    .custom-sequencer-note.active.Gs 
+    .polygam-sequencer-note.active.Gs 
     {  
       background-image: linear-gradient(#337CFF, #4833FF);
     }
 
-    .custom-sequencer-note.active.A 
+    .polygam-sequencer-note.active.A 
     {  
       background-image: linear-gradient(#4833FF, #A733FF);
     }
 
-    .custom-sequencer-note.active.As 
+    .polygam-sequencer-note.active.As 
     {  
       background-image: linear-gradient(#A733FF, #FF33E1);
     }
 
-    .custom-sequencer-note.active.B 
+    .polygam-sequencer-note.active.B 
     {  
       background-image: linear-gradient(#FF33E1, #FF3333);
     }      
@@ -175,7 +175,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
     shadow.appendChild(style);  
     
     this.song = document.createElement("div");
-    this.song.setAttribute("class","custom-sequencer-song");    
+    this.song.setAttribute("class","polygam-sequencer-song");    
     shadow.appendChild(this.song);      
   }
   
@@ -210,7 +210,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
   stop()
   {
     if(this.currentBeat < 0 || this.CurrentBar < 0) { return; }
-    this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "custom-sequencer-beat"); 
+    this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "polygam-sequencer-beat"); 
     this.currentBeat = -1;
     this.currentBar = -1;
   }
@@ -220,7 +220,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
     // Skip clearing last beat when song starts
     if(this.currentBar >= 0)
     {
-      this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "custom-sequencer-beat");      
+      this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "polygam-sequencer-beat");      
     }
     else
     {
@@ -239,7 +239,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
       }  
     } 
       
-    this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "custom-sequencer-beat active"); 
+    this.getBeatDOM(this.currentBar,this.currentBeat).setAttribute("class", "polygam-sequencer-beat active"); 
     this.bringBarOnTop(this.currentBar);   
   }
   
@@ -258,7 +258,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
     this.stop(); 
     
     let bar = document.createElement("div");
-    bar.setAttribute("class", "custom-sequencer-bar");
+    bar.setAttribute("class", "polygam-sequencer-bar");
     
     for(let beatIndex = 0; beatIndex < this.seqLength; ++beatIndex)
     {               
@@ -274,7 +274,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
   {
     // Create DOM element
     let beat = document.createElement("div");
-    beat.setAttribute("class", "custom-sequencer-beat");
+    beat.setAttribute("class", "polygam-sequencer-beat");
 
     for(let i = 0; i < this.seqHeight; ++i)
     {
@@ -288,7 +288,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
   {
     // Create DOM element
     let note = document.createElement("div");    
-    note.setAttribute("class", "custom-sequencer-note");     
+    note.setAttribute("class", "polygam-sequencer-note");     
     note.setAttribute("bar", barIndex); 
     note.setAttribute("beat", beatIndex); 
     note.setAttribute("index", noteIndex);    
@@ -325,7 +325,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
   {
     let beatIndex = Number(e.target.getAttribute("beat"));
     let noteIndex = Number(e.target.getAttribute("index"));    
-    let noteActivation = /custom-sequencer-note active .*/.test(e.target.getAttribute("class"));
+    let noteActivation = /polygam-sequencer-note active .*/.test(e.target.getAttribute("class"));
     
     this.setNoteActivation(beatIndex, noteIndex, !noteActivation);
   }
@@ -342,16 +342,16 @@ customElements.define("custom-sequencer", class extends HTMLElement
         if(noteToEdit.hasAttribute("note"))
         {
           noteToEdit.setAttribute
-          ("class", "custom-sequencer-note active " + noteToEdit.getAttribute("note").match(/[a-gA-G|s|S]{1,2}/)[0]);
+          ("class", "polygam-sequencer-note active " + noteToEdit.getAttribute("note").match(/[a-gA-G|s|S]{1,2}/)[0]);
         }
         else
         {
-          noteToEdit.setAttribute("class", "custom-sequencer-note active");
+          noteToEdit.setAttribute("class", "polygam-sequencer-note active");
         } 
       } 
       else
       {
-        noteToEdit.setAttribute("class", "custom-sequencer-note");
+        noteToEdit.setAttribute("class", "polygam-sequencer-note");
       }      
     }
     
@@ -419,7 +419,7 @@ customElements.define("custom-sequencer", class extends HTMLElement
 // Demo
 //-------------------------------------------------
 
-let seq = document.querySelector("custom-sequencer");
+let seq = document.querySelector("polygam-sequencer");
 seq.appendBar(["C#4","E4","G#4","B4","E5","G#5","B5"]);
 seq.appendBar(["F#3","A3","C4","F#4","A4","C5","F#5"]);
 seq.setBeats([[1],[,1],[,,1],[,1,,1],[],[,,,,1,,1],[,,,1,,1]]);

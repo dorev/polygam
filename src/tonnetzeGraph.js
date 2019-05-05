@@ -1,4 +1,4 @@
-class Graph
+class TonnetzeGraph
 {	
   constructor(iSvgSelection)
   {    

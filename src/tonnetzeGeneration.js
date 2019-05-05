@@ -1,6 +1,4 @@
-console.log("TEST!!");
-console.clear();
-let graph = new Graph(d3.select(".container"));
+let graph = new TonnetzeGraph(d3.select(".container"));
 
 //---------------------------------------------------------------
 // Initialize tonnetze
