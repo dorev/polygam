@@ -38,7 +38,7 @@ svg
 body
 {
   margin: 0;
-  background: #444;
+  background: #555;
 }
 
 /* Main page styles */
@@ -47,9 +47,10 @@ body
   display: grid;
   grid-gap: 0px;
   grid-template-columns: auto;
-  grid-template-rows:    40px 600px 100%;
+  grid-template-rows:    40px 200px 600px 100%;
   grid-template-areas: 
   "header"
+  "welcome"
   "app"
   "blog";
 }
@@ -58,19 +59,27 @@ body
 {
   grid-area : header;
   background: #444;
-  place-self: center;
+  place-self: stretch;
+}
+
+.welcome 
+{
+  grid-area : welcome;
+  background: #555;
+  place-self: stretch;
 }
 
 .app 
 {
   grid-area : app;
-  background: #555;
+  background: #444;
+  place-self: stretch;
 }
 
 .blog 
 {
   grid-area : blog;
-  place-self: center;
+  place-self: stretch;
 }
 
 :root
