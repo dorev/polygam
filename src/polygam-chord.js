@@ -181,7 +181,7 @@ class PolygamChord extends HTMLElement
         this.notes.push(this.notes[0] + 7);
 
         // Iterate to reach correct inversion
-        for(let inv = 1; inv < this.inversion; ++i)
+        for(let inv = 1; inv < this.inversion; ++inv)
         {
             inversionUp();
         }
