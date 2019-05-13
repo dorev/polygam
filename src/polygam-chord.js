@@ -8,14 +8,17 @@ class PolygamChord extends HTMLElement
         // CSS style
         //--------------------------------------------------------
         let style = document.createElement('style');
-        {
-        style.textContent =`
-        
+        style.textContent =`        
         .chord-container
         {   
+            display: grid;
             grid-gap: 2px;
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows:    repeat(8, 1fr);
+            width: 100px;
+            height: 200px;
+            background: white;
+            place-items:stretch;
         }
         
         .chord-name
@@ -24,6 +27,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 5;
             grid-row-start    : 1;
             grid-row-end      : 5;
+            background: red;
         }
         
         .inversion-button-up
@@ -32,6 +36,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 4;
             grid-row-start    : 5;
             grid-row-end      : 6;
+            background: lime;
         }
         
         .inversion-label
@@ -40,6 +45,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 4;
             grid-row-start    : 6;
             grid-row-end      : 8;
+            background: black;
         }
         
         .inversion-button-down
@@ -48,6 +54,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 4;
             grid-row-start    : 8;
             grid-row-end      : 9;
+            background: grey;
         }
         
         .octave
@@ -56,6 +63,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 1;
             grid-row-end      : 5;
+            background: pink;
         }
         
         .octave-button-up
@@ -64,6 +72,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 5;
             grid-row-end      : 6;
+            background: yellow;
         }
         
         .octave-label
@@ -72,6 +81,7 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 6;
             grid-row-end      : 8;
+            background: green;
         }
         
         .octave-button-down
@@ -80,9 +90,10 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 8;
             grid-row-end      : 9;
+            background: blue;
         }
         `;  
-        }
+        
         //--------------------------------------------------------
         // Custom element members
         //--------------------------------------------------------    
@@ -99,7 +110,8 @@ class PolygamChord extends HTMLElement
         //--------------------------------------------------------
         let shadow = this.attachShadow({mode: 'open'});  
         shadow.appendChild(style);  
-        
+
+        this.container     = document.createElement("div");
         this.chordName     = document.createElement("div");
         this.invButtonUp   = document.createElement("div");
         this.invLabel      = document.createElement("div");
@@ -109,6 +121,8 @@ class PolygamChord extends HTMLElement
         this.octLabel      = document.createElement("div");
         this.octButtonDown = document.createElement("div");
 
+
+        this.container     .setAttribute("class","chord-container");
         this.chordName     .setAttribute("class","chord-name");  
         this.invButtonUp   .setAttribute("class","inversion-button-up"); 
         this.invLabel      .setAttribute("class","inversion-label"); 
@@ -118,14 +132,15 @@ class PolygamChord extends HTMLElement
         this.octLabel      .setAttribute("class","octave-label"); 
         this.octButtonDown .setAttribute("class","octave-button-down"); 
         
-        shadow.appendChild(chordName);
-        shadow.appendChild(invButtonUp);
-        shadow.appendChild(invLabel);
-        shadow.appendChild(invButtonDown);
-        shadow.appendChild(octave);
-        shadow.appendChild(octButtonup);
-        shadow.appendChild(octLabel);
-        shadow.appendChild(octButtonDown);
+        this.container.appendChild(this.chordName);
+        this.container.appendChild(this.invButtonUp);
+        this.container.appendChild(this.invLabel);
+        this.container.appendChild(this.invButtonDown);
+        this.container.appendChild(this.octaveName);
+        this.container.appendChild(this.octButtonup);
+        this.container.appendChild(this.octLabel);
+        this.container.appendChild(this.octButtonDown);
+        shadow.appendChild(this.container);
 
         this.invLabel.innerHTML = "INV";
         this.octLabel.innerHTML = "OCT";
@@ -133,16 +148,17 @@ class PolygamChord extends HTMLElement
         //--------------------------------------------------------
         // Setup events
         //--------------------------------------------------------
-        this.invButtonUp    .addEventListener("click", inversionUp); 
-        this.invButtonDown  .addEventListener("click", inversionDown);
-        this.octButtonup    .addEventListener("click", octaveUp);
-        this.octButtonDown  .addEventListener("click", octaveDown);
+        this.invButtonUp    .addEventListener("click", this.inversionUp); 
+        this.invButtonDown  .addEventListener("click", this.inversionDown);
+        this.octButtonup    .addEventListener("click", this.octaveUp);
+        this.octButtonDown  .addEventListener("click", this.octaveDown);
+
+        //setChord(properties);
 
     } // end of constructor
 
-    // Mediator callbacks
-    updateProgression(){}
-    updateGraph(){}
+    // Callbacks
+    chordChanged(){}
 
     setChord(properties)
     {
@@ -187,7 +203,6 @@ class PolygamChord extends HTMLElement
         }
 
         this.updateChordName();
-
     }
 
     inversionUp()
@@ -205,6 +220,9 @@ class PolygamChord extends HTMLElement
             notes = notes.map(n => n - 12);
         }
         
+        // Callback
+        chordChanged(this);
+
         this.updateChordName();
     }
 
@@ -222,6 +240,9 @@ class PolygamChord extends HTMLElement
             // Shift chord one octave up            
             notes = notes.map(n => n + 12);
         }
+
+        // Callback
+        chordChanged(this);
 
         this.updateChordName();
     }
@@ -254,6 +275,9 @@ class PolygamChord extends HTMLElement
 
         // Increase pitch by 12
         notes = notes.map(n => n + 12);
+
+        // Callback
+        chordChanged(this);
     }
 
     octaveDown()
@@ -271,9 +295,13 @@ class PolygamChord extends HTMLElement
 
         // Increase pitch by 12
         notes = notes.map(n => n - 12);
+
+        // Callback
+        chordChanged(this);
     }
 
-    octaveOf(noteNumber)
+    // Utilities
+    octaveOf(noteNumber) 
     {
         return Math.floor(noteNumber / 12);
     }
