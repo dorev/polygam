@@ -12,13 +12,14 @@ class PolygamChord extends HTMLElement
         .chord-container
         {   
             display: grid;
-            grid-gap: 2px;
+            padding: 2px;
+            grid-gap: 4px;
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows:    repeat(8, 1fr);
             width: 100px;
             height: 200px;
-            background: white;
-            place-items:stretch;
+            background: darkgrey;
+            place-items: stretch;
         }
         
         .chord-name
@@ -27,7 +28,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 5;
             grid-row-start    : 1;
             grid-row-end      : 5;
-            background: red;
+            background: grey;
+            border-radius: 5px;
         }
         
         .inversion-button-up
@@ -36,7 +38,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 4;
             grid-row-start    : 5;
             grid-row-end      : 6;
-            background: lime;
+            background: grey;
+            border-radius: 5px;
         }
         
         .inversion-label
@@ -45,7 +48,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 4;
             grid-row-start    : 6;
             grid-row-end      : 8;
-            background: black;
+            background: grey;
+            border-radius: 5px;
         }
         
         .inversion-button-down
@@ -55,6 +59,7 @@ class PolygamChord extends HTMLElement
             grid-row-start    : 8;
             grid-row-end      : 9;
             background: grey;
+            border-radius: 5px;
         }
         
         .octave
@@ -63,7 +68,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 1;
             grid-row-end      : 5;
-            background: pink;
+            background: grey;
+            border-radius: 5px;
         }
         
         .octave-button-up
@@ -72,7 +78,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 5;
             grid-row-end      : 6;
-            background: yellow;
+            background: grey;
+            border-radius: 5px;
         }
         
         .octave-label
@@ -81,7 +88,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 6;
             grid-row-end      : 8;
-            background: green;
+            background: grey;
+            border-radius: 5px;
         }
         
         .octave-button-down
@@ -90,7 +98,8 @@ class PolygamChord extends HTMLElement
             grid-column-end   : 7;
             grid-row-start    : 8;
             grid-row-end      : 9;
-            background: blue;
+            background: grey;
+            border-radius: 5px;
         }
         `;  
         
@@ -117,7 +126,7 @@ class PolygamChord extends HTMLElement
         this.invLabel      = document.createElement("div");
         this.invButtonDown = document.createElement("div");        
         this.octaveName    = document.createElement("div");
-        this.octButtonup   = document.createElement("div");
+        this.octButtonUp   = document.createElement("div");
         this.octLabel      = document.createElement("div");
         this.octButtonDown = document.createElement("div");
 
@@ -128,7 +137,7 @@ class PolygamChord extends HTMLElement
         this.invLabel      .setAttribute("class","inversion-label"); 
         this.invButtonDown .setAttribute("class","inversion-button-down"); 
         this.octaveName    .setAttribute("class","octave");  
-        this.octButtonup   .setAttribute("class","octave-button-up"); 
+        this.octButtonUp   .setAttribute("class","octave-button-up"); 
         this.octLabel      .setAttribute("class","octave-label"); 
         this.octButtonDown .setAttribute("class","octave-button-down"); 
         
@@ -137,20 +146,24 @@ class PolygamChord extends HTMLElement
         this.container.appendChild(this.invLabel);
         this.container.appendChild(this.invButtonDown);
         this.container.appendChild(this.octaveName);
-        this.container.appendChild(this.octButtonup);
+        this.container.appendChild(this.octButtonUp);
         this.container.appendChild(this.octLabel);
         this.container.appendChild(this.octButtonDown);
         shadow.appendChild(this.container);
 
         this.invLabel.innerHTML = "INV";
         this.octLabel.innerHTML = "OCT";
+        this.invButtonDown.innerHTML = "-";
+        this.octButtonDown.innerHTML = "-";
+        this.invButtonUp.innerHTML = "+";
+        this.octButtonUp.innerHTML = "+";
 
         //--------------------------------------------------------
         // Setup events
         //--------------------------------------------------------
         this.invButtonUp    .addEventListener("click", this.inversionUp); 
         this.invButtonDown  .addEventListener("click", this.inversionDown);
-        this.octButtonup    .addEventListener("click", this.octaveUp);
+        this.octButtonUp    .addEventListener("click", this.octaveUp);
         this.octButtonDown  .addEventListener("click", this.octaveDown);
 
         //setChord(properties);
