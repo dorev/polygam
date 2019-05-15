@@ -21,7 +21,6 @@
     
     <div class="app">
         app
-        <polygam-chord></polygam-chord>
     </div>
     
     <div class="blog">
@@ -33,7 +32,10 @@
 
 
 <script type="text/javascript">
-var obj = document.querySelector("polygam-chord");
-obj.setChord({root:0, voicing:"major", octave:3});
+
+// Create a new chord
+var newChord = document.createElement("polygam-chord");
+document.querySelector(".app").appendChild(newChord);
+newChord.setChord({root:0, voicing:"major", octave:3});
 
 </script>

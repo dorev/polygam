@@ -184,7 +184,9 @@ class PolygamChord extends HTMLElement
            && (properties.voicing === "major" || properties.voicing === "minor")
            // Check octave
            && properties.hasOwnProperty("octave") 
-           && Number.isInteger(properties.octave))
+           && Number.isInteger(properties.octave)
+           && properties.octave >= 0
+           && properties.octave <= 9)
         )
         {
             console.error("Invalid chord set, check properties");
@@ -200,7 +202,7 @@ class PolygamChord extends HTMLElement
             this.inversion = 1;
         }
 
-        this.root    = properties.root;
+        this.root    = properties.root % 12;
         this.voicing = properties.voicing;
         this.octave  = properties.octave;
 
@@ -232,48 +234,56 @@ class PolygamChord extends HTMLElement
 
     inversionUp()
     {     
-        // Retarget customElement 
+        // Retarget customElement base
         let that = this.parentNode.parentNode.host;
+
+        // Check if inversion is possible
+        if(that.notes[0] > 96)
+        {
+            console.error("Chord to high to invert");
+            return;
+        }
 
         // Increase inversion value
         that.inversion = that.inversion === that.maxInversion ? 1 : that.inversion + 1;
 
         // Rotate chord notes   
-        that.notes.push(that.notes.shift());
+        that.notes.push(that.notes.shift() + 12);
         
-        // Validate bass octave
-        if(that.octaveOf(that.getBass()) != that.octave)
-        {
-            // Shift chord one octave down            
-            notes = notes.map(n => n - 12);
-        }
+        // Update octave value
+        that.octave = that.octaveOf(that.getBass());
+        that.octaveName.innerHTML = that.octave;
         
         // Callback
-        //chordChanged(that);
+        that.chordChanged(that);
 
         that.updateChordName();
     }
 
     inversionDown()
     {
-        // Retarget customElement 
+        // Retarget customElement base
         let that = this.parentNode.parentNode.host;
 
-        // Decrease inversion value
-        that.inversion = that.inversion === 0 ? that.maxInversion : that.inversion - 1;
-
-        // Rotate chord notes   
-        that.notes.unshift(that.notes.pop());
-        
-        // Validate bass octave
-        if(that.octaveOf(that.getBass()) != that.octave)
+        // Check if inversion is possible
+        if(that.notes[that.notes.length - 1] < 12)
         {
-            // Shift chord one octave up            
-            notes = notes.map(n => n + 12);
+            console.error("Chord to low to invert");
+            return;
         }
 
+        // Decrease inversion value
+        that.inversion = that.inversion === 1 ? that.maxInversion : that.inversion - 1;
+
+        // Rotate chord notes   
+        that.notes.unshift(that.notes.pop() - 12);
+        
+        // Update octave value
+        that.octave = that.octaveOf(that.getBass());
+        that.octaveName.innerHTML = that.octave;
+
         // Callback
-        //chordChanged(that);
+        that.chordChanged(that);
 
         that.updateChordName();
     }
@@ -294,7 +304,7 @@ class PolygamChord extends HTMLElement
 
     octaveUp()
     {
-        // Retarget customElement 
+        // Retarget customElement base
         let that = this.parentNode.parentNode.host;
 
         // Check no note busts octave 9
@@ -312,12 +322,12 @@ class PolygamChord extends HTMLElement
         that.notes = that.notes.map(n => n + 12);
 
         // Callback
-        //chordChanged(that);
+        that.chordChanged(that);
     }
 
     octaveDown()
     {
-        // Retarget customElement 
+        // Retarget customElement base
         let that = this.parentNode.parentNode.host;
 
         // Check no note busts octave 0
@@ -335,7 +345,7 @@ class PolygamChord extends HTMLElement
         that.notes = that.notes.map(n => n - 12);
 
         // Callback
-        //chordChanged(that);
+        that.chordChanged(that);
     }
 
     // Utilities
