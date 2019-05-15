@@ -190,6 +190,16 @@ class PolygamChord extends HTMLElement
             console.error("Invalid chord set, check properties");
         }
 
+        if(properties.hasOwnProperty("inversion")
+           && Number.isInteger(properties.inversion))
+        {
+            this.inversion = properties.inversion;
+        }
+        else
+        {
+            this.inversion = 1;
+        }
+
         this.root    = properties.root;
         this.voicing = properties.voicing;
         this.octave  = properties.octave;
@@ -209,6 +219,8 @@ class PolygamChord extends HTMLElement
         // Add fifth
         this.notes.push(this.notes[0] + 7);
 
+        this.maxInversion = 3;
+
         // Iterate to reach correct inversion
         for(let inv = 1; inv < this.inversion; ++inv)
         {
@@ -220,97 +232,110 @@ class PolygamChord extends HTMLElement
 
     inversionUp()
     {     
+        // Retarget customElement 
+        let that = this.parentNode.parentNode.host;
+
         // Increase inversion value
-        this.inversion = this.inversion === this.maxInversion ? 1 : this.inversion + 1;
+        that.inversion = that.inversion === that.maxInversion ? 1 : that.inversion + 1;
 
         // Rotate chord notes   
-        this.notes.push(this.notes.shift());
+        that.notes.push(that.notes.shift());
         
         // Validate bass octave
-        if(this.octaveOf(this.getBass()) != this.octave)
+        if(that.octaveOf(that.getBass()) != that.octave)
         {
             // Shift chord one octave down            
             notes = notes.map(n => n - 12);
         }
         
         // Callback
-        chordChanged(this);
+        //chordChanged(that);
 
-        this.updateChordName();
+        that.updateChordName();
     }
 
     inversionDown()
     {
+        // Retarget customElement 
+        let that = this.parentNode.parentNode.host;
+
         // Decrease inversion value
-        this.inversion = this.inversion === 0 ? this.maxInversion : this.inversion - 1;
+        that.inversion = that.inversion === 0 ? that.maxInversion : that.inversion - 1;
 
         // Rotate chord notes   
-        this.notes.unshift(this.notes.pop());
+        that.notes.unshift(that.notes.pop());
         
         // Validate bass octave
-        if(this.octaveOf(this.getBass()) != this.octave)
+        if(that.octaveOf(that.getBass()) != that.octave)
         {
             // Shift chord one octave up            
             notes = notes.map(n => n + 12);
         }
 
         // Callback
-        chordChanged(this);
+        //chordChanged(that);
 
-        this.updateChordName();
+        that.updateChordName();
     }
 
     updateChordName()
     {
         let notesName = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
-        this.name = `${notesName[this.notes[0] % 12]} ${this.voicing}`;
+        this.name = `${notesName[this.root]}${this.voicing === "major" ? "" : "m"}`;
 
         if(this.inversion != 1)
         {
-            this.name += `/${notesName[this.notes[this.inversion-1] % 12]}`;
+            this.name += `/${notesName[this.notes[0] % 12]}`;
         }
 
         this.chordName.innerHTML = this.name;
+        this.octaveName.innerHTML = this.octave;
     }
 
     octaveUp()
     {
+        // Retarget customElement 
+        let that = this.parentNode.parentNode.host;
+
         // Check no note busts octave 9
-        if(this.octaveOf(this.getSoprano() + 12) > 9)
+        if(that.octaveOf(that.getSoprano() + 12) > 9)
         {
-            console.err("Chords note to high to increase of an octave")
+            console.error("Chords note to high to increase of an octave");
             return;
         }
 
         // Update octave value
-        this.octave++;
-        this.octaveName.innerHTML = this.octave;
+        that.octave++;
+        that.octaveName.innerHTML = that.octave;
 
         // Increase pitch by 12
-        notes = notes.map(n => n + 12);
+        that.notes = that.notes.map(n => n + 12);
 
         // Callback
-        chordChanged(this);
+        //chordChanged(that);
     }
 
     octaveDown()
     {
+        // Retarget customElement 
+        let that = this.parentNode.parentNode.host;
+
         // Check no note busts octave 0
-        if(this.octaveOf(this.getBass() - 12) < 0)
+        if(that.octaveOf(that.getBass() - 12)< 0)
         {
-            console.err("Chords note to low to decrease of an octave")
+            console.error("Chords note to low to decrease of an octave");
             return;
         }
 
         // Update octave value
-        this.octave--;
-        this.octaveName.innerHTML = this.octave;
+        that.octave--;
+        that.octaveName.innerHTML = that.octave;
 
         // Increase pitch by 12
-        notes = notes.map(n => n - 12);
+        that.notes = that.notes.map(n => n - 12);
 
         // Callback
-        chordChanged(this);
+        //chordChanged(that);
     }
 
     // Utilities
