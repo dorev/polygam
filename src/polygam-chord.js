@@ -1,4 +1,4 @@
-class PolygamChord extends HTMLElement
+customElements.define("polygam-chord",class extends HTMLElement
 {            
     constructor()
     {
@@ -337,9 +337,9 @@ class PolygamChord extends HTMLElement
     }
 
     // Utilities
-    octaveOf(noteNumber) 
+    octaveOf(iNoteNumber) 
     {
-        return Math.floor(noteNumber / 12);
+        return Math.floor(iNoteNumber / 12);
     }
 
     getBass()
@@ -352,7 +352,29 @@ class PolygamChord extends HTMLElement
         return Math.max.apply(null, this.notes);
     }
 
+    // Getters
+    getName()
+    {
+        return this.name;
+    }
 
-};
+    getRoot()
+    {
+        return this.root;
+    }
 
-customElements.define("polygam-chord", PolygamChord);
+    getOctave()
+    {
+        return this.octave;
+    }
+
+    getInversion()
+    {
+        return this.inversion;
+    }
+
+    getNotes()
+    {
+        return this.notes;
+    }
+});

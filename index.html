@@ -5,6 +5,7 @@
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
     <script type="text/javascript" src="src/polygam-chord.js"></script>
+    <script type="text/javascript" src="src/polygam-progression.js"></script>
 
 </head>
 
@@ -34,8 +35,10 @@
 <script type="text/javascript">
 
 // Create a new chord
-var newChord = document.createElement("polygam-chord");
-document.querySelector(".app").appendChild(newChord);
-newChord.setChord({root:0, voicing:"major", octave:3});
+var e = document.createElement("polygam-progression");
+document.querySelector(".app").appendChild(e);
+e.addChord({root:0, voicing:"major", octave:3});
+e.addChord({root:5, voicing:"major", octave:3});
+console.log(e.chords);
 
 </script>
