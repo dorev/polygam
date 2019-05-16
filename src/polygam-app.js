@@ -13,7 +13,22 @@ customElements.define("polygam-app", class extends HTMLElement
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
-    style.textContent =`
+    style.textContent =` 
+    .chord-container
+    {   
+        place-self: center;
+        display: grid;
+        padding: 2px;
+        grid-gap: 4px;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows:    repeat(8, 1fr);
+        width: 100px;
+        height: 200px;
+        background: darkgrey;
+        place-items: stretch;
+    }
+
+
     `;  
     
     //--------------------------------------------------------

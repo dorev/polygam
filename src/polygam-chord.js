@@ -11,6 +11,7 @@ customElements.define("polygam-chord",class extends HTMLElement
         style.textContent =`        
         .chord-container
         {   
+            place-self: center;
             display: grid;
             padding: 2px;
             grid-gap: 4px;
