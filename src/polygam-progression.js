@@ -14,8 +14,8 @@ customElements.define("polygam-progression",class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows:    9fr 1fr;
+      grid-template-columns: auto;
+      grid-template-rows: auto;
       width: 600px;
       height: 250px;
       background: orange;
@@ -36,8 +36,7 @@ customElements.define("polygam-progression",class extends HTMLElement
     shadow.appendChild(style);  
 
     this.container = document.createElement("div");
-    this.container.setAttribute("class","progression-container");
-    
+    this.container.setAttribute("class","progression-container");    
     shadow.appendChild(this.container);
 
     //--------------------------------------------------------
@@ -54,8 +53,13 @@ customElements.define("polygam-progression",class extends HTMLElement
 
   addChord(iChord)
   {
-    // Create element
+    // Create chord element
     let newChord = document.createElement("polygam-chord");
+    
+    // Adjust style 
+    this.container.style.gridTemplateColumns = `repeat(${this.chords.length + 1}, 1fr)`;
+
+    // Add chord element
     this.container.appendChild(newChord);
     newChord.setChord(iChord);
 

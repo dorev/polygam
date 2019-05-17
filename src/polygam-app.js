@@ -16,16 +16,40 @@ customElements.define("polygam-app", class extends HTMLElement
     style.textContent =` 
     .app-container
     {   
-      place-self: stretch;
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(6, 1fr);
-      grid-template-rows:    repeat(8, 1fr);
-      background: darkgrey;
+      grid-template-columns: auto; 
+      grid-template-rows: 100px 1fr 100px 100px;
       place-items: stretch;
     }
 
+    .app-graph
+    {     
+      place-self: center; 
+      grid-row : 1/2;
+      background: green;
+    }
+
+    .app-progression
+    {      
+      place-self: center;
+      grid-row : 2/3;
+    }
+
+    .app-sequencer
+    {   
+      place-self: center;   
+      grid-row : 3/4;
+      background: red;
+    }
+
+    .app-oscillator
+    {   
+      place-self: center;   
+      grid-row : 4/5;
+      background: orange;
+    }
     `;  
     
     //--------------------------------------------------------
@@ -33,20 +57,38 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
+    
+    this.container = document.createElement("div");
+    this.container.setAttribute("class","app-container");    
+    shadow.appendChild(this.container);
 
+    // Create graph    
+    this.graph = document.createElement("div");
+    this.graph.setAttribute("class", "app-graph");
+    this.container.appendChild(this.graph);
 
+    // Create progression
+    this.progression = document.createElement("polygam-progression");
+    this.progression.setAttribute("class", "app-progression");
+    this.container.appendChild(this.progression);
 
-    this.init(); 
-         
+    this.progression.addChord({root:0, voicing:"major", octave:3});
+    this.progression.addChord({root:0, voicing:"major", octave:3});
+    this.progression.addChord({root:0, voicing:"major", octave:3});
+    this.progression.addChord({root:0, voicing:"major", octave:3});
+
+    // Create sequencer
+    this.sequencer = document.createElement("div");
+    this.sequencer.setAttribute("class", "app-sequencer");
+    this.container.appendChild(this.sequencer);
+
+    // Create oscillator
+    this.oscillator = document.createElement("div");
+    this.oscillator.setAttribute("class", "app-oscillator");
+    this.container.appendChild(this.oscillator);
+
   } // end of constructor
   
-  init()
-  {
-    // create graph    
-    // create progression
-    // create sequencer
-    // create oscillator
-  }
 
   // Callback from progression
   progressionEvent(iProgression)
@@ -69,6 +111,14 @@ customElements.define("polygam-app", class extends HTMLElement
   {
 
   }
+
+  // Callback from sequencer
+  sequencerEvent()
+  {
+
+  }
+
+
 
 
 
@@ -100,3 +150,4 @@ require("some.js", function() {
 
 // CUTE CSS!!
 https://cssfx.dev/
+*/

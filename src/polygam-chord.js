@@ -37,80 +37,64 @@ customElements.define("polygam-chord",class extends HTMLElement
     
     .chord-name
     {   
-      grid-column-start : 1;
-      grid-column-end   : 5;
-      grid-row-start    : 1;
-      grid-row-end      : 5;
+      grid-column : 1/5;
+      grid-row    : 1/5;
       background: grey;
       border-radius: 5px;
     }
     
     .inversion-button-up
     {   
-      grid-column-start : 1;
-      grid-column-end   : 4;
-      grid-row-start    : 5;
-      grid-row-end      : 6;
+      grid-column : 1/4;
+      grid-row    : 5/6;
       background: grey;
       border-radius: 5px;
     }
     
     .inversion-label
     {   
-      grid-column-start : 1;
-      grid-column-end   : 4;
-      grid-row-start    : 6;
-      grid-row-end      : 8;
+      grid-column : 1/4;
+      grid-row    : 6/8;
       background: grey;
       border-radius: 5px;
     }
     
     .inversion-button-down
     {   
-      grid-column-start : 1;
-      grid-column-end   : 4;
-      grid-row-start    : 8;
-      grid-row-end      : 9;
+      grid-column : 1/4;
+      grid-row    : 8/9;
       background: grey;
       border-radius: 5px;
     }
     
     .octave
     {   
-      grid-column-start : 5;
-      grid-column-end   : 7;
-      grid-row-start    : 1;
-      grid-row-end      : 5;
+      grid-column : 5/7;
+      grid-row    : 1/5;
       background: grey;
       border-radius: 5px;
     }
     
     .octave-button-up
     {   
-      grid-column-start : 4;
-      grid-column-end   : 7;
-      grid-row-start    : 5;
-      grid-row-end      : 6;
+      grid-column : 4/7;
+      grid-row    : 5/6;
       background: grey;
       border-radius: 5px;
     }
     
     .octave-label
     {   
-      grid-column-start : 4;
-      grid-column-end   : 7;
-      grid-row-start    : 6;
-      grid-row-end      : 8;
+      grid-column : 4/7;
+      grid-row    : 6/8;
       background: grey;
       border-radius: 5px;
     }
     
     .octave-button-down
     {   
-      grid-column-start : 4;
-      grid-column-end   : 7;
-      grid-row-start    : 8;
-      grid-row-end      : 9;
+      grid-column : 4/7;
+      grid-row    : 8/9;
       background: grey;
       border-radius: 5px;
     }
