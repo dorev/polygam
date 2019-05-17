@@ -1,5 +1,15 @@
-customElements.define("polygam-button", class extends HTMLElement
-{            
+customElements.define("polygam-control", class extends HTMLElement
+{          
+  
+  /*
+  like the HTMLElement input, polygam-control is registry
+  of various control types with different properties :
+  - play/stop button
+  - knob
+  - anything else...
+  */
+
+
   constructor()
   {
     super();        

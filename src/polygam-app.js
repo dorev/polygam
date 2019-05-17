@@ -14,20 +14,17 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =` 
-    .chord-container
+    .app-container
     {   
-        place-self: center;
-        display: grid;
-        padding: 2px;
-        grid-gap: 4px;
-        grid-template-columns: repeat(6, 1fr);
-        grid-template-rows:    repeat(8, 1fr);
-        width: 100px;
-        height: 200px;
-        background: darkgrey;
-        place-items: stretch;
+      place-self: stretch;
+      display: grid;
+      padding: 2px;
+      grid-gap: 4px;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows:    repeat(8, 1fr);
+      background: darkgrey;
+      place-items: stretch;
     }
-
 
     `;  
     
@@ -36,10 +33,44 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
-    
+
+
+
+    this.init(); 
          
   } // end of constructor
   
+  init()
+  {
+    // create graph    
+    // create progression
+    // create sequencer
+    // create oscillator
+  }
+
+  // Callback from progression
+  progressionEvent(iProgression)
+  {
+    // When the progression changes
+      // refresh the graph
+      // update sequencer notes
+      // 
+
+  }
+
+  // Callback from graph
+  graphEvent()
+  {
+
+  }
+
+  // Callback from sequencer
+  sequencerEvent()
+  {
+
+  }
+
+
 
 
 });
