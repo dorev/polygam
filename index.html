@@ -4,6 +4,7 @@
     <meta charset="UTF-8"> 
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
+    <script type="text/javascript" src="src/polygam-knob.js"></script>
     <script type="text/javascript" src="src/polygam-chord.js"></script>
     <script type="text/javascript" src="src/polygam-progression.js"></script>
     <script type="text/javascript" src="src/polygam-app.js"></script>
@@ -24,6 +25,7 @@
         - sequencer <br>
         - graph <br>
         - osc <br>
+        <polygam-knob></polygam-knob>
     </div>
     
     <div class="app">
@@ -40,19 +42,7 @@
 
 <script type="text/javascript">
 
-// Create a new chord
-//var e = document.createElement("polygam-progression");
-//document.querySelector(".app").appendChild(e);
-//e.addChord({root:0, voicing:"major", octave:3});
-//e.addChord({root:0, voicing:"major", octave:3});
-//e.addChord({root:0, voicing:"major", octave:3});
-//e.addChord({root:0, voicing:"major", octave:3});
-//console.log(e.chords);
-
 // Create app
-var a = document.createElement("polygam-app");
-document.querySelector(".app").appendChild(a);
-
-
+document.querySelector(".app").appendChild(document.createElement("polygam-app"));
 
 </script>

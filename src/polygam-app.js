@@ -1,3 +1,30 @@
+/*
+LOADING STUFF
+
+// Wait for page to have loaded :
+window.onload = function ...
+
+
+// dynamically call js
+function require(url, callback) 
+{
+  var e = document.createElement("script");
+  e.src = url;
+  e.type="text/javascript";
+  e.addEventListener('load', callback);
+  document.getElementsByTagName("head")[0].appendChild(e);
+}
+
+require("some.js", function() { 
+   // Do this and that
+});
+
+
+
+// CUTE CSS!!
+https://cssfx.dev/
+*/
+
 customElements.define("polygam-app", class extends HTMLElement
 {            
   constructor()
@@ -26,29 +53,29 @@ customElements.define("polygam-app", class extends HTMLElement
 
     .app-graph
     {     
-      place-self: center; 
+      place-self: stretch;
       grid-row : 1/2;
       background: green;
     }
 
     .app-progression
     {      
-      place-self: center;
+      place-self: stretch;
       grid-row : 2/3;
     }
 
     .app-sequencer
     {   
-      place-self: center;   
+      place-self: stretch; 
       grid-row : 3/4;
       background: red;
     }
 
     .app-oscillator
     {   
-      place-self: center;   
+      place-self: stretch; 
       grid-row : 4/5;
-      background: orange;
+      background: purple;
     }
     `;  
     
@@ -96,8 +123,6 @@ customElements.define("polygam-app", class extends HTMLElement
     // When the progression changes
       // refresh the graph
       // update sequencer notes
-      // 
-
   }
 
   // Callback from graph
@@ -124,30 +149,3 @@ customElements.define("polygam-app", class extends HTMLElement
 
 
 });
-
-/*
-LOADING STUFF
-
-// Wait for page to have loaded :
-window.onload = function ...
-
-
-// dynamically call js
-function require(url, callback) 
-{
-  var e = document.createElement("script");
-  e.src = url;
-  e.type="text/javascript";
-  e.addEventListener('load', callback);
-  document.getElementsByTagName("head")[0].appendChild(e);
-}
-
-require("some.js", function() { 
-   // Do this and that
-});
-
-
-
-// CUTE CSS!!
-https://cssfx.dev/
-*/
