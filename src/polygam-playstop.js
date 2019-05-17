@@ -10,7 +10,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
     //--------------------------------------------------------    
     
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;  
-    this.status = true;  
+    this.status = false;  
 
     //--------------------------------------------------------
     // CSS style
@@ -80,14 +80,14 @@ customElements.define("polygam-playstop", class extends HTMLElement
   } // end of constructor
 
   // Callback
-  buttonChanged() {}  
+  buttonEvent() {}  
   
   click()
   {
     this.status = !(this.status);   
     this.playIcon.setAttribute("visibility", this.status ? "visible" : "hidden"); 
     this.stopIcon.setAttribute("visibility", this.status ? "hidden" : "visible");
-    this.buttonChanged(this);
+    this.buttonEvent(this);
   }
 
   
