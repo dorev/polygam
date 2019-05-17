@@ -5,6 +5,12 @@ customElements.define("polygam-progression",class extends HTMLElement
     super();        
     
     //--------------------------------------------------------
+    // Custom element members
+    //--------------------------------------------------------    
+    this.chords = [];
+    
+    
+    //--------------------------------------------------------
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
@@ -22,27 +28,16 @@ customElements.define("polygam-progression",class extends HTMLElement
     }
 
     `;  
-    
-    //--------------------------------------------------------
-    // Custom element members
-    //--------------------------------------------------------    
-    this.chords = [];
-    
     //--------------------------------------------------------
     // Construct custom element
     //--------------------------------------------------------
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
-
+    
     this.container = document.createElement("div");
     this.container.setAttribute("class","progression-container");    
     shadow.appendChild(this.container);
-
-    //--------------------------------------------------------
-    // Setup events
-    //--------------------------------------------------------
-
-
+        
   } // end of constructor
 
   // Callbacks
@@ -70,7 +65,6 @@ customElements.define("polygam-progression",class extends HTMLElement
 
   chordChanged(iChord)
   {
-    console.log(`${iChord.name} has changed!`);
     this.progressionEvent(this);
   }
 

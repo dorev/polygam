@@ -105,7 +105,7 @@ customElements.define("polygam-app", class extends HTMLElement
     this.progression.addChord({root:0, voicing:"major", octave:3});
 
     // Create sequencer
-    this.sequencer = document.createElement("div");
+    this.sequencer = document.createElement("polygam-player");
     this.sequencer.setAttribute("class", "app-sequencer");
     this.container.appendChild(this.sequencer);
 

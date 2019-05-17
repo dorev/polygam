@@ -5,8 +5,10 @@
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
     <script type="text/javascript" src="src/polygam-knob.js"></script>
+    <script type="text/javascript" src="src/polygam-playstop.js"></script>
     <script type="text/javascript" src="src/polygam-chord.js"></script>
     <script type="text/javascript" src="src/polygam-progression.js"></script>
+    <script type="text/javascript" src="src/polygam-player.js"></script>
     <script type="text/javascript" src="src/polygam-app.js"></script>
 
 </head>
@@ -25,11 +27,10 @@
         - sequencer <br>
         - graph <br>
         - osc <br>
-        <polygam-knob></polygam-knob>
     </div>
     
     <div class="app">
-        app
+        <polygam-app></polygam-app>
     </div>
     
     <div class="blog">
@@ -38,11 +39,3 @@
 </div>
 </body>
 </html>
-
-
-<script type="text/javascript">
-
-// Create app
-document.querySelector(".app").appendChild(document.createElement("polygam-app"));
-
-</script>

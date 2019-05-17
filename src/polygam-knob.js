@@ -25,8 +25,8 @@ customElements.define("polygam-knob", class extends HTMLElement
     .knob-container
     {   
       display: grid;
-      width: 100px;
-      height: 100px;
+      width: ${this.size}px;
+      height: ${this.size}px;
     }
     `;  
     
@@ -41,24 +41,25 @@ customElements.define("polygam-knob", class extends HTMLElement
     shadow.appendChild(this.container);
 
     // Create SVG
+    let s = this.size;
     this.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-    this.svg.setAttribute("width", this.size);
-    this.svg.setAttribute("height", this.size);
+    this.svg.setAttribute("width", s);
+    this.svg.setAttribute("height", s);
     this.container.appendChild(this.svg);
     
     this.knobBody = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
-    this.knobBody.setAttribute("cx", this.size/2);
-    this.knobBody.setAttribute("cy", this.size/2);
-    this.knobBody.setAttribute("r", this.size/2.2);
+    this.knobBody.setAttribute("cx", s*0.5);
+    this.knobBody.setAttribute("cy", s*0.5);
+    this.knobBody.setAttribute("r", s/2.25);
     this.knobBody.setAttribute("stroke","#000");
-    this.knobBody.setAttribute("stroke-width",2);
+    this.knobBody.setAttribute("stroke-width",s*0.05);
     this.knobBody.setAttribute("fill","#0F0");
     this.svg.appendChild(this.knobBody);
 
     this.knobPointer = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
-    this.knobPointer.setAttribute("cx", this.size/2);
-    this.knobPointer.setAttribute("cy", this.size/5);
-    this.knobPointer.setAttribute("r", this.size/10);
+    this.knobPointer.setAttribute("cx", s*0.5);
+    this.knobPointer.setAttribute("cy", s*0.2);
+    this.knobPointer.setAttribute("r", s*0.1);
     this.knobPointer.setAttribute("fill","#000");   
     this.svg.appendChild(this.knobPointer);
 
@@ -88,7 +89,7 @@ customElements.define("polygam-knob", class extends HTMLElement
   } // end of constructor
 
   // Callback
-  knobChanged() {}  
+  knobEvent() {}  
   
   rotate()
   {
@@ -104,7 +105,7 @@ customElements.define("polygam-knob", class extends HTMLElement
   updateValue()
   {
     this.value = (this.rotation + 150) / 3;
-    this.knobChanged(this.value);
+    this.knobEvent(this);
   }
 
   
