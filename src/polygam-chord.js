@@ -1,3 +1,15 @@
+/*
+REWORK:
+
+remove OCT display, label and controls
+remove INV label and integrate controls around the chord name
+
+inversion +/- will be the way to access the various octaves 
+
+! will need a way to limit the range if the sequencer has more octaves
+
+*/
+
 customElements.define("polygam-chord",class extends HTMLElement
 {            
   constructor()
