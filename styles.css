@@ -22,19 +22,6 @@ rect
   pointer-events: all;
 }
 
-text 
-{
-  font-family: monospace;
-  font-size: 1.25em;
-  fill : #000;
-  stroke-width: 0;
-}
-
-svg 
-{
-  background: #555;
-}
-
 body
 {
   margin: 0;
@@ -42,51 +29,70 @@ body
 }
 
 /* Main page styles */
+
+@font-face { /* https://www.1001freefonts.com/vanilla-extract.font */
+  font-family: "Polygam";
+  src: url("fonts/VanillaExtractRegular.ttf") format("truetype");
+}
+
+
 .container 
 {
   display: grid;
   grid-gap: 0px;
   grid-template-columns: auto;
-  grid-template-rows:    40px 200px auto auto;
+  grid-template-rows:    3.6em auto auto auto;
+  place-items: stretch;
   grid-template-areas: 
   "header"
   "welcome"
   "app"
-  "blog";
+  "info";
 }
 
 .header 
 {
   grid-area : header;
   background: #444;
-  place-self: stretch;
+  text-align: center;
 }
+
 
 .welcome 
 {
   grid-area : welcome;
   background: #555;
-  place-self: stretch;
 }
 
 .app 
 {
   grid-area : app;
   background: #444;
-  place-self: stretch;
 }
 
 .blog 
 {
-  grid-area : blog;
-  place-self: stretch;
+  grid-area : info;
 }
 
 :root
 {
+  /*
+  --poly1 : #8A2387;  
+  --poly2 : #E94057;
+  --poly3 : #F27121;
+  */
+
+  /*
   --poly1 : #FF0080;  
   --poly2 : #FF8C00;
   --poly3 : #40E0D0;
+  */
+
+  --poly1 : #833AB4;
+  --poly2 : #FD1D1D;
+  --poly3 : #FCB045;
+
 }
 
 .rainbow 
@@ -104,4 +110,6 @@ body
   color:transparent;
   background-clip: text;
   -webkit-background-clip: text;
+  font-family: "Polygam";
+  font-size: 2em;
 }

@@ -38,6 +38,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
+    {
     style.textContent =`
     .polygam-sequencer-song 
     {
@@ -167,6 +168,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       background-image: linear-gradient(#FF33E1, #FF3333);
     }      
     `;  
+    }
     
     //--------------------------------------------------------
     // Construct default custom element

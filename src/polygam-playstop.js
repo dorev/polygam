@@ -23,7 +23,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
       width: ${this.size}px;
       height: ${this.size}px;
     }
-    `;  
+    `;
     
     //--------------------------------------------------------
     // Construct custom element
@@ -84,9 +84,10 @@ customElements.define("polygam-playstop", class extends HTMLElement
   
   click()
   {
+
     this.status = !(this.status);   
-    this.playIcon.setAttribute("visibility", this.status ? "visible" : "hidden"); 
-    this.stopIcon.setAttribute("visibility", this.status ? "hidden" : "visible");
+    this.stopIcon.setAttribute("visibility", this.status ? "visible" : "hidden"); 
+    this.playIcon.setAttribute("visibility", this.status ? "hidden" : "visible");
     this.buttonEvent(this);
   }
 
