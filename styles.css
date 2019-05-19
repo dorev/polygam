@@ -3,12 +3,17 @@
   src: url("fonts/VanillaExtractRegular.ttf") format("truetype");
 }
 
+body
+{  
+  margin  : 0; 
+  padding : 0;
+}
+
 .container 
 {
   display: grid;
-  grid-gap: 0px;
   grid-template-columns: auto;
-  grid-template-rows:    3.6em auto auto auto;
+  grid-template-rows: 3.6em auto auto auto;
   place-items: stretch;
   grid-template-areas: 
   "header"
@@ -44,18 +49,6 @@
 
 :root
 {
-  /*
-  --poly1 : #8A2387;  
-  --poly2 : #E94057;
-  --poly3 : #F27121;
-  */
-
-  /*
-  --poly1 : #FF0080;  
-  --poly2 : #FF8C00;
-  --poly3 : #40E0D0;
-  */
-
   --poly1 : #833AB4;
   --poly2 : #FD1D1D;
   --poly3 : #FCB045;
@@ -77,6 +70,6 @@
   color:transparent;
   background-clip: text;
   -webkit-background-clip: text;
-  font-family: "Polygam";
+  font-family: "Polygam", sans-serif;
   font-size: 2em;
 }

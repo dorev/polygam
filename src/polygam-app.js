@@ -108,10 +108,12 @@ customElements.define("polygam-app", class extends HTMLElement
     this.progression.setAttribute("class", "app-progression");
     this.container.appendChild(this.progression);
 
+    // TEST ========================================
     this.progression.addChord({root:0, voicing:"major", octave:3});
     this.progression.addChord({root:0, voicing:"major", octave:3});
     this.progression.addChord({root:0, voicing:"major", octave:3});
     this.progression.addChord({root:0, voicing:"major", octave:3});
+    //=============================================
 
     // Create player
     this.player = document.createElement("polygam-player");
@@ -140,37 +142,5 @@ customElements.define("polygam-app", class extends HTMLElement
     this.sequencer.playerPlayNotes = this.player.playNotes;
 
   } // end of constructor
-  
-
-  // Callback from progression
-  progressionEvent(iProgression)
-  {
-    // When the progression changes
-      // refresh the graph
-      // update sequencer notes
-  }
-
-  // Callback from graph
-  graphEvent()
-  {
-
-  }
-
-  // Callback from sequencer
-  sequencerEvent()
-  {
-
-  }
-
-  // Callback from sequencer
-  sequencerEvent()
-  {
-
-  }
-
-
-
-
-
 
 });
