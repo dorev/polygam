@@ -8,6 +8,9 @@ customElements.define("polygam-player", class extends HTMLElement
     // Custom element members
     //--------------------------------------------------------    
 
+    this.volume = 50;
+    this.tempo = 120;
+    this.isPlaying = false;
     
     //--------------------------------------------------------
     // CSS style
@@ -27,7 +30,7 @@ customElements.define("polygam-player", class extends HTMLElement
       place-items: stretch;
     }
 
-    .player-playstop
+    .player-playStop
     {
       grid-column : 1/2;
       grid-row    : 1/2;
@@ -91,10 +94,10 @@ customElements.define("polygam-player", class extends HTMLElement
     shadow.appendChild(this.container);
 
     // Play/stop button
-    this.playstop = document.createElement("polygam-playstop");
-    this.playstop.setAttribute("class","player-playstop");  
-    this.playstop.buttonEvent = this.playstopEvent.bind(this);
-    this.container.appendChild(this.playstop);
+    this.playStop = document.createElement("polygam-playStop");
+    this.playStop.setAttribute("class","player-playStop");  
+    this.playStop.buttonEvent = this.playStopEvent.bind(this);
+    this.container.appendChild(this.playStop);
 
     // Volume knob
     this.volumeKnob = document.createElement("polygam-knob");
@@ -130,20 +133,33 @@ customElements.define("polygam-player", class extends HTMLElement
 
   } // end of constructor
   
-  
-  playstopEvent(iButton)
+  sequencerPlay(){}
+  sequencerStop(){}
+    
+  playStopEvent(iButton)
   {
-    console.log(iButton.isPlaying);
+    this.isPlaying = iButton.isPlaying;
+    
+    if(this.isPlaying)
+    {
+      this.sequencerPlay();
+    }
+    else
+    {
+      this.sequencerStop();
+    }
   }
   
   volumeEvent(iVolumeKnob)
   {
-    this.volumeValue.innerHTML = iVolumeKnob.value > 99.1 ? 100 : Math.floor(iVolumeKnob.value);
+    this.volume = iVolumeKnob.value > 99.1 ? 100 : Math.floor(iVolumeKnob.value);
+    this.volumeValue.innerHTML = this.volume;
   }
   
   tempoEvent(iTempoKnob)
   {
-    this.tempoValue.innerHTML = iTempoKnob.value > 99.5 ? 180 : Math.floor(iTempoKnob.value * 1.2 + 60);
+    this.tempo = iTempoKnob.value > 99.5 ? 180 : Math.floor(iTempoKnob.value * 1.2 + 60);
+    this.tempoValue.innerHTML = this.tempo;
   }
 
 

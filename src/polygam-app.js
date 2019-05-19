@@ -48,7 +48,7 @@ customElements.define("polygam-app", class extends HTMLElement
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: 100px 1fr auto 100px;
+      grid-template-rows: 100px 1fr auto auto 100px;
       place-items: stretch;
     }
 
@@ -65,17 +65,24 @@ customElements.define("polygam-app", class extends HTMLElement
       grid-row : 2/3;
     }
 
-    .app-sequencer
+    .app-player
     {   
       place-self: stretch; 
       grid-row : 3/4;
       background: red;
     }
 
-    .app-oscillator
+    .app-sequencer
     {   
       place-self: stretch; 
       grid-row : 4/5;
+      background: blue;
+    }
+
+    .app-oscillator
+    {   
+      place-self: stretch; 
+      grid-row : 5/6;
       background: purple;
     }
     `;  
@@ -106,6 +113,11 @@ customElements.define("polygam-app", class extends HTMLElement
     this.progression.addChord({root:0, voicing:"major", octave:3});
     this.progression.addChord({root:0, voicing:"major", octave:3});
 
+    // Create player
+    this.player = document.createElement("polygam-player");
+    this.player.setAttribute("class", "app-player");
+    this.container.appendChild(this.player);
+
     // Create sequencer
     this.sequencer = document.createElement("polygam-sequencer");
     this.sequencer.setAttribute("class", "app-sequencer");
@@ -115,6 +127,17 @@ customElements.define("polygam-app", class extends HTMLElement
     this.oscillator = document.createElement("div");
     this.oscillator.setAttribute("class", "app-oscillator");
     this.container.appendChild(this.oscillator);
+
+    //--------------------------------------------------------
+    // Connect elements
+    //--------------------------------------------------------
+
+    // Player calls sequencer
+    this.player.sequencerPlay = this.sequencer.play;
+    this.player.sequencerStop = this.sequencer.stop;
+
+    // Sequencer calls player
+    this.sequencer.playerPlayNotes = this.player.playNotes;
 
   } // end of constructor
   

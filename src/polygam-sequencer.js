@@ -14,19 +14,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
-    style.textContent =`
+    style.textContent =`    
     .sequencer-container
-    {
-      margin : 0; padding : 0;
-      display : grid;
-      grid-template-rows : auto auto;
-    }
-    .sequencer-player-container
-    {
-      margin : 0; padding : 0;
-    }
-
-    .sequencer-seq-container
     {
       margin : 0; padding : 0;
       display : grid;
@@ -87,16 +76,6 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     this.container.setAttribute("class","sequencer-container");    
     shadow.appendChild(this.container);
 
-    // Player container
-    this.player = document.createElement("polygam-player");
-    this.player.setAttribute("class","sequencer-player-container");    
-    this.container.appendChild(this.player);
-
-    // Sequencer container
-    this.sequencer = document.createElement("div");
-    this.sequencer.setAttribute("class","sequencer-seq-container");    
-    this.container.appendChild(this.sequencer);
-
     // Notes
     for(let b = 0; b < 17; ++b)
     {
@@ -108,20 +87,30 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       for(let n = 0; n < 10; ++n)
       {
         let note = document.createElement("div");
-        note.setAttribute("class",noteClass);    
+        note.setAttribute("class", noteClass);    
         beat.appendChild(note);
       }
       
-      this.sequencer.appendChild(beat);
+      this.container.appendChild(beat);
     }
-
-
-
-
-    
          
   } // end of constructor
   
+
+  play()
+  {
+    console.log("PLAYY!")
+  }
+
+  stop()
+  {
+    console.log("PLAYY!")
+  }
+
+  playerPlayNotes()
+  {
+
+  }
 
   
 });
