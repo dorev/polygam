@@ -16,6 +16,7 @@ customElements.define("polygam-player", class extends HTMLElement
     style.textContent =`      
     .player-container
     {   
+      margin : 0; padding : 0;
       place-self: center;
       display: grid;
       padding: 2px;
@@ -81,9 +82,10 @@ customElements.define("polygam-player", class extends HTMLElement
     //--------------------------------------------------------
     // Construct custom element
     //--------------------------------------------------------
+    
+    // Main container
     let shadow = this.attachShadow({mode: 'open'});  
-    shadow.appendChild(style);  
-
+    shadow.appendChild(style); 
     this.container = document.createElement("div");
     this.container.setAttribute("class","player-container");    
     shadow.appendChild(this.container);
@@ -131,7 +133,7 @@ customElements.define("polygam-player", class extends HTMLElement
   
   playstopEvent(iButton)
   {
-    console.log(iButton.status);
+    console.log(iButton.isPlaying);
   }
   
   volumeEvent(iVolumeKnob)

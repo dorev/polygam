@@ -10,7 +10,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
     //--------------------------------------------------------    
     
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;  
-    this.status = false;  
+    this.isPlaying = false;  
 
     //--------------------------------------------------------
     // CSS style
@@ -19,6 +19,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
     style.textContent =`
     .playstop-container
     {   
+      margin : 0; padding : 0;
       display: grid;
       width: ${this.size}px;
       height: ${this.size}px;
@@ -28,9 +29,10 @@ customElements.define("polygam-playstop", class extends HTMLElement
     //--------------------------------------------------------
     // Construct custom element
     //--------------------------------------------------------
+    
+    // Main container
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
-    
     this.container = document.createElement("div");
     this.container.setAttribute("class","playstop-container");    
     shadow.appendChild(this.container);
@@ -42,6 +44,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
     this.svg.setAttribute("height", s);
     this.container.appendChild(this.svg);
     
+    // Button body
     this.buttonBody = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
     this.buttonBody.setAttribute("cx", s*0.5);
     this.buttonBody.setAttribute("cy", s*0.5);
@@ -51,6 +54,7 @@ customElements.define("polygam-playstop", class extends HTMLElement
     this.buttonBody.setAttribute("fill","#FF0");
     this.svg.appendChild(this.buttonBody);
 
+    // Stop icon
     this.stopIcon = document.createElementNS("http://www.w3.org/2000/svg", "rect"); 
     this.stopIcon.setAttribute("x", s*0.3);
     this.stopIcon.setAttribute("y", s*0.3);
@@ -60,12 +64,14 @@ customElements.define("polygam-playstop", class extends HTMLElement
     this.stopIcon.setAttribute("visibility","hidden");   
     this.svg.appendChild(this.stopIcon);
 
+    // Play icon
     this.playIcon = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
     this.playIcon.setAttribute("d", `M${s*0.35} ${s*0.25} L${s*0.75} ${s*0.5} L${s*0.35} ${s*0.75} Z`);
     this.playIcon.setAttribute("fill","#00F");   
     this.playIcon.setAttribute("visibility","visible");   
     this.svg.appendChild(this.playIcon);    
     
+    // Click overlay
     this.buttonOverlay = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
     this.buttonOverlay.setAttribute("cx", s*0.5);
     this.buttonOverlay.setAttribute("cy", s*0.5);
@@ -85,9 +91,9 @@ customElements.define("polygam-playstop", class extends HTMLElement
   click()
   {
 
-    this.status = !(this.status);   
-    this.stopIcon.setAttribute("visibility", this.status ? "visible" : "hidden"); 
-    this.playIcon.setAttribute("visibility", this.status ? "hidden" : "visible");
+    this.isPlaying = !(this.isPlaying);   
+    this.stopIcon.setAttribute("visibility", this.isPlaying ? "visible" : "hidden"); 
+    this.playIcon.setAttribute("visibility", this.isPlaying ? "hidden" : "visible");
     this.buttonEvent(this);
   }
 

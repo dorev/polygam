@@ -1,40 +1,7 @@
-/* https://css-tricks.com/snippets/css/complete-guide-grid/ */
-
-/*   Graph styles  */
-.link 
-{
-  stroke: #777;
-  stroke-width: 2px;
-}
-
-.node 
-{
-  fill: #CCC;
-  stroke: #777;
-  stroke-width: 2px;
-}
-
-rect 
-{
-  fill: none;
-  stroke: #888;
-  stroke-width: 2px;
-  pointer-events: all;
-}
-
-body
-{
-  margin: 0;
-  background: #555;
-}
-
-/* Main page styles */
-
 @font-face { /* https://www.1001freefonts.com/vanilla-extract.font */
   font-family: "Polygam";
   src: url("fonts/VanillaExtractRegular.ttf") format("truetype");
 }
-
 
 .container 
 {

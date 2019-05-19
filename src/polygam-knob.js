@@ -24,6 +24,7 @@ customElements.define("polygam-knob", class extends HTMLElement
     style.textContent =`
     .knob-container
     {   
+      margin : 0; padding : 0;
       display: grid;
       width: ${this.size}px;
       height: ${this.size}px;
@@ -33,9 +34,10 @@ customElements.define("polygam-knob", class extends HTMLElement
     //--------------------------------------------------------
     // Construct custom element
     //--------------------------------------------------------
+    
+    // Main container
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
-    
     this.container = document.createElement("div");
     this.container.setAttribute("class","knob-container");    
     shadow.appendChild(this.container);
@@ -47,6 +49,7 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.svg.setAttribute("height", s);
     this.container.appendChild(this.svg);
     
+    // Knob body
     this.knobBody = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
     this.knobBody.setAttribute("cx", s*0.5);
     this.knobBody.setAttribute("cy", s*0.5);
@@ -56,12 +59,13 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.knobBody.setAttribute("fill","#0F0");
     this.svg.appendChild(this.knobBody);
 
-    this.knobPointer = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
-    this.knobPointer.setAttribute("cx", s*0.5);
-    this.knobPointer.setAttribute("cy", s*0.2);
-    this.knobPointer.setAttribute("r", s*0.1);
-    this.knobPointer.setAttribute("fill","#000");   
-    this.svg.appendChild(this.knobPointer);
+    // Knob cursor
+    this.knobCursor = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
+    this.knobCursor.setAttribute("cx", s*0.5);
+    this.knobCursor.setAttribute("cy", s*0.2);
+    this.knobCursor.setAttribute("r", s*0.1);
+    this.knobCursor.setAttribute("fill","#000");   
+    this.svg.appendChild(this.knobCursor);
 
 
     // Bind events

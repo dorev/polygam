@@ -40,14 +40,15 @@ customElements.define("polygam-app", class extends HTMLElement
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
-    style.textContent =` 
+    style.textContent =`
     .app-container
     {   
+      margin : 0; padding : 0;
       display: grid;
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: 100px 1fr 100px 100px;
+      grid-template-rows: 100px 1fr auto 100px;
       place-items: stretch;
     }
 
@@ -82,9 +83,10 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     // Construct custom element
     //--------------------------------------------------------
+    
+    // Main container
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
-    
     this.container = document.createElement("div");
     this.container.setAttribute("class","app-container");    
     shadow.appendChild(this.container);
@@ -105,7 +107,7 @@ customElements.define("polygam-app", class extends HTMLElement
     this.progression.addChord({root:0, voicing:"major", octave:3});
 
     // Create sequencer
-    this.sequencer = document.createElement("polygam-player");
+    this.sequencer = document.createElement("polygam-sequencer");
     this.sequencer.setAttribute("class", "app-sequencer");
     this.container.appendChild(this.sequencer);
 

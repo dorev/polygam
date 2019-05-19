@@ -23,6 +23,7 @@ customElements.define("polygam-chord",class extends HTMLElement
     style.textContent =`        
     .chord-container
     {   
+      margin : 0; padding : 0;
       place-self: center;
       display: grid;
       padding: 2px;
@@ -40,7 +41,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 1/5;
       grid-row    : 1/5;
       background: grey;
-      border-radius: 5px;
     }
     
     .inversion-button-up
@@ -48,7 +48,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 1/4;
       grid-row    : 5/6;
       background: grey;
-      border-radius: 5px;
     }
     
     .inversion-label
@@ -56,7 +55,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 1/4;
       grid-row    : 6/8;
       background: grey;
-      border-radius: 5px;
     }
     
     .inversion-button-down
@@ -64,7 +62,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 1/4;
       grid-row    : 8/9;
       background: grey;
-      border-radius: 5px;
     }
     
     .octave
@@ -72,7 +69,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 5/7;
       grid-row    : 1/5;
       background: grey;
-      border-radius: 5px;
     }
     
     .octave-button-up
@@ -80,7 +76,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 4/7;
       grid-row    : 5/6;
       background: grey;
-      border-radius: 5px;
     }
     
     .octave-label
@@ -88,7 +83,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 4/7;
       grid-row    : 6/8;
       background: grey;
-      border-radius: 5px;
     }
     
     .octave-button-down
@@ -96,7 +90,6 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 4/7;
       grid-row    : 8/9;
       background: grey;
-      border-radius: 5px;
     }
     `;  
       
