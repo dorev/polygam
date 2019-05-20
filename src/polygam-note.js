@@ -1,0 +1,49 @@
+customElements.define("polygam-note", class extends HTMLElement
+{          
+  
+  constructor()
+  {
+    super();    
+    
+    //--------------------------------------------------------
+    // Custom element members
+    //--------------------------------------------------------    
+    
+    this.index = -1;
+    this.beat = -1;
+    this.isSelected = false;
+
+    //--------------------------------------------------------
+    // CSS style
+    //--------------------------------------------------------
+    let style = document.createElement('style');
+    style.textContent =`
+    .note-container
+    {   
+      margin : 0.2em;
+      place-self : stretch;
+      background : yellow;
+      min-height : 1em;
+    }
+    `;  
+    
+    //--------------------------------------------------------
+    // Construct custom element
+    //--------------------------------------------------------
+    
+    // Main container
+    let shadow = this.attachShadow({mode: 'open'});  
+    shadow.appendChild(style);  
+    this.container = document.createElement("div");
+    this.container.setAttribute("class","note-container");    
+    shadow.appendChild(this.container);
+         
+  } // end of constructor
+  
+  click()
+  {
+    this.isSelected = !this.isSelected;
+    this.container.style.background = this.isSelected ? "white" : "yellow";
+  }
+
+});

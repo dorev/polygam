@@ -223,7 +223,7 @@ customElements.define("polygam-chord",class extends HTMLElement
   inversionUp()
   {     
     // Check if inversion is possible
-    if(this.notes[0] > 96)
+    if(this.notes[0] > 84)
     {
       console.error("Chord to high to invert");
       return;
@@ -248,7 +248,7 @@ customElements.define("polygam-chord",class extends HTMLElement
   inversionDown()
   {
     // Check if inversion is possible
-    if(this.notes[this.notes.length - 1] < 12)
+    if(this.notes[this.notes.length - 1] < 24)
     {
       console.error("Chord to low to invert");
       return;
@@ -286,8 +286,8 @@ customElements.define("polygam-chord",class extends HTMLElement
 
   octaveUp()
   {
-    // Check no note busts octave 9
-    if(this.octaveOf(this.getSoprano() + 12) > 9)
+    // Check no note busts octave 8
+    if(this.octaveOf(this.getSoprano() + 12) > 8)
     {
       console.error("Chords note to high to increase of an octave");
       return;
@@ -306,8 +306,8 @@ customElements.define("polygam-chord",class extends HTMLElement
 
   octaveDown()
   {
-    // Check no note busts octave 0
-    if(this.octaveOf(this.getBass() - 12)< 0)
+    // Check no note busts octave 1
+    if(this.octaveOf(this.getBass() - 12) < 1)
     {
       console.error("Chords note to low to decrease of an octave");
       return;
