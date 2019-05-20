@@ -39,6 +39,12 @@ customElements.define("polygam-note", class extends HTMLElement
     shadow.appendChild(this.container);
          
   } // end of constructor
+
+  placeNote(iBeat, iIndex)
+  {
+    this.beat = iBeat;
+    this.index = iIndex;
+  }
   
   click()
   {

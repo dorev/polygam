@@ -46,28 +46,12 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       background : transparent;
     }
-
-    .sequencer-beat .sequencer-note, .sequencer-beat .sequencer-note-label
-    {
-      height : 1em;
-      margin : 0.1em;
-      place-self : stretch;
-    }
-    
-    /* Root note */
-    .sequencer-note:nth-child(3n+1)
-    {
-      background : grey;
-    }
-    
-    .sequencer-note
-    {
-      background : darkgrey;
-    }
-
     .sequencer-note-label
     {
+      margin : 0.2em;
+      place-self : stretch;
       background : lightgrey;
+      min-height : 1em;
     }
     `;  
     
@@ -85,21 +69,30 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     // Build sequencer
     for(let b = 0; b < 17; ++b)
     {
+      // Beat setup
       let beat = document.createElement("div");
       beat.setAttribute("class","sequencer-beat");   
       beat.setAttribute("highlight", "false");   
       
-      let noteClass = b ? "sequencer-note" : "sequencer-note-label";
-      
+      // Notes setup
       for(let n = 0; n < 10; ++n)
       {
-        let note = document.createElement("polygam-note");
-        note.index = 9 - n;
-        note.beat = b - 1;
-        
-        // Add mouse events
-        note.addEventListener("mousedown",this.mousedown.bind(this));
-        note.addEventListener("mouseover",this.mouseover.bind(this));
+        let note;
+
+        if(b)
+        {
+          note = document.createElement("polygam-note");
+          note.placeNote(b - 1, 9 - n);
+          
+          // Add mouse events
+          note.addEventListener("mousedown",this.mousedown.bind(this));
+          note.addEventListener("mouseover",this.mouseover.bind(this));
+        }
+        else
+        {
+          note = document.createElement("div");
+          note.setAttribute("class", "sequencer-note-label" )
+        }
 
         beat.appendChild(note);
       }
@@ -139,6 +132,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       ++this.currentBeat;
     }
 
+    // Update beat highlighting
     let oldHighlight = this.container.querySelector("[highlight='true']");
     if(oldHighlight)    
     {
@@ -148,7 +142,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     let newHighlight = this.container.querySelector(`.sequencer-beat:nth-child(${this.currentBeat + 1})`);
     newHighlight.setAttribute("highlight", "true");
 
-    this.playerPlayNotes(this.bars[this.currentBeat]);
+    this.playerPlayNotes(this.beats[this.currentBeat]);
   }
 
   stop()
