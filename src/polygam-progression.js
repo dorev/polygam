@@ -42,11 +42,6 @@ customElements.define("polygam-progression",class extends HTMLElement
         
   } // end of constructor
 
-  // Callback
-  progressionEvent()
-  {
-  }
-
   addChord(iChord)
   {
     // Create chord element
@@ -68,6 +63,7 @@ customElements.define("polygam-progression",class extends HTMLElement
   chordChanged(iChord)
   {
     this.progressionEvent(this);
+    console.log(`chord changed ${iChord.name}`)
   }
 
 

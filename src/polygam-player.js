@@ -132,10 +132,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.container.appendChild(this.tempoLabel);
 
   } // end of constructor
-  
-  sequencerPlay(){}
-  sequencerStop(){}
-    
+        
   playStopEvent(iButton)
   {
     this.isPlaying = iButton.isPlaying;
@@ -160,10 +157,15 @@ customElements.define("polygam-player", class extends HTMLElement
   {
     this.tempo = iTempoKnob.value > 99.5 ? 180 : Math.floor(iTempoKnob.value * 1.2 + 60);
     this.tempoValue.innerHTML = this.tempo;
+    this.sequencerTempo(this.tempo);
   }
 
 
+  playNotes(iNotesArray)
+  {
+    // attackrelease with Tone.js    
 
+  }
 
   
 });

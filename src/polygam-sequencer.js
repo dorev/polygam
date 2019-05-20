@@ -7,8 +7,11 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    this.progression = [];  // array of array of notes
-    this.currentBeat = -1;  //
+    this.bars = [];  // array of array of notes
+    this.currentBeat = 0;
+    this.currentBar = 0;
+    this.timeout;
+    this.tempo = 120;
     
     //--------------------------------------------------------
     // CSS style
@@ -19,7 +22,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       margin : 0; padding : 0;
       display : grid;
-      grid-template-columns : 2em repeat(16, 1fr);
+      grid-template-columns : 2em repeat(16, 1fr) 1em;
       grid-template-rows : auto;
       place-items : stretch;
     }
@@ -29,13 +32,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       margin : 0; padding : 0;
       grid-template-rows : repeat(10, 1fr);
     }
-
-    .sequencer-beat:nth-child(2n)
-    {
-      background : #DDD;
-    }
     
-    .sequencer-beat[highlight=true]
+    .sequencer-beat[highlight=0]
     {
       background : #DDD;
     }
@@ -62,7 +60,6 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       background : lightgrey;
     }
-
     `;  
     
     //--------------------------------------------------------
@@ -96,21 +93,47 @@ customElements.define("polygam-sequencer", class extends HTMLElement
          
   } // end of constructor
   
-
   play()
   {
-    console.log("PLAYY!")
+    console.log("start sequencer!")    
+    this.timeout = setTimeout(()=>{ this.play(); }, this.tempo * 4 / 60000);
+
+    
+    if(this.currentBeat === 17)
+    {
+      this.currentBar = (this.currentBar + 1) % this.bars.length;
+      this.currentBeat = 0;
+    }
+    else
+    {
+      ++this.currentBeat;
+    }
+
+    let oldHighlight = this.container.querySelector(`[highlight=1]`);
+    oldHighlight.setAttribute("highlight", 0);
+
+    let newHighlight = this.container.querySelector(`.beat:nth-child(${this.currentBeat + 2})`);
+    newHighlight.setAttribute("highlight", 1);
+    
+    this.playerPlayNotes(this.bars[this.currentBeat]);
   }
 
   stop()
   {
-    console.log("PLAYY!")
+    console.log("stop sequencer!")
+    clearTimeout(this.timeout);
+    this.currentBeat = 0;
+    this.currentBar  = 0;
   }
 
-  playerPlayNotes()
+  setTempo(iTempo)
   {
-
+    console.log("tempo set in sequencer!")
+    this.tempo = iTempo;
   }
+
+  
+
 
   
 });

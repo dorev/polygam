@@ -160,9 +160,6 @@ customElements.define("polygam-chord",class extends HTMLElement
 
   } // end of constructor
 
-  // Callbacks
-  chordChanged() {}
-
   setChord(properties)
   {
     if
