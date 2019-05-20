@@ -20,10 +20,9 @@ customElements.define("polygam-note", class extends HTMLElement
     style.textContent =`
     .note-container
     {   
-      margin : 0.2em;
       place-self : stretch;
-      background : yellow;
       min-height : 1em;
+      border : solid 1px yellow
     }
     `;  
     
@@ -49,7 +48,7 @@ customElements.define("polygam-note", class extends HTMLElement
   click()
   {
     this.isSelected = !this.isSelected;
-    this.container.style.background = this.isSelected ? "white" : "yellow";
+    this.container.style.background = this.isSelected ? "yellow" : "none";
   }
 
 });

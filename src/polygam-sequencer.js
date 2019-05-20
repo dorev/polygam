@@ -25,15 +25,19 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       margin : 0; padding : 0;
       display : grid;
-      grid-template-columns : 2em repeat(16, 1fr) 1em;
-      grid-template-rows : auto;
+      grid-template-columns : 2em repeat(16, 1fr);
+      grid-template-rows : repeat(10, 1fr);
       place-items : stretch;
       min-height : 100px;
+      grid-auto-flow: column;
     }
 
     .sequencer-beat
     {
       margin : 0; padding : 0;
+      grid-row : 1/11;
+      display: grid;
+      place-items: stretch;
       grid-template-rows : repeat(10, 1fr);
     }
     
@@ -48,9 +52,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     }
     .sequencer-note-label
     {
-      margin : 0.2em;
       place-self : stretch;
-      background : lightgrey;
+      border : solid 1px lightgrey;
       min-height : 1em;
     }
     `;  
@@ -67,7 +70,16 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     shadow.appendChild(this.container);
 
     // Build sequencer
-    for(let b = 0; b < 17; ++b)
+
+    for(let l = 0; l < 10; ++l)
+    {
+      // Beat setup
+      let label = document.createElement("div");
+      label.setAttribute("class", "sequencer-note-label");
+      this.container.appendChild(label);
+    }
+
+    for(let b = 1; b < 17; ++b)
     {
       // Beat setup
       let beat = document.createElement("div");
@@ -79,29 +91,20 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       {
         let note;
 
-        if(b)
-        {
-          note = document.createElement("polygam-note");
-          note.placeNote(b - 1, 9 - n);
-          
-          // Add mouse events
-          note.addEventListener("mousedown",this.mousedown.bind(this));
-          note.addEventListener("mouseover",this.mouseover.bind(this));
-        }
-        else
-        {
-          note = document.createElement("div");
-          note.setAttribute("class", "sequencer-note-label" )
-        }
+        note = document.createElement("polygam-note");
+        note.placeNote(b, 9 - n);
+        
+        // Add mouse events
+        note.addEventListener("mousedown",this.mousedown.bind(this));
+        note.addEventListener("mouseover",this.mouseover.bind(this));
 
         beat.appendChild(note);
       }
       this.container.appendChild(beat);     
       
       // Fill beats structure
-      if(b) { this.beats.push(Array(10).fill(null)); }
+      this.beats.push(Array(10).fill(null));
     }
-    
     // Add global mouseup event
     document.addEventListener("mouseup",this.mouseup.bind(this));
 
