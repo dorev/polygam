@@ -130,7 +130,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoLabel.setAttribute("class","player-tempo-label");  
     this.tempoLabel.innerHTML = "TEMPO";
     this.container.appendChild(this.tempoLabel);
-
+    
   } // end of constructor
         
   playStopEvent(iButton)
@@ -164,7 +164,9 @@ customElements.define("polygam-player", class extends HTMLElement
   playNotes(iNotesArray)
   {
     // attackrelease with Tone.js    
+    if(!iNotesArray.some(n => n != null)) { return; }
 
+    console.log(iNotesArray.filter(n => n != null));
   }
 
   

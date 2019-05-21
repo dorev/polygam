@@ -82,6 +82,12 @@ customElements.define("polygam-playstop", class extends HTMLElement
     // Bind events
     this.buttonOverlay.addEventListener("click", this.click.bind(this));
 
+    // Adding "Space" as play-stop shortcut
+    document.addEventListener("keypress", (event) => 
+    {
+      if(event.key !== " ") { return; }
+      this.click();
+    });
          
   } // end of constructor
 

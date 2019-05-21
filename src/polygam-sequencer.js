@@ -7,9 +7,9 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    this.bars = [];  // array of array of notes
+    this.bars = [[24,28,33],[24,28,33]];  // array of array of notes
     this.beats = [];
-    this.currentBeat = 0;
+    this.currentBeat = -1;
     this.currentBar = 0;
     this.timeout;
     this.tempo = 120;
@@ -48,7 +48,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     
     .sequencer-beat[highlight="false"]
     {
-      background : transparent;
+      background : none;
     }
     .sequencer-note-label
     {
@@ -92,7 +92,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
         let note;
 
         note = document.createElement("polygam-note");
-        note.placeNote(b, 9 - n);
+        note.placeNote(b, 9-n);
         
         // Add mouse events
         note.addEventListener("mousedown",this.mousedown.bind(this));
@@ -103,21 +103,15 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       this.container.appendChild(beat);     
       
       // Fill beats structure
-      this.beats.push(Array(10).fill(null));
+      this.beats.push(Array(10).fill(false));
     }
     // Add global mouseup event
     document.addEventListener("mouseup",this.mouseup.bind(this));
 
-    // Adding "Space" as play-stop shortcut
-    document.addEventListener("keypress", (event) => 
-    {
-      if(event.key !== " ") { return; }
-      if(this.isPlaying) { this.stop(); }
-      else               { this.play(); }
-    });
-         
+
   } // end of constructor
   
+
   play()
   {    
     this.isPlaying = true;
@@ -125,10 +119,10 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     // Set timeout until next beat (allows dynamic tempo change)
     this.timeout = setTimeout(()=>{ this.play(); }, 60000 / (this.tempo * 4) );
     
-    if(this.currentBeat === 16)
+    if(this.currentBeat === 15)
     {
       this.currentBar = (this.currentBar + 1) % this.bars.length;
-      this.currentBeat = 1;
+      this.currentBeat = 0;
     }
     else
     {
@@ -142,31 +136,28 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       oldHighlight.setAttribute("highlight", "false");
     }
 
-    let newHighlight = this.container.querySelector(`.sequencer-beat:nth-child(${this.currentBeat + 1})`);
+    let newHighlight = this.container.querySelectorAll(`.sequencer-beat`)[this.currentBeat];
     newHighlight.setAttribute("highlight", "true");
 
-    this.playerPlayNotes(this.beats[this.currentBeat]);
+    this.sendNotes();
   }
+
 
   stop()
   {    
     this.isPlaying = false;
     clearTimeout(this.timeout);
-    this.currentBeat = 0;
+    this.currentBeat = -1;
     this.currentBar  = 0;    
     this.container.querySelector("[highlight='true']").setAttribute("highlight", "false");
   }
+
 
   setTempo(iTempo)
   {
     this.tempo = iTempo;
   }
 
-  getNodeIndex(iNode)
-  {
-    for (var i = 0; (iNode = iNode.previousSibling); ++i);
-    return i;
-  }
 
   mousedown(e)
   {  
@@ -175,9 +166,10 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     let note = e.target;
     note.click();    
     this.isAdding = note.isSelected;
-    this.noteActivation(note.beat, note.index)
+    this.beats[note.beat][note.index] = note.isSelected;
   }
   
+
   mouseover(e)
   {
     let note = e.target;
@@ -185,20 +177,34 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     if(this.isSelecting && note.isSelected !== this.isAdding)
     {     
       note.click();
-      this.noteActivation(note.beat, note.index)
+      this.beats[note.beat][note.index] = note.isSelected;
     }
   }
   
+
   mouseup(e)
   {
     this.isSelecting = false;
   }
 
-  noteActivation(iBeat, iNote)
+  getNoteValue(iNoteIndex)
   {
-    console.log("UPDATING SEQUENCER BEATS!");
+    let octaveShift = Math.floor(iNoteIndex / 3) - 1;
+    let baseNote = iNoteIndex % 3;
+    return this.bars[this.currentBar][baseNote] + 12 * octaveShift;
   }
 
+  sendNotes()
+  {
+    let sequencerNotes = [];
+    for(let i = 0; i < 10; ++i)
+    {
+      if(this.beats[this.currentBeat][i]) { sequencerNotes.push(i); }
+    }
+    if(sequencerNotes.length === 0) { return; }
+    console.log("sending notes");
+    this.playerPlayNotes(sequencerNotes.map(n => this.getNoteValue(n)));
+  }
 
   
 });
