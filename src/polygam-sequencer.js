@@ -92,7 +92,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
         let note;
 
         note = document.createElement("polygam-note");
-        note.placeNote(b, 9-n);
+        note.placeNote(b-1, 9-n);
         
         // Add mouse events
         note.addEventListener("mousedown",this.mousedown.bind(this));
@@ -161,8 +161,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
   mousedown(e)
   {  
-    this.isSelecting = true;
-    
+    this.isSelecting = true;    
     let note = e.target;
     note.click();    
     this.isAdding = note.isSelected;
@@ -173,7 +172,6 @@ customElements.define("polygam-sequencer", class extends HTMLElement
   mouseover(e)
   {
     let note = e.target;
-    
     if(this.isSelecting && note.isSelected !== this.isAdding)
     {     
       note.click();
