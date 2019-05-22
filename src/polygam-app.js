@@ -108,13 +108,6 @@ customElements.define("polygam-app", class extends HTMLElement
     this.progression.setAttribute("class", "app-progression");
     this.container.appendChild(this.progression);
 
-    // TEST ********************************************************
-    this.progression.addChord({root:0, voicing:"major", octave:3});
-    this.progression.addChord({root:0, voicing:"major", octave:3});
-    this.progression.addChord({root:0, voicing:"major", octave:3});
-    this.progression.addChord({root:0, voicing:"major", octave:3});
-    //**************************************************************
-
     // Create player
     this.player = document.createElement("polygam-player");
     this.player.setAttribute("class", "app-player");
@@ -141,7 +134,28 @@ customElements.define("polygam-app", class extends HTMLElement
 
     // Sequencer calls player
     this.sequencer.playerPlayNotes = this.player.playNotes.bind(this.player);
+    
+    // Sequencer calls progression
+    this.sequencer.progHighlightChord = this.progression.highlightChord.bind(this.progression);
+    
+    // Progression calls main app
+    this.progression.progressionChanged = this.progressionChanged.bind(this);
+
+    
+
+    // TEST ********************************************************
+    this.progression.addChord({root:0, voicing:"major", octave:5});
+    this.progression.addChord({root:5, voicing:"major", octave:5});
+    this.progression.addChord({root:0, voicing:"major", octave:5});
+    this.progression.addChord({root:7, voicing:"major", octave:5});
+    //**************************************************************
+
 
   } // end of constructor
+
+  progressionChanged(iProgression)
+  {
+    // Update progression in sequencer
+    this.sequencer.setProgression(iProgression.progression);  }
 
 });

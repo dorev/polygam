@@ -11,6 +11,8 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volume = 50;
     this.tempo = 120;
     this.isPlaying = false;
+    this.synth = new Tone.PolySynth(8, Tone.Synth).toMaster();
+    this.synth.volume.value = -50;
     
     //--------------------------------------------------------
     // CSS style
@@ -139,10 +141,12 @@ customElements.define("polygam-player", class extends HTMLElement
     
     if(this.isPlaying)
     {
+      // Callback
       this.sequencerPlay();
     }
     else
     {
+      // Callback
       this.sequencerStop();
     }
   }
@@ -151,12 +155,15 @@ customElements.define("polygam-player", class extends HTMLElement
   {
     this.volume = iVolumeKnob.value > 99.1 ? 100 : Math.floor(iVolumeKnob.value);
     this.volumeValue.innerHTML = this.volume;
+    this.synth.volume.value = -100 + this.volume; 
   }
   
   tempoEvent(iTempoKnob)
   {
     this.tempo = iTempoKnob.value > 99.5 ? 180 : Math.floor(iTempoKnob.value * 1.2 + 60);
     this.tempoValue.innerHTML = this.tempo;
+    
+    // Callback
     this.sequencerTempo(this.tempo);
   }
 
@@ -165,8 +172,9 @@ customElements.define("polygam-player", class extends HTMLElement
   {
     // attackrelease with Tone.js    
     if(!iNotesArray.some(n => n != null)) { return; }
+    let notesToPlay = iNotesArray.filter(n => n != null);
 
-    console.log(iNotesArray.filter(n => n != null));
+    this.synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
   }
 
   

@@ -109,6 +109,8 @@ customElements.define("polygam-knob", class extends HTMLElement
   updateValue()
   {
     this.value = (this.rotation + 150) / 3;
+    
+    // Callback
     this.knobEvent(this);
   }
 

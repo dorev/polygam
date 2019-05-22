@@ -7,7 +7,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    this.bars = [[24,28,33],[24,28,33]];  // array of array of notes
+    this.progression = [[48,52,55],[45,48,52]];  // array of array of notes
     this.beats = [];
     this.currentBeat = -1;
     this.currentBar = 0;
@@ -55,6 +55,10 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       place-self : stretch;
       border : solid 1px lightgrey;
       min-height : 1em;
+      font-family: "Polygam", sans-serif;
+      font-size: 0.6em;
+      color: white;
+      text-align: center;
     }
     `;  
     
@@ -108,9 +112,13 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     // Add global mouseup event
     document.addEventListener("mouseup",this.mouseup.bind(this));
 
-
+    this.noteLabels = this.container.querySelectorAll(".sequencer-note-label");    
+    this.updateNoteLabels();
   } // end of constructor
   
+  // Callback
+  progHighlightChord(){}
+  playerPlayNotes(){}
 
   play()
   {    
@@ -121,8 +129,9 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     
     if(this.currentBeat === 15)
     {
-      this.currentBar = (this.currentBar + 1) % this.bars.length;
+      this.currentBar = (this.currentBar + 1) % this.progression.length;
       this.currentBeat = 0;
+      this.updateNoteLabels();
     }
     else
     {
@@ -140,11 +149,15 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     newHighlight.setAttribute("highlight", "true");
 
     this.sendNotes();
+    
+    // Callback
+    this.progHighlightChord(this.currentBar);
   }
 
 
   stop()
   {    
+    if(!this.isPlaying) { return; }
     this.isPlaying = false;
     clearTimeout(this.timeout);
     this.currentBeat = -1;
@@ -185,12 +198,14 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     this.isSelecting = false;
   }
 
+
   getNoteValue(iNoteIndex)
   {
     let octaveShift = Math.floor(iNoteIndex / 3) - 1;
     let baseNote = iNoteIndex % 3;
-    return this.bars[this.currentBar][baseNote] + 12 * octaveShift;
+    return this.progression[this.currentBar][baseNote] + 12 * octaveShift;
   }
+
 
   sendNotes()
   {
@@ -200,9 +215,33 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       if(this.beats[this.currentBeat][i]) { sequencerNotes.push(i); }
     }
     if(sequencerNotes.length === 0) { return; }
-    console.log("sending notes");
+    
+    // Callback
     this.playerPlayNotes(sequencerNotes.map(n => this.getNoteValue(n)));
   }
 
+  updateNoteLabels()
+  {
+    for(let i = 9; i >= 0; --i)
+    {
+      this.noteLabels[i].innerHTML = 
+      ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][this.progression[this.currentBar][i % 3] % 12];
+    }
+  }
+
+  setProgression(iProgression)
+  {
+    if(this.isPlaying && iProgression.length > this.progression) 
+    { 
+      this.stop(); 
+      this.progression = iProgression;
+      this.play();
+    }
+    else
+    {
+      this.progression = iProgression;
+    }
+    this.updateNoteLabels();
+  }
   
 });

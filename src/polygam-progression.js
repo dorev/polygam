@@ -8,6 +8,7 @@ customElements.define("polygam-progression",class extends HTMLElement
     // Custom element members
     //--------------------------------------------------------    
     this.chords = [];
+    this.progression = [];
     
     
     //--------------------------------------------------------
@@ -42,6 +43,10 @@ customElements.define("polygam-progression",class extends HTMLElement
         
   } // end of constructor
 
+
+  // Callback
+  progressionChanged(){}
+
   addChord(iChord)
   {
     // Create chord element
@@ -53,17 +58,29 @@ customElements.define("polygam-progression",class extends HTMLElement
     // Add chord element
     this.container.appendChild(newChord);
     newChord.setChord(iChord);
+    newChord.setPosition(this.chords.length);
 
     // Set callback
     newChord.chordChanged = this.chordChanged.bind(this);
 
     this.chords.push(newChord);
+    this.progression.push(newChord.notes)
+
+    // Callback
+    this.progressionChanged(this);
   }
 
   chordChanged(iChord)
   {
-    this.progressionEvent(this);
-    console.log(`chord changed ${iChord.name}`)
+    this.progression[iChord.position] = iChord.notes;
+    
+    // Callback
+    this.progressionChanged(this);
+  }
+
+  highlightChord(iChordIndex)
+  {
+
   }
 
 

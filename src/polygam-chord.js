@@ -17,6 +17,18 @@ customElements.define("polygam-chord",class extends HTMLElement
     super();        
     
     //--------------------------------------------------------
+    // Custom element members
+    //--------------------------------------------------------    
+    this.name         = "";
+    this.root         = -1;
+    this.voicing      = "";
+    this.notes        = [];
+    this.octave       = -1;
+    this.position     = -1;
+    this.inversion    = -1;
+    this.maxInversion = 3;
+    
+    //--------------------------------------------------------
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
@@ -93,16 +105,6 @@ customElements.define("polygam-chord",class extends HTMLElement
     }
     `;  
       
-    //--------------------------------------------------------
-    // Custom element members
-    //--------------------------------------------------------    
-    this.name         = "";
-    this.voicing      = "";
-    this.root         = 0;
-    this.octave       = 0;
-    this.inversion    = 0;
-    this.maxInversion = 0;
-    this.notes        = [];
     
     //--------------------------------------------------------
     // Construct custom element
@@ -208,8 +210,6 @@ customElements.define("polygam-chord",class extends HTMLElement
 
     // Add fifth
     this.notes.push(this.notes[0] + 7);
-
-    this.maxInversion = 3;
 
     // Iterate to reach correct inversion
     for(let inv = 1; inv < this.inversion; ++inv)
@@ -339,4 +339,10 @@ customElements.define("polygam-chord",class extends HTMLElement
   {
     return Math.max.apply(null, this.notes);
   }
+
+  setPosition(iPosition)
+  {
+    this.position = iPosition;
+  }
+
 });
