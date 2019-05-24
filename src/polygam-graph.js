@@ -105,16 +105,17 @@ customElements.define("polygam-graph", class extends HTMLElement
 
         let nodeCount = this.graph.nodesData.length;
         
-        if(nodeCount > 0)
+        // fluff
+        if(nodeCount > 1)
         {
           let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
           this.graph.addLink(currId,currId-1);
         }
-        //if(nodeCount > 1)
-        //{
-        //  let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
-        //  this.graph.addLink(currId,currId-2);
-        //}
+        if(nodeCount > 2)
+        {
+          let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
+          this.graph.addLink(currId,currId-2);
+        }
 
       })
     });
@@ -137,7 +138,10 @@ customElements.define("polygam-graph", class extends HTMLElement
       this.processTick = null;
       if(this.state = "uninit") 
       { 
+        // fluff
         this.graph.addLink(0,this.graph.nodesData.length-1);
+        this.graph.addLink(0,this.graph.nodesData.length-2);
+        this.graph.addLink(1,this.graph.nodesData.length-1);
         this.graphInitDone();
       }
       return; 

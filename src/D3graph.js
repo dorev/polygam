@@ -34,7 +34,7 @@ class Graph
     this.simulation = d3.forceSimulation(this.nodesData)
       .force("charge", d3.forceManyBody().strength(this.manyBodyStrength))
       .force("link", d3.forceLink(this.linksData).distance(this.linkDistance))
-      .force("forceX", d3.forceX().strength(this.centerForceRatio/10).x(this.svgCenterX))
+      .force("forceX", d3.forceX().strength(this.centerForceRatio).x(this.svgCenterX))
       .force("forceY", d3.forceY().strength(this.centerForceRatio).y(this.svgCenterY))
       .alphaTarget(1)
       .on("tick", this.graphTick.bind(this));
