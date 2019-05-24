@@ -16,10 +16,10 @@ class Graph
     // Default graph properties
     this.linksData = [];
     this.nodesData = [];
-    this.nodeRadius = 30;
+    this.nodeRadius = 20;
     this.manyBodyStrength = -100;
-    this.centerForceRatio = 0.05;
-    this.linkDistance = 100;
+    this.centerForceRatio = 0.08;
+    this.linkDistance = 120;
         
     // Create links structure
     this.svg.append("g").attr("class", "links");
@@ -44,7 +44,7 @@ class Graph
   updateSimulation()
   {    
     // Update nodes
-    this.nodesRef = this.nodesRef.data(this.nodesData, d => d.id);
+    this.nodesRef = this.nodesRef.data(this.nodesData);
     this.nodesRef.exit().remove();
     let newNodes = this.nodesRef.enter()
       .append("g")
@@ -76,18 +76,19 @@ class Graph
     this.simulation.nodes(this.nodesData);
     //this.simulation.force("link").links(this.linksData); //*** NOT SURE IF THIS IS REQUIRED ***
     this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.weight * this.linkDistance));
-    this.simulation.alpha(1).restart();
+    this.simulation
+    .alphaTarget(0).restart();
   };  
   
   dressNewNodes(iSelection)
   {    
     iSelection.append("circle").attr("r", this.nodeRadius);    
     iSelection.append("text")
-    .attr("x", 0) 
-    //.attr("y", d => d.radius/2) 
+    .attr("class", "graph-text")
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "central")
-    .text(d => d.id);
+    .attr("dominant-baseline", "central")
+    .text(d => d.hasOwnProperty("name") ? d.name : d.id);
   };
   
   /* TO DO
@@ -98,34 +99,44 @@ class Graph
   
   addNode (iNodeObject)
   {    
+    
+    if(iNodeObject.id === undefined) { 
+      iNodeObject.id = this.nodesData.length === 0 ? 0 : Math.max.apply(Math, this.nodesData.map(n => n.id)) + 1; 
+    }
+
     // Return if the node already exists
     if(this.nodesData.map(n => n.id).includes(iNodeObject.id)) { console.error(`Node ${iNodeObject.id} already exists`); return; }    
     
     // Define a radius property if undefined
     if(iNodeObject.radius === undefined) { iNodeObject.radius = this.nodeRadius; }	
+    // Define a default initial coordinates if undefined
+    if(iNodeObject.cx === undefined) { iNodeObject.x = this.svgCenterX; }	
+    if(iNodeObject.cy === undefined) { iNodeObject.y = this.svgCenterY; }	
     
     this.nodesData.push(iNodeObject);       
     this.updateSimulation();    
   };
   
   
-  addLink (iLinkObject) 
+  addLink (iSource, iTarget) 
   {    
+    let linkObject = {source: iSource, target: iTarget};
+
     // Return if the target or source node does not exist
-    if (!this.nodesData.map(node => node.id).includes(iLinkObject.target)) { console.error(`Target node ${iLinkObject.target} does not exist`); return; }
-    if (!this.nodesData.map(node => node.id).includes(iLinkObject.source)) { console.error(`Source node ${iLinkObject.source} does not exist`); return; }
+    if (!this.nodesData.map(node => node.id).includes(linkObject.target)) { console.error(`Target node ${linkObject.target} does not exist`); return; }
+    if (!this.nodesData.map(node => node.id).includes(linkObject.source)) { console.error(`Source node ${linkObject.source} does not exist`); return; }
 
     // Return is target is also the source
-    if (iLinkObject.target === iLinkObject.source) { console.error("A link musk bind two different nodes"); return; }
+    if (linkObject.target === linkObject.source) { console.error("A link musk bind two different nodes"); return; }
 
     // Return if identical link already exists
-    if(this.linksData.some(link => iLinkObject.target === link.target.id && iLinkObject.source === link.source.id)) 
-    {console.error(`Link ${iLinkObject.source}-${iLinkObject.target} already exists`); return;}
+    if(this.linksData.some(link => linkObject.target === link.target.id && linkObject.source === link.source.id)) 
+    {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`); return;}
 
     // Define a weight property if undefined
-    if (iLinkObject.weight === undefined) { iLinkObject.weight = 0.5; }
+    if (linkObject.weight === undefined) { linkObject.weight = 0.5; }
 
-    this.linksData.push(iLinkObject);
+    this.linksData.push(linkObject);
     this.updateSimulation();    
   };  
   
@@ -191,7 +202,7 @@ class Graph
   
   graphDragended (d) 
   {
-    if (!d3.event.active) this.simulation.alphaTarget(.1);
+    if (!d3.event.active) this.simulation.alphaTarget(0);
     d.fx = null;
     d.fy = null;
   };

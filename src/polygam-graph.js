@@ -9,12 +9,17 @@ customElements.define("polygam-graph", class extends HTMLElement
     // Custom element members
     //--------------------------------------------------------    
     
+    this.graphTasks = [];
+    this.processTick = null;
+    this.taskTempo = 100;
+    this.state = "uninit";
 
     //--------------------------------------------------------
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =`
+
     .graph-container
     {   
       place-self : stretch;
@@ -27,6 +32,18 @@ customElements.define("polygam-graph", class extends HTMLElement
       fill: #FFF;
       stroke: #000;
       stroke-width: 1px;
+    }
+
+    .link {
+      stroke: #000;
+      stroke-width: 1px;
+    }
+
+    .graph-text {
+      fill: black;
+      stroke: none;
+      font-family: "Polygam", sans-serif;
+      font-size: 0.8em;
     }
     
     `;  
@@ -42,19 +59,95 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.container.setAttribute("class","graph-container");    
     shadow.appendChild(this.container);
 
+    // temporary loadtime patch
     setTimeout(()=>{this.initGraph()},1000);
-    
+   
 
          
   } // end of constructor
 
-
   initGraph()
   {
+    console.log("Initializing graph")
     this.graph = new Graph(this.container);
-    this.graph.addNode({id:1});
-    this.graph.addNode({id:2});
-    this.graph.addNode({id:3});
+
+    var graphInitialNodes = [
+      "C",
+      "Cm",
+      "C#",
+      "C#m",
+      "D",
+      "Dm",
+      "Eb",
+      "Ebm",
+      "E",
+      "Em",
+      "F",
+      "Fm",
+      "F#",
+      "F#m",
+      "G",
+      "Gm",
+      "Ab",
+      "Abm",
+      "A",
+      "Am",
+      "Bb",
+      "Bbm",
+      "B",
+      "Bm"
+    ].forEach(chordName => 
+    {
+      this.queueTask(()=>
+      {
+        this.graph.addNode({name:chordName});
+
+        let nodeCount = this.graph.nodesData.length;
+        
+        if(nodeCount > 0)
+        {
+          let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
+          this.graph.addLink(currId,currId-1);
+        }
+        if(nodeCount > 1)
+        {
+          let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
+          this.graph.addLink(currId,currId-2);
+        }
+
+      })
+    });
+
+  }
+
+  queueTask(iAction)
+  {
+    this.graphTasks.push(iAction);
+    if(this.processTick == null)
+    {
+      this.processTick = setTimeout(()=>{this.processGraphTask()},this.taskTempo);
+    }
+  }
+
+  processGraphTask()
+  {
+    if(this.graphTasks.length === 0) 
+    { 
+      this.processTick = null;
+      if(this.state = "uninit") { this.graphInitDone();}
+      return; 
+    }
+
+    this.graphTasks.shift()();
+    this.processTick = setTimeout(()=>{this.processGraphTask()},this.taskTempo);
+  }
+
+
+  graphInitDone()
+  {
+    this.state = "init";
+    this.graph.updateSimulation();
+    console.log(this.graph.nodesData);
   }
 
 });
