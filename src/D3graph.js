@@ -34,7 +34,7 @@ class Graph
     this.simulation = d3.forceSimulation(this.nodesData)
       .force("charge", d3.forceManyBody().strength(this.manyBodyStrength))
       .force("link", d3.forceLink(this.linksData).distance(this.linkDistance))
-      .force("forceX", d3.forceX().strength(this.centerForceRatio).x(this.svgCenterX))
+      .force("forceX", d3.forceX().strength(this.centerForceRatio/10).x(this.svgCenterX))
       .force("forceY", d3.forceY().strength(this.centerForceRatio).y(this.svgCenterY))
       .alphaTarget(1)
       .on("tick", this.graphTick.bind(this));
@@ -76,19 +76,31 @@ class Graph
     this.simulation.nodes(this.nodesData);
     //this.simulation.force("link").links(this.linksData); //*** NOT SURE IF THIS IS REQUIRED ***
     this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.weight * this.linkDistance));
-    this.simulation
-    .alphaTarget(0).restart();
+    this.simulation.restart();
   };  
   
   dressNewNodes(iSelection)
   {    
-    iSelection.append("circle").attr("r", this.nodeRadius);    
+    // Node body
+    iSelection.append("circle")
+    .attr("r", this.nodeRadius);  
+
+    // Node text
     iSelection.append("text")
     .attr("class", "graph-text")
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "central")
     .attr("dominant-baseline", "central")
     .text(d => d.hasOwnProperty("name") ? d.name : d.id);
+
+    // Node overlay
+    iSelection.append("circle")
+    .attr("r", this.nodeRadius)
+    .attr("fill", "transparent")
+    .attr("nodeId", d => d.id)
+    .on("click", this.nodeClick);
+
+        
   };
   
   /* TO DO
@@ -192,6 +204,8 @@ class Graph
     if (!d3.event.active) this.simulation.alphaTarget(1).restart();
     d.fx = d.x;
     d.fy = d.y;
+    
+
   };  
   
   graphDragged (d) 
@@ -206,5 +220,8 @@ class Graph
     d.fx = null;
     d.fy = null;
   };
+
+  //  Callback  
+  nodeClick(){}
 
 }

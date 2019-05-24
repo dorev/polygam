@@ -11,7 +11,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     
     this.graphTasks = [];
     this.processTick = null;
-    this.taskTempo = 100;
+    this.taskTempo = 50;
     this.state = "uninit";
 
     //--------------------------------------------------------
@@ -60,7 +60,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     shadow.appendChild(this.container);
 
     // temporary loadtime patch
-    setTimeout(()=>{this.initGraph()},1000);
+    setTimeout(()=>{this.initGraph()},500);
    
 
          
@@ -70,6 +70,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   {
     console.log("Initializing graph")
     this.graph = new Graph(this.container);
+    this.graph.nodeClick = this.nodeClicked.bind(this);
 
     var graphInitialNodes = [
       "C",
@@ -109,11 +110,11 @@ customElements.define("polygam-graph", class extends HTMLElement
           let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
           this.graph.addLink(currId,currId-1);
         }
-        if(nodeCount > 1)
-        {
-          let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
-          this.graph.addLink(currId,currId-2);
-        }
+        //if(nodeCount > 1)
+        //{
+        //  let currId = this.graph.nodesData.map(n => n.id)[nodeCount-1];
+        //  this.graph.addLink(currId,currId-2);
+        //}
 
       })
     });
@@ -134,7 +135,11 @@ customElements.define("polygam-graph", class extends HTMLElement
     if(this.graphTasks.length === 0) 
     { 
       this.processTick = null;
-      if(this.state = "uninit") { this.graphInitDone();}
+      if(this.state = "uninit") 
+      { 
+        this.graph.addLink(0,this.graph.nodesData.length-1);
+        this.graphInitDone();
+      }
       return; 
     }
 
@@ -145,9 +150,17 @@ customElements.define("polygam-graph", class extends HTMLElement
 
   graphInitDone()
   {
+    
     this.state = "init";
     this.graph.updateSimulation();
-    console.log(this.graph.nodesData);
+    console.log("init done!")
+  }
+
+  nodeClicked(iNode)
+  {
+    
+    console.log(`polygam-graph click called`);
+    console.log(iNode);
   }
 
 });
