@@ -39,6 +39,16 @@ customElements.define("polygam-graph", class extends HTMLElement
       stroke-width: 1px;
     }
 
+    line {
+      transition: stroke 1s, stroke-width 1s;
+      -webkit-transition: stroke 1s, stroke-width 1s;
+    }
+
+    circle {
+      transition: stroke 1s, stroke-width 1s;
+      -webkit-transition: stroke 1s, stroke-width 1s;
+    }
+
     .graph-text {
       fill: black;
       stroke: none;
