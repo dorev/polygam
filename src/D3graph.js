@@ -1,4 +1,4 @@
-class Graph
+class D3Graph
 {	
   constructor(iHostElement)
   {    
@@ -137,18 +137,31 @@ class Graph
     // Return if the target or source node does not exist
     if (!this.nodesData.map(node => node.id).includes(linkObject.target)) { console.error(`Target node ${linkObject.target} does not exist`); return; }
     if (!this.nodesData.map(node => node.id).includes(linkObject.source)) { console.error(`Source node ${linkObject.source} does not exist`); return; }
-
-    // Return is target is also the source
+    
+        // Return is target is also the source
     if (linkObject.target === linkObject.source) { console.error("A link musk bind two different nodes"); return; }
-
+    
     // Return if identical link already exists
     if(this.linksData.some(link => linkObject.target === link.target.id && linkObject.source === link.source.id)) 
     {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`); return;}
-
+    
+    
     // Define a weight property if undefined
-    if (linkObject.weight === undefined) { linkObject.weight = 0.5; }
-
+    if (linkObject.weight === undefined) { linkObject.weight = 1; }
+    if (linkObject.id === undefined)     { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1; 
+    }
+    
+    
+    var sourceNode = this.nodesData.filter(n => n.id === iSource)[0];
+    var targetNode = this.nodesData.filter(n => n.id === iTarget)[0];
+    if(sourceNode && !sourceNode.hasOwnProperty("sourceLinks")) { sourceNode.sourceLinks = []; }
+    if(targetNode && !targetNode.hasOwnProperty("targetLinks")) { targetNode.targetLinks = []; }
+    
+    sourceNode.sourceLinks.push(linkObject.id);
+    targetNode.targetLinks.push(linkObject.id);
+    
     this.linksData.push(linkObject);
+
     this.updateSimulation();    
   };  
   
@@ -177,12 +190,26 @@ class Graph
   {
     // Return if link does not exist
     if(!this.linksData.map(link => `${link.source.id}-${link.target.id}`).includes(`${iLinkSourceId}-${iLinkTargetId}`)) 
-    {console.error(`Link ${iLinkSourceId}-${iLinkTargetId} does not exist`); return;}
+    { console.error(`Link ${iLinkSourceId}-${iLinkTargetId} does not exist`); return; } 
     
     // Remove link
     this.linksData
     .splice(this.linksData.map(link => `${link.source.id}-${link.target.id}`)
-    .indexOf(`${iLinkSourceId}-${iLinkTargetId}`),1);    
+    .indexOf(`${iLinkSourceId}-${iLinkTargetId}`),1);
+    
+    // Remove links references of nodes
+    this.nodesData.forEach(n => 
+    {
+      if(n.hasOwnProperty("sourceLinks") && n.sourceLinks.includes(iLinkSourceId))
+      {
+        n.sourceLinks.splice(n.sourceLinks.indexOf(iLinkSourceId),1);
+      }
+
+      if(n.hasOwnProperty("targetLinks") && n.targetLinks.includes(iLinkTargetId))
+      {
+        n.targetLinks.splice(n.targetLinks.indexOf(iLinkTargetId),1);
+      }
+    });
     
     this.updateSimulation(); 
   };

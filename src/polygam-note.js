@@ -22,9 +22,9 @@ customElements.define("polygam-note", class extends HTMLElement
     {   
       place-self : stretch;
       min-height : 1em;
-      border : solid 1px black;
-      border-radius: 5px;
-      margin: 2px;
+      border : solid 0.1em black;
+      border-radius: 0.25em;
+      margin: 0.1em;
 
     }
     `;  

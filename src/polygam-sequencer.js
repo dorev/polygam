@@ -59,7 +59,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       font-size: 0.6em;
       color: black;
       text-align: center;
-      margin: 4px;
+      margin: 0.4em;
     }
     `;  
     

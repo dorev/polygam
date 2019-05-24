@@ -13,6 +13,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.processTick = null;
     this.taskTempo = 50;
     this.state = "uninit";
+    this.progression = [];
 
     //--------------------------------------------------------
     // CSS style
@@ -25,7 +26,6 @@ customElements.define("polygam-graph", class extends HTMLElement
       place-self : stretch;
       min-height: 300px;
       border : dotted 1px silver;
-
     }
 
     .node {
@@ -69,39 +69,39 @@ customElements.define("polygam-graph", class extends HTMLElement
   initGraph()
   {
     console.log("Initializing graph")
-    this.graph = new Graph(this.container);
+    this.graph = new D3Graph(this.container);
     this.graph.nodeClick = this.nodeClicked.bind(this);
 
     var graphInitialNodes = [
-      "C",
-      "Cm",
-      "C#",
-      "C#m",
-      "D",
-      "Dm",
-      "Eb",
-      "Ebm",
-      "E",
-      "Em",
-      "F",
-      "Fm",
-      "F#",
-      "F#m",
-      "G",
-      "Gm",
-      "Ab",
-      "Abm",
-      "A",
-      "Am",
-      "Bb",
-      "Bbm",
-      "B",
-      "Bm"
-    ].forEach(chordName => 
+      {name: "C",   root: 0,  voicing: "major"},
+      {name: "Cm",  root: 0,  voicing: "minor"},
+      {name: "C#",  root: 1,  voicing: "major"},
+      {name: "C#m", root: 1,  voicing: "minor"},
+      {name: "D",   root: 2,  voicing: "major"},
+      {name: "Dm",  root: 2,  voicing: "minor"},
+      {name: "Eb",  root: 3,  voicing: "major"},
+      {name: "Ebm", root: 3,  voicing: "minor"},
+      {name: "E",   root: 4,  voicing: "major"},
+      {name: "Em",  root: 4,  voicing: "minor"},
+      {name: "F",   root: 5,  voicing: "major"},
+      {name: "Fm",  root: 5,  voicing: "minor"},
+      {name: "F#",  root: 6,  voicing: "major"},
+      {name: "F#m", root: 6,  voicing: "minor"},
+      {name: "G",   root: 7,  voicing: "major"},
+      {name: "Gm",  root: 7,  voicing: "minor"},
+      {name: "Ab",  root: 8,  voicing: "major"},
+      {name: "Abm", root: 8,  voicing: "minor"},
+      {name: "A",   root: 9,  voicing: "major"},
+      {name: "Am",  root: 9,  voicing: "minor"},
+      {name: "Bb",  root: 10, voicing: "major"},
+      {name: "Bbm", root: 10, voicing: "minor"},
+      {name: "B",   root: 11, voicing: "major"},
+      {name: "Bm",  root: 11, voicing: "minor"}
+    ].forEach(chordData => 
     {
       this.queueTask(()=>
       {
-        this.graph.addNode({name:chordName});
+        this.graph.addNode({name:chordData.name, root:chordData.root, voicing: chordData.voicing });
 
         let nodeCount = this.graph.nodesData.length;
         
@@ -153,10 +153,9 @@ customElements.define("polygam-graph", class extends HTMLElement
 
 
   graphInitDone()
-  {
-    
+  {    
     this.state = "init";
-    this.graph.updateSimulation();
+    this.graph.simulation.alphaTarget(0);
     console.log("init done!")
   }
 
