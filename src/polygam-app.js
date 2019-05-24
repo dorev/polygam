@@ -48,7 +48,7 @@ customElements.define("polygam-app", class extends HTMLElement
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: 100px 1fr auto auto 100px;
+      grid-template-rows: auto 1fr auto auto 100px;
       place-items: stretch;
     }
 
@@ -56,7 +56,6 @@ customElements.define("polygam-app", class extends HTMLElement
     {     
       place-self: stretch;
       grid-row : 1/2;
-      background: green;
     }
 
     .app-progression
@@ -69,21 +68,18 @@ customElements.define("polygam-app", class extends HTMLElement
     {   
       place-self: stretch; 
       grid-row : 3/4;
-      background: red;
     }
 
     .app-sequencer
     {   
       place-self: stretch; 
       grid-row : 4/5;
-      background: blue;
     }
 
     .app-oscillator
     {   
       place-self: stretch; 
       grid-row : 5/6;
-      background: purple;
     }
     `;  
     
@@ -99,7 +95,7 @@ customElements.define("polygam-app", class extends HTMLElement
     shadow.appendChild(this.container);
 
     // Create graph    
-    this.graph = document.createElement("div");
+    this.graph = document.createElement("polygam-graph");
     this.graph.setAttribute("class", "app-graph");
     this.container.appendChild(this.graph);
 

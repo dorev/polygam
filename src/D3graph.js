@@ -1,27 +1,22 @@
 class Graph
 {	
-  constructor(iSvgSelection)
+  constructor(iHostElement)
   {    
-    this.svgWidth  = iSvgSelection.attr("width");
-    this.svgHeight = iSvgSelection.attr("height");    
-    this.svgCenterX = this.svgWidth.replace("px","")/2;
-    this.svgCenterY = this.svgHeight.replace("px","")/2;
+    this.svgWidth  = iHostElement.offsetWidth;
+    this.svgHeight = iHostElement.offsetHeight;
+    this.svgCenterX = iHostElement.offsetWidth / 2;
+    this.svgCenterY = iHostElement.offsetHeight / 2;
     
     // Create SVG handle
-    this.svg = iSvgSelection
-      .append("svg")
-      .attr("width", this.svgWidth)
-      .attr("height", this.svgHeight);
-    
-    // Create border
-    this.svg.append("rect")
-      .attr("width", this.svgWidth)
-      .attr("height", this.svgHeight);
-    
+    this.svg = d3.select(iHostElement)
+    .append("svg")
+    .attr("width", this.svgWidth)
+    .attr("height",this.svgHeight);
+        
     // Default graph properties
     this.linksData = [];
     this.nodesData = [];
-    this.nodeRadius = 10;
+    this.nodeRadius = 30;
     this.manyBodyStrength = -100;
     this.centerForceRatio = 0.05;
     this.linkDistance = 100;
@@ -87,7 +82,12 @@ class Graph
   dressNewNodes(iSelection)
   {    
     iSelection.append("circle").attr("r", this.nodeRadius);    
-    iSelection.append("text").text(d => d.id);
+    iSelection.append("text")
+    .attr("x", 0) 
+    //.attr("y", d => d.radius/2) 
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .text(d => d.id);
   };
   
   /* TO DO

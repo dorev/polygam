@@ -25,7 +25,6 @@ customElements.define("polygam-progression",class extends HTMLElement
       grid-template-columns: auto;
       grid-template-rows: auto;
       height: 250px;
-      background: orange;
       place-items: center;
     }
 

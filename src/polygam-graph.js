@@ -1,4 +1,4 @@
-customElements.define("polygam-note", class extends HTMLElement
+customElements.define("polygam-graph", class extends HTMLElement
 {          
   
   constructor()
@@ -9,24 +9,26 @@ customElements.define("polygam-note", class extends HTMLElement
     // Custom element members
     //--------------------------------------------------------    
     
-    this.index = -1;
-    this.beat = -1;
-    this.isSelected = false;
 
     //--------------------------------------------------------
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =`
-    .note-container
+    .graph-container
     {   
       place-self : stretch;
-      min-height : 1em;
-      border : solid 1px black;
-      border-radius: 5px;
-      margin: 2px;
+      min-height: 300px;
+      border : dotted 1px silver;
 
     }
+
+    .node {
+      fill: #FFF;
+      stroke: #000;
+      stroke-width: 1px;
+    }
+    
     `;  
     
     //--------------------------------------------------------
@@ -37,21 +39,22 @@ customElements.define("polygam-note", class extends HTMLElement
     let shadow = this.attachShadow({mode: 'open'});  
     shadow.appendChild(style);  
     this.container = document.createElement("div");
-    this.container.setAttribute("class","note-container");    
+    this.container.setAttribute("class","graph-container");    
     shadow.appendChild(this.container);
+
+    setTimeout(()=>{this.initGraph()},100);
+    
+
          
   } // end of constructor
 
-  placeNote(iBeat, iIndex)
+
+  initGraph()
   {
-    this.beat = iBeat;
-    this.index = iIndex;
-  }
-  
-  click()
-  {
-    this.isSelected = !this.isSelected;
-    this.container.style.background = this.isSelected ? "silver" : "none";
+    this.graph = new Graph(this.container);
+    this.graph.addNode({id:1});
+    this.graph.addNode({id:2});
+    this.graph.addNode({id:3});
   }
 
 });

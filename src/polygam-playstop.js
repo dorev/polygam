@@ -50,8 +50,8 @@ customElements.define("polygam-playstop", class extends HTMLElement
     this.buttonBody.setAttribute("cy", s*0.5);
     this.buttonBody.setAttribute("r", s/2.25);
     this.buttonBody.setAttribute("stroke","#000");
-    this.buttonBody.setAttribute("stroke-width",s*0.05);
-    this.buttonBody.setAttribute("fill","#FF0");
+    this.buttonBody.setAttribute("stroke-width",s*0.025);
+    this.buttonBody.setAttribute("fill","#FFF");
     this.svg.appendChild(this.buttonBody);
 
     // Stop icon
@@ -60,14 +60,14 @@ customElements.define("polygam-playstop", class extends HTMLElement
     this.stopIcon.setAttribute("y", s*0.3);
     this.stopIcon.setAttribute("width", s*0.4);
     this.stopIcon.setAttribute("height", s*0.4);
-    this.stopIcon.setAttribute("fill","#F00");   
+    this.stopIcon.setAttribute("fill","#000");   
     this.stopIcon.setAttribute("visibility","hidden");   
     this.svg.appendChild(this.stopIcon);
 
     // Play icon
     this.playIcon = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
     this.playIcon.setAttribute("d", `M${s*0.35} ${s*0.25} L${s*0.75} ${s*0.5} L${s*0.35} ${s*0.75} Z`);
-    this.playIcon.setAttribute("fill","#00F");   
+    this.playIcon.setAttribute("fill","#000");   
     this.playIcon.setAttribute("visibility","visible");   
     this.svg.appendChild(this.playIcon);    
     

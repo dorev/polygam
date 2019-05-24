@@ -55,8 +55,8 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.knobBody.setAttribute("cy", s*0.5);
     this.knobBody.setAttribute("r", s/2.25);
     this.knobBody.setAttribute("stroke","#000");
-    this.knobBody.setAttribute("stroke-width",s*0.05);
-    this.knobBody.setAttribute("fill","#0F0");
+    this.knobBody.setAttribute("stroke-width",s*0.025);
+    this.knobBody.setAttribute("fill","#FFF");
     this.svg.appendChild(this.knobBody);
 
     // Knob cursor

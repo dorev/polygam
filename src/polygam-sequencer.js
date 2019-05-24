@@ -34,7 +34,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
     .sequencer-beat
     {
-      margin : 0; padding : 0;
+      margin : 0; 
+      padding : 0;
       grid-row : 1/11;
       display: grid;
       place-items: stretch;
@@ -53,12 +54,12 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     .sequencer-note-label
     {
       place-self : stretch;
-      border : solid 1px lightgrey;
       min-height : 1em;
       font-family: "Polygam", sans-serif;
       font-size: 0.6em;
-      color: white;
+      color: black;
       text-align: center;
+      margin: 4px;
     }
     `;  
     

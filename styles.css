@@ -25,7 +25,6 @@ body
 .header 
 {
   grid-area : header;
-  background: #444;
   text-align: center;
 }
 
@@ -33,13 +32,11 @@ body
 .welcome 
 {
   grid-area : welcome;
-  background: #555;
 }
 
 .app 
 {
   grid-area : app;
-  background: #444;
 }
 
 .blog 
