@@ -42,7 +42,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.container.setAttribute("class","graph-container");    
     shadow.appendChild(this.container);
 
-    setTimeout(()=>{this.initGraph()},100);
+    setTimeout(()=>{this.initGraph()},1000);
     
 
          
