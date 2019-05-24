@@ -60,16 +60,15 @@ class D3Graph
     this.nodesRef = newNodes.merge(this.nodesRef);  
     
     // Update links
-    this.linksRef = this.linksRef.data(this.linksData, d => `${d.source.id}-${d.target.id}`);
+    this.linksRef = this.linksRef.data(this.linksData);
     this.linksRef.exit().remove();
     
     let newLinks = this.linksRef.enter()
       .append("g")
       .attr("class", "link")
-      .append("line");
+      .append("line")
+      .attr("linkId", d => d.id);
     
-    // Setup link appearance in another function *** TO DO ***
-    //this.dressNewLinks(newLinks);
     this.linksRef = newLinks.merge(this.linksRef);
     
     // Restart simulation
@@ -83,7 +82,8 @@ class D3Graph
   {    
     // Node body
     iSelection.append("circle")
-    .attr("r", this.nodeRadius);  
+    .attr("r", this.nodeRadius)
+    .attr("nodeId", d => d.id);  
 
     // Node text
     iSelection.append("text")
@@ -101,13 +101,7 @@ class D3Graph
     .on("click", this.nodeClick);
 
         
-  };
-  
-  /* TO DO
-  dressNewLinks(iSelection)
-  {  
-  };
-  */
+  };  
   
   addNode (iNodeObject)
   {    
@@ -149,8 +143,7 @@ class D3Graph
     // Define a weight property if undefined
     if (linkObject.weight === undefined) { linkObject.weight = 1; }
     if (linkObject.id === undefined)     { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1; 
-    }
-    
+    }    
     
     var sourceNode = this.nodesData.filter(n => n.id === iSource)[0];
     var targetNode = this.nodesData.filter(n => n.id === iTarget)[0];
@@ -165,7 +158,16 @@ class D3Graph
     this.updateSimulation();    
   };  
   
-  
+
+  findLink (iSourceId, iTargetId)
+  {
+    // Return if link does not exist
+    if(!this.linksData.map(link => `${link.source.id}-${link.target.id}`).includes(`${iSourceId}-${iTargetId}`)) 
+    { console.error(`Link ${iSourceId}-${iTargetId} does not exist`); return null; } 
+
+    return this.linksData.filter(l => l.source.id === iSourceId && l.target.id === iTargetId)[0].id;
+  };
+
   removeNode (iNodeId) 
   {
     // Return if the node does not exist

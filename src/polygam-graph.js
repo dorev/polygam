@@ -159,11 +159,36 @@ customElements.define("polygam-graph", class extends HTMLElement
     console.log("init done!")
   }
 
+  
+
   nodeClicked(iNode)
-  {
+  { 
+    // Add node to progression
+    this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing });
     
-    console.log(`polygam-graph click called`);
-    console.log(iNode);
+    // Update highlighting
+    for(let i = 0; i < this.progression.length; ++i)
+    {
+      let nodeId = this.progression[i].id;
+
+      this.graph.svg.selectAll(`.node [nodeId='${nodeId}']`)
+      .attr("stroke","red")
+      .attr("stroke-width","4");
+
+      // If we're not the first node, highlight link with previous
+      if(i > 0)
+      {
+        var linkId = this.graph.findLink(this.progression[i-1].id, this.progression[i].id);
+        if(linkId === null)
+        {
+          linkId = this.graph.findLink(this.progression[i].id, this.progression[i-1].id);
+        }
+
+        this.graph.svg.selectAll(`.link [linkId='${linkId}']`)
+        .attr("stroke","red")
+        .attr("stroke-width","4");
+      }
+    }
   }
 
 });
