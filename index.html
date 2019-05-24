@@ -4,19 +4,6 @@
     <meta charset="UTF-8"> 
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
-    <script type="text/javascript" src="resources/d3.v5.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script type="text/javascript" src="resources/Tone.js"></script>
-    <script type="text/javascript" src="src/polygam-knob.js"></script>
-    <script type="text/javascript" src="src/polygam-playstop.js"></script>
-    <script type="text/javascript" src="src/polygam-note.js"></script>
-    <script type="text/javascript" src="src/polygam-chord.js"></script>
-    <script type="text/javascript" src="src/polygam-progression.js"></script>
-    <script type="text/javascript" src="src/polygam-graph.js"></script>
-    <script type="text/javascript" src="src/polygam-player.js"></script>
-    <script type="text/javascript" src="src/polygam-sequencer.js"></script>
-    <script type="text/javascript" src="src/polygam-app.js"></script>
-    <script type="text/javascript" src="src/D3Graph.js"></script>
 
 </head>
 
@@ -32,8 +19,9 @@
         X progression <br>
         X player <br>
         X sequencer <br>
-        - graph with initial menu highlighting <br>
+        X graph with initial menu highlighting <br>
         - add app-loader
+        - graph tonnetze logic <br>
         - refactor chords (remove octave controls) <br>
         - add shortcuts to edit chords (inversion up/down, major-minor switch, shift-semitone left/right)
         - dual oscillators with mixing <br>
@@ -47,12 +35,64 @@
     </div>
     
     <div class="app">
-        <polygam-app></polygam-app>
     </div>
     
     <div class="blog">
         blog
     </div> 
 </div>
+
+
+
+<script>
+    
+    var srcs = [
+        "resources/d3.v5.js",       // "https://d3js.org/d3.v5.min.js"
+        "resources/Tone.js",
+        "src/D3Graph.js",
+        "src/polygam-knob.js",
+        "src/polygam-playstop.js",
+        "src/polygam-note.js",
+        "src/polygam-chord.js",
+        "src/polygam-progression.js",
+        "src/polygam-graph.js",
+        "src/polygam-player.js",
+        "src/polygam-sequencer.js",
+        "src/polygam-app.js"
+    ];
+    
+    var timestamp;
+    
+    function init(sources, callback)
+    {
+        if(!sources.length)
+        {
+            callback();
+            return;
+        }
+        
+        let source = sources.shift();    
+        timestamp = Date.now();
+        
+        let e = document.createElement("script");
+        e.setAttribute("src", source);
+        document.querySelector("head").appendChild(e);
+        
+        e.addEventListener('load', () => {
+            //console.log(`loading ${source} took ${Date.now() - timestamp}ms`);
+            init(sources, callback);
+        });
+    }
+    
+    
+    function isLoaded()
+    {
+        document.querySelector(".app").appendChild(document.createElement("polygam-app"));
+    }
+    
+    window.onload = init(srcs, isLoaded);
+    
+    </script>
+
 </body>
 </html>
