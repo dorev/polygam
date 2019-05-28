@@ -17,9 +17,9 @@ class D3Graph
     this.linksData = [];
     this.nodesData = [];
     this.nodeRadius = 20;
-    this.manyBodyStrength = -100;
+    this.manyBodyStrength = -200;
     this.centerForceRatio = 0.08;
-    this.linkDistance = 120;
+    this.linkDistance = 50;
         
     // Create links structure
     this.svg.append("g").attr("class", "links");

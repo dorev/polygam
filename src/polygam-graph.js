@@ -24,7 +24,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     .graph-container
     {   
       place-self : stretch;
-      min-height: 300px;
+      min-height: 400px;
       border : dotted 1px silver;
     }
 
@@ -40,13 +40,13 @@ customElements.define("polygam-graph", class extends HTMLElement
     }
 
     line {
-      transition: stroke 1s, stroke-width 1s;
-      -webkit-transition: stroke 1s, stroke-width 1s;
+      transition: stroke 0.5s, stroke-width 0.5s;
+      -webkit-transition: stroke 0.5s, stroke-width 0.5s;
     }
 
     circle {
-      transition: stroke 1s, stroke-width 1s;
-      -webkit-transition: stroke 1s, stroke-width 1s;
+      transition: stroke 0.5s, stroke-width 0.5s;
+      -webkit-transition: stroke 0.5s, stroke-width 0.5s;
     }
 
     .graph-text {
@@ -78,7 +78,6 @@ customElements.define("polygam-graph", class extends HTMLElement
 
   initGraph()
   {
-    console.log("Initializing graph")
     this.graph = new D3Graph(this.container);
     this.graph.nodeClick = this.nodeClicked.bind(this);
 
@@ -166,7 +165,6 @@ customElements.define("polygam-graph", class extends HTMLElement
   {    
     this.state = "init";
     this.graph.simulation.alphaTarget(0);
-    console.log("init done!")
   }
 
   

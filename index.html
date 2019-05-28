@@ -1,70 +1,9 @@
 <!doctype html>
 <html lang = "en-US">
-    <head>
+<head>
     <meta charset="UTF-8"> 
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
-
-
-
-
-
-
-
-    <script>
-    
-        var srcs = [
-            //resources/d3.v5.js",       
-            "https://d3js.org/d3.v5.min.js",
-            //"resources/Tone.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js",
-            "https://raw.githack.com/dorev/polygam/master/src/D3graph.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-knob.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-playstop.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-note.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-chord.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-progression.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-graph.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-player.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-sequencer.js",
-            "https://raw.githack.com/dorev/polygam/master/src/polygam-app.js"
-        ];
-        
-        var timestamp;
-        
-        function init(sources, callback)
-        {
-            if(!sources.length)
-            {
-                callback();
-                return;
-            }
-            
-            let source = sources.shift();    
-            timestamp = Date.now();
-            
-            let e = document.createElement("script");
-            e.setAttribute("src", source);
-            e.setAttribute("type", "text/javascript");
-            document.querySelector("head").appendChild(e);
-            
-            e.addEventListener('load', () => {
-                //console.log(`loading ${source} took ${Date.now() - timestamp}ms`);
-                init(sources, callback);
-            });
-        }
-        
-        
-        function isLoaded()
-        {
-            document.querySelector(".app").appendChild(document.createElement("polygam-app"));
-        }
-        
-        window.onload = init(srcs, isLoaded);
-        
-        </script>
-
-
 </head>
 
 <body>
@@ -91,7 +30,7 @@
         - polish knob smoothness, enable touch control, add log scale<br>
         - tonnetze logic for random generation <br>
         - sequencer logic for random generation <br>
-        - add memento ctrl-z <br>
+        <br><br><br>
     </div>
     
     <div class="app">
@@ -102,6 +41,67 @@
     </div> 
 </div>
 
+<script>    
+    var srcs = [
+        //"resources/d3.v5.js",       
+        //"resources/Tone.js",
+        //"src/D3graph.js",
+        //"src/polygam-knob.js",
+        //"src/polygam-playstop.js",
+        //"src/polygam-note.js",
+        //"src/polygam-chord.js",
+        //"src/polygam-progression.js",
+        //"src/polygam-graph.js",
+        //"src/polygam-player.js",
+        //"src/polygam-sequencer.js",
+        //"src/polygam-app.js"
+        "https://d3js.org/d3.v5.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js",
+        "https://raw.githack.com/dorev/polygam/master/src/D3graph.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-knob.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-playstop.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-note.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-chord.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-progression.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-graph.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-player.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-sequencer.js",
+        "https://raw.githack.com/dorev/polygam/master/src/polygam-app.js"
+    ];
+    
+    var timestamp;    
+    function init(sources, callback)
+    {
+        if(!sources.length)
+        {
+            callback();
+            return;
+        }
+        
+        let source = sources.shift();    
+        timestamp = Date.now();
+        
+        document.querySelector(".app").innerHTML += `Loading ${source}`;
+        let e = document.createElement("script");
+        e.setAttribute("src", source);
+        e.setAttribute("type", "text/javascript");
+        document.querySelector("head").appendChild(e);
+        
+        e.addEventListener('load', () => 
+        {
+            document.querySelector(".app").innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
+            init(sources, callback);
+        });
+    }
+    
+    function isLoaded()
+    {
+        document.querySelector(".app").innerHTML = "";
+        document.querySelector(".app").appendChild(document.createElement("polygam-app"));
+    }
+    
+    window.onload = init(srcs, isLoaded);    
+</script>
 
 </body>
 </html>
