@@ -5,6 +5,65 @@
     <title>polygam</title>
     <link rel = "stylesheet" type = "text/css"href = "styles.css" />
 
+
+
+
+
+
+
+    <script>
+    
+        var srcs = [
+            //resources/d3.v5.js",       
+            "https://d3js.org/d3.v5.min.js",
+            //"resources/Tone.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js",
+            "src/D3Graph.js",
+            "src/polygam-knob.js",
+            "src/polygam-playstop.js",
+            "src/polygam-note.js",
+            "src/polygam-chord.js",
+            "src/polygam-progression.js",
+            "src/polygam-graph.js",
+            "src/polygam-player.js",
+            "src/polygam-sequencer.js",
+            "src/polygam-app.js"
+        ];
+        
+        var timestamp;
+        
+        function init(sources, callback)
+        {
+            if(!sources.length)
+            {
+                callback();
+                return;
+            }
+            
+            let source = sources.shift();    
+            timestamp = Date.now();
+            
+            let e = document.createElement("script");
+            e.setAttribute("src", source);
+            document.querySelector("head").appendChild(e);
+            
+            e.addEventListener('load', () => {
+                //console.log(`loading ${source} took ${Date.now() - timestamp}ms`);
+                init(sources, callback);
+            });
+        }
+        
+        
+        function isLoaded()
+        {
+            document.querySelector(".app").appendChild(document.createElement("polygam-app"));
+        }
+        
+        window.onload = init(srcs, isLoaded);
+        
+        </script>
+
+
 </head>
 
 <body>
@@ -20,7 +79,7 @@
         X player <br>
         X sequencer <br>
         X graph with initial menu highlighting <br>
-        X add app-loader
+        X add app-loader <br>
         - graph tonnetze logic <br>
         - refactor chords (remove octave controls) <br>
         - add shortcuts to edit chords (inversion up/down, major-minor switch, shift-semitone left/right)
@@ -42,57 +101,6 @@
     </div> 
 </div>
 
-
-
-<script>
-    
-    var srcs = [
-        "resources/d3.v5.js",       // "https://d3js.org/d3.v5.min.js"
-        "resources/Tone.js",
-        "src/D3Graph.js",
-        "src/polygam-knob.js",
-        "src/polygam-playstop.js",
-        "src/polygam-note.js",
-        "src/polygam-chord.js",
-        "src/polygam-progression.js",
-        "src/polygam-graph.js",
-        "src/polygam-player.js",
-        "src/polygam-sequencer.js",
-        "src/polygam-app.js"
-    ];
-    
-    var timestamp;
-    
-    function init(sources, callback)
-    {
-        if(!sources.length)
-        {
-            callback();
-            return;
-        }
-        
-        let source = sources.shift();    
-        timestamp = Date.now();
-        
-        let e = document.createElement("script");
-        e.setAttribute("src", source);
-        document.querySelector("head").appendChild(e);
-        
-        e.addEventListener('load', () => {
-            //console.log(`loading ${source} took ${Date.now() - timestamp}ms`);
-            init(sources, callback);
-        });
-    }
-    
-    
-    function isLoaded()
-    {
-        document.querySelector(".app").appendChild(document.createElement("polygam-app"));
-    }
-    
-    window.onload = init(srcs, isLoaded);
-    
-    </script>
 
 </body>
 </html>
