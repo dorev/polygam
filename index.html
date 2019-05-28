@@ -45,6 +45,7 @@
             
             let e = document.createElement("script");
             e.setAttribute("src", source);
+            e.setAttribute("type", "text/javascript");
             document.querySelector("head").appendChild(e);
             
             e.addEventListener('load', () => {
