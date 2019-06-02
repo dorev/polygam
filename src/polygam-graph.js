@@ -173,16 +173,23 @@ customElements.define("polygam-graph", class extends HTMLElement
   { 
     // Add node to progression
     this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing });
-    
-    // Update highlighting
+
+    this.updateGraph();    
+    this.updateHighlighting();
+  }
+
+  
+  updateHighlighting()
+  {    
+    // For each node of the progression,  find a link with the previous node and highlight it
     for(let i = 0; i < this.progression.length; ++i)
     {
       let nodeId = this.progression[i].id;
-
+      
       this.graph.svg.selectAll(`.node [nodeId='${nodeId}']`)
       .attr("stroke","red")
       .attr("stroke-width","4");
-
+      
       // If we're not the first node, highlight link with previous
       if(i > 0)
       {
@@ -191,12 +198,54 @@ customElements.define("polygam-graph", class extends HTMLElement
         {
           linkId = this.graph.findLink(this.progression[i].id, this.progression[i-1].id);
         }
-
+        
+        // If no link exists between the nodes
+        if(linkId === null)
+        {
+          console.log(`No link exists between node ${this.progression[i].id} and node ${this.progression[i-1].id}`);
+          continue;
+        }
+        
         this.graph.svg.selectAll(`.link [linkId='${linkId}']`)
         .attr("stroke","red")
         .attr("stroke-width","4");
       }
     }
   }
+  
+  
+  updateGraph()
+  {
+    //
+    switch(this.progression.length)    
+    {
+      case 0 : return;
+
+      case 1 : 
+      // FIRST NOTE
+      let newGraphElements = firstChordNeighbors(this.progression[0]);
+
+
+      // consider the 1st note being the I or V or VI
+      // identify the chords of these scales
+        // add I-IV-V of the said chords as first layer
+        // add brighter/darker chords
+        // add IV/V and V/V of IV and V
+        // add major/minor potential borrowings      
+      return;
+
+      default :
+      // PROGRESSION WITH AT LEAST 2 CHORDS
+      // look behind to evaluate our most likely scales
+      // remove nodes not belonging to these scales
+
+      
+      return;
+
+    }
+
+
+  }
+
 
 });
