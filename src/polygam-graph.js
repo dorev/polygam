@@ -11,7 +11,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     
     this.graphTasks = [];
     this.processTick = null;
-    this.taskTempo = 50;
+    this.taskTempo = 40;
     this.state = "uninit";
     this.progression = [];
 
@@ -174,7 +174,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     // Add node to progression
     this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing });
 
-    this.updateGraph();    
+    this.updateGraph();   
     this.updateHighlighting();
   }
 
@@ -213,25 +213,66 @@ customElements.define("polygam-graph", class extends HTMLElement
     }
   }
   
+  clearGraph()
+  {
+    var tempoAcceleration = 2;
+    this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
+
+    // Remove all nodes
+    this.graph.nodesData.map(n => n.id).forEach(id =>
+    {      
+      this.queueTask(() => { this.graph.removeNode(id); }); // some minor error occurs in here...
+    });  
+  
+
+    this.queueTask(() => { this.taskTempo *= tempoAcceleration; });
+  }
   
   updateGraph()
   {
-    //
     switch(this.progression.length)    
     {
       case 0 : return;
 
       case 1 : 
       // FIRST NOTE
+      
+      this.clearGraph();
       let newGraphElements = firstChordNeighbors(this.progression[0]);
+      console.log(newGraphElements);
 
+      this.queueTask(() => { this.graph.simulation.alphaTarget(1); });    
+      
+      newGraphElements.nodes.forEach(node => 
+      {
+        this.queueTask(() => { this.graph.addNode(node); });
+      });
 
-      // consider the 1st note being the I or V or VI
-      // identify the chords of these scales
-        // add I-IV-V of the said chords as first layer
-        // add brighter/darker chords
-        // add IV/V and V/V of IV and V
-        // add major/minor potential borrowings      
+      newGraphElements.links.forEach(link => 
+      {
+        // find current graph node id with name [source]
+        // find current graph node id with name [target]
+        
+        this.queueTask(() => 
+        { 
+          var sourceId = this.graph.nodesData.find(node => node.name === link.source).id;
+          var targetId = this.graph.nodesData.find(node => node.name === link.target).id;
+          //console.log(`bind ${sourceId} and ${targetId}`);
+          this.graph.addLink(sourceId, targetId); 
+        });
+      });
+      
+      this.queueTask(() => 
+      { 
+        this.graph.simulation.alphaTarget(0); 
+        console.log(this.progression);
+        this.updateHighlighting(); 
+      });    
+      
+      // how to match the returned tonnetzeGraph id and the actual ids of the graph (to match the links)
+      // make links based on chord names :\
+
+       
       return;
 
       default :

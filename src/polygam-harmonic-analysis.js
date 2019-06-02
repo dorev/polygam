@@ -14,44 +14,14 @@ function firstChordNeighbors(iChord)
   var voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
 
   // List chords of scale as if input chord is I
-  var chordsAsI = getAllChordsOfScale(iChord.root, voicingAsI).map(a => a[0]).filter(c => c.voicing != "diminished");
-  // Add chord names
-  chordsAsI.forEach(chord => { chord.name = buildChordName(chord); });
+  var chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).map(a => a[0]).filter(c => c.voicing != "diminished");
+  var chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).map(a => a[0]).filter(c => c.voicing != "diminished");
+  var chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).map(a => a[0]).filter(c => c.voicing != "diminished");
 
-  // List chords of scale as if input chord is V
-  var chordsAsV = getAllChordsOfScale(rootAsV, voicingAsV).map(a => a[0]).filter(c => c.voicing != "diminished");;
-  // Add chord names
-  chordsAsV.forEach(chord => { chord.name = buildChordName(chord); });
-
-  // List chords of scale as if input chord is VI
-  // Switch voicing
-  var chordsAsVI = getAllChordsOfScale(rootAsVI, voicingAsVI).map(a => a[0]).filter(c => c.voicing != "diminished");;
-  // Add chord names
-  chordsAsVI.forEach(chord => { chord.name = buildChordName(chord); });
-
-
-  // By comparing chord names, build list of all chords
   var chordsForGraph = [];
-  chordsForGraph.concat(chordsAsI);
+  chordsForGraph = chordsForGraph.concat(chordsAsI, chordsAsV, chordsAsVI);
   
-  chordsAsV.forEach(chord => 
-  {
-    if(!chordsForGraph.map(c => c.id).includes(chord.id))
-    {
-      chordsForGraph.push(chord);
-    }
-  });
-  
-  chordsAsVI.forEach(chord => 
-  {
-    if(!chordsForGraph.map(c => c.id).includes(chord.id))
-    {
-      chordsForGraph.push(chord);
-    }
-  });
-
-  
-  // add first brighter(+5)/darker(+7) scale stranger chord
+  // add first brighter(+5st)/darker(+7st) scale stranger chord
   // C-Am first brighter => Bb
   // C-Am first darker => Bm
   var brighterDarkerChords = [];
@@ -63,29 +33,19 @@ function firstChordNeighbors(iChord)
     
     if(voicing === "major")
     {
-      brighterDarkerChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);
-      brighterDarkerChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z"])]);
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z"])]);
     }
     else
     {
-      brighterDarkerChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z"])]);
-      brighterDarkerChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z"])]);
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);
     }
   });
-  
-  brighterDarkerChords.forEach(chord => { chord.name = buildChordName(chord); });
-  brighterDarkerChords.forEach(chord => 
-  {
-    if(!chordsForGraph.map(c => c.id).includes(chord.id))
-    {
-      chordsForGraph.push(chord);
-    }
-  });
-    
   
   
   //
-  // add IV/V and V/V of IV and V
+  // Add IV/V and V/V
   //
   var extendedChords = [];
   [[rootAsI, voicingAsI], [rootAsV, voicingAsV], [rootAsVI, voicingAsVI]].forEach(array =>
@@ -96,38 +56,59 @@ function firstChordNeighbors(iChord)
     
     if(voicing === "major")
     {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z","+y"])]); // V/V
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]); // IV/IV
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z","+y"])]); // V/V
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]); // IV/IV
     }
     else
     {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]); // V/V
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z","-y"])]); // IV/IV
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]); // V/V
+      chordsForGraph.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z","-y"])]); // IV/IV
     }
   });
-  
-  extendedChords.forEach(chord => { chord.name = buildChordName(chord); });
-  extendedChords.forEach(chord => 
-  {
-    if(!chordsForGraph.map(c => c.id).includes(chord.id))
-    {
-      chordsForGraph.push(chord);
-    }
-  });
-    
-    
-  console.log(chordsForGraph);
 
+  var filteredChords = [];
+  chordsForGraph.forEach( chord =>
+  {
+    if(!filteredChords.map(c => c.id).includes(chord.id))
+    {
+      chord.name = buildChordName(chord);
+      filteredChords.push(chord);
+    }
+  });
+
+  //
   // add major/minor potential borrowings
   // LETS KEEP THAT FOR LATER!!!
-
+  //
+  
   // Build output
-  /*
+  var returnedObject = { nodes: [], links: [] };
+  
+  // Add all nodes from list of found chords
+  filteredChords.forEach( chord =>
   {
-    nodes : [{name, voicing, root}],
-    links : [],
-  }
-*/
+    returnedObject.nodes.push({ name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id });
+  });
+
+  // For each node, add existing edges to any other tonnetze node
+  returnedObject.nodes.forEach( node =>
+  {
+    tonnetze[node.id].neighbors.forEach(neighbor => 
+    {
+      if(returnedObject.nodes.map(n => n.id).includes(node.id))
+      {
+        returnedObject.links.push({ source: node.name, target: buildChordName(tonnetze[neighbor]) })
+      }
+    });
+  });
+
+  //{
+  //  nodes : [{name, voicing, root, tonnetzeId}],
+  //  links : [{sourceTonnetzeId, targetTonnetzeId}]
+  //}
+  //console.log(returnedObject);
+
+  return returnedObject;
 }
 
 function buildChordName(iChord)
