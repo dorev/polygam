@@ -11,7 +11,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     
     this.graphTasks = [];
     this.processTick = null;
-    this.taskTempo = 40;
+    this.taskTempo = 50;
     this.state = "uninit";
     this.progression = [];
 
@@ -82,30 +82,30 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.graph.nodeClick = this.nodeClicked.bind(this);
 
     var graphInitialNodes = [
-      {name: "C",   root: 0,  voicing: "major"},
-      {name: "Cm",  root: 0,  voicing: "minor"},
-      {name: "C#",  root: 1,  voicing: "major"},
-      {name: "C#m", root: 1,  voicing: "minor"},
-      {name: "D",   root: 2,  voicing: "major"},
-      {name: "Dm",  root: 2,  voicing: "minor"},
-      {name: "Eb",  root: 3,  voicing: "major"},
-      {name: "Ebm", root: 3,  voicing: "minor"},
-      {name: "E",   root: 4,  voicing: "major"},
-      {name: "Em",  root: 4,  voicing: "minor"},
-      {name: "F",   root: 5,  voicing: "major"},
-      {name: "Fm",  root: 5,  voicing: "minor"},
-      {name: "F#",  root: 6,  voicing: "major"},
-      {name: "F#m", root: 6,  voicing: "minor"},
-      {name: "G",   root: 7,  voicing: "major"},
-      {name: "Gm",  root: 7,  voicing: "minor"},
-      {name: "Ab",  root: 8,  voicing: "major"},
-      {name: "Abm", root: 8,  voicing: "minor"},
-      {name: "A",   root: 9,  voicing: "major"},
-      {name: "Am",  root: 9,  voicing: "minor"},
-      {name: "Bb",  root: 10, voicing: "major"},
-      {name: "Bbm", root: 10, voicing: "minor"},
-      {name: "B",   root: 11, voicing: "major"},
-      {name: "Bm",  root: 11, voicing: "minor"}
+      {name: "C",   root: 0,  voicing: "major", id:},  // load all chords from tonnetze instead!!!
+      {name: "Cm",  root: 0,  voicing: "minor", id:},  // add chord names to tonnetze
+      {name: "C#",  root: 1,  voicing: "major", id:},
+      {name: "C#m", root: 1,  voicing: "minor", id:},
+      {name: "D",   root: 2,  voicing: "major", id:},
+      {name: "Dm",  root: 2,  voicing: "minor", id:},
+      {name: "Eb",  root: 3,  voicing: "major", id:},
+      {name: "Ebm", root: 3,  voicing: "minor", id:},
+      {name: "E",   root: 4,  voicing: "major", id:},
+      {name: "Em",  root: 4,  voicing: "minor", id:},
+      {name: "F",   root: 5,  voicing: "major", id:},
+      {name: "Fm",  root: 5,  voicing: "minor", id:},
+      {name: "F#",  root: 6,  voicing: "major", id:},
+      {name: "F#m", root: 6,  voicing: "minor", id:},
+      {name: "G",   root: 7,  voicing: "major", id:},
+      {name: "Gm",  root: 7,  voicing: "minor", id:},
+      {name: "Ab",  root: 8,  voicing: "major", id:},
+      {name: "Abm", root: 8,  voicing: "minor", id:},
+      {name: "A",   root: 9,  voicing: "major", id:},
+      {name: "Am",  root: 9,  voicing: "minor", id:},
+      {name: "Bb",  root: 10, voicing: "major", id:},
+      {name: "Bbm", root: 10, voicing: "minor", id:},
+      {name: "B",   root: 11, voicing: "major", id:},
+      {name: "Bm",  root: 11, voicing: "minor", id:}
     ].forEach(chordData => 
     {
       this.queueTask(()=>
@@ -213,13 +213,13 @@ customElements.define("polygam-graph", class extends HTMLElement
     }
   }
   
-  clearGraph()
+  clearGraph(exceptionId = -1)
   {
     var tempoAcceleration = 2;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
 
     // Remove all nodes
-    this.graph.nodesData.map(n => n.id).forEach(id =>
+    this.graph.nodesData.map(n => n.id).filter(id => id != exceptionId).forEach(id =>
     {      
       this.queueTask(() => { this.graph.removeNode(id); }); // some minor error occurs in here...
     });  
@@ -236,41 +236,50 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       case 1 : 
       // FIRST NOTE
-      
       this.clearGraph();
       let newGraphElements = firstChordNeighbors(this.progression[0]);
       console.log(newGraphElements);
 
       this.queueTask(() => { this.graph.simulation.alphaTarget(1); });    
       
-      newGraphElements.nodes.forEach(node => 
+      newGraphElements.scaleChords.forEach(node => 
       {
-        this.queueTask(() => { this.graph.addNode(node); });
+        this.queueTask(() => { this.graph.addNode(node); this.graph.addLink(this.progression[0].id, node.id, 1.5) });
+      });  
+      
+      newGraphElements.extendedChords.forEach(node => 
+      {
+        this.queueTask(() => { this.graph.addNode(node); this.graph.addLink(this.progression[0].id, node.id, 3) });
       });
 
-      newGraphElements.links.forEach(link => 
-      {
-        // find current graph node id with name [source]
-        // find current graph node id with name [target]
-        
-        this.queueTask(() => 
-        { 
-          var sourceId = this.graph.nodesData.find(node => node.name === link.source).id;
-          var targetId = this.graph.nodesData.find(node => node.name === link.target).id;
-          //console.log(`bind ${sourceId} and ${targetId}`);
-          this.graph.addLink(sourceId, targetId); 
-        });
-      });
+  //newGraphElements.links.forEach(link => 
+  //{
+    //// find current graph node id with name [source]
+    //// find current graph node id with name [target]
+    //
+    //this.queueTask(() => 
+    //{ 
+    //  //console.log(`source ${link.source}   target ${link.target}`);
+    //  //console.log(this.graph.nodesData.find(node => node.name === link.source));
+    //  //console.log(this.graph.nodesData.find(node => node.name === link.target));
+    //  var sourceId = this.graph.nodesData.find(node => node.name === link.source).id;
+    //  var targetId = this.graph.nodesData.find(node => node.name === link.target).id;
+    //  this.graph.addLink(sourceId, targetId); 
+    //});
+  //});
       
       this.queueTask(() => 
       { 
         this.graph.simulation.alphaTarget(0); 
-        console.log(this.progression);
         this.updateHighlighting(); 
+        console.log(this.graph.nodesData)
       });    
       
-      // how to match the returned tonnetzeGraph id and the actual ids of the graph (to match the links)
-      // make links based on chord names :\
+      
+
+      // Tighten the link between 
+      //
+      //
 
        
       return;

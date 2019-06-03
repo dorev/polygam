@@ -74,7 +74,7 @@ class D3Graph
     // Restart simulation
     this.simulation.nodes(this.nodesData);
     //this.simulation.force("link").links(this.linksData); //*** NOT SURE IF THIS IS REQUIRED ***
-    this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.weight * this.linkDistance));
+    this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.distance * this.linkDistance));
     this.simulation.restart();
   };  
   
@@ -124,7 +124,7 @@ class D3Graph
   };
   
   
-  addLink (iSource, iTarget) 
+  addLink (iSource, iTarget, iDistance = null) 
   {    
     let linkObject = {source: iSource, target: iTarget};
 
@@ -139,11 +139,11 @@ class D3Graph
     if(this.linksData.some(link => linkObject.target === link.target.id && linkObject.source === link.source.id)) 
     {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`); return;}
     
-    
-    // Define a weight property if undefined
-    if (linkObject.weight === undefined) { linkObject.weight = 1; }
-    if (linkObject.id === undefined)     { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1; 
-    }    
+    // Set distance
+    linkObject.distance = iDistance != null ? iDistance : 1;
+
+    // Set link id
+    if (linkObject.id === undefined)     { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1;  }    
     
     var sourceNode = this.nodesData.filter(n => n.id === iSource)[0];
     var targetNode = this.nodesData.filter(n => n.id === iTarget)[0];
@@ -183,7 +183,7 @@ class D3Graph
     
     // Remove from data
     let wIndexToRemove = this.nodesData.map(node => node.id).indexOf(iNodeId);
-    this.nodesData.splice(wIndexToRemove,1);        
+    this.nodesData.splice(wIndexToRemove,1);
     this.updateSimulation();    
   };    
   
