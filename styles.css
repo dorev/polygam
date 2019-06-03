@@ -52,7 +52,7 @@ body
 
 }
 
-.rainbow 
+.polygram-color
 {
   background-image:         gradient( linear, left top, right top, 
                                       color-stop(0,   var(--poly1)), 
@@ -67,6 +67,12 @@ body
   color:transparent;
   background-clip: text;
   -webkit-background-clip: text;
+  font-family: "Polygam", sans-serif;
+  font-size: 2em;
+}
+.polygram-bw
+{
+  color:black;
   font-family: "Polygam", sans-serif;
   font-size: 2em;
 }

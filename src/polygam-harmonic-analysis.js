@@ -85,6 +85,7 @@ function firstChordNeighbors(iChord)
     }
   });
 
+  
   //
   // add major/minor potential borrowings
   // LETS KEEP THAT FOR LATER!!!
@@ -96,33 +97,6 @@ function firstChordNeighbors(iChord)
     scaleChords:    filteredScaleChords   .map(chord => { return { name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id }; }) , 
     extendedChords: filteredExtendedChords.map(chord => { return { name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id }; }) 
   };
-
-
-  //// Build output
-  //var returnedObject = { nodes: [], links: [] };
-  //
-  //// Add all nodes from list of found chords
-  //filteredChords.forEach( chord =>
-  //{
-  //  returnedObject.nodes.push({ name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id});
-  //});
-  //
-  //// For each node, add existing edges to any other tonnetze node
-  //returnedObject.nodes.forEach( node =>
-  //{
-  //  tonnetze[node.id].neighbors.forEach(neighbor => 
-  //  {
-  //    if(returnedObject.nodes.map(n => n.id).includes(tonnetze[neighbor].id))
-  //    {
-  //      returnedObject.links.push({ source: node.name, target: buildChordName(tonnetze[neighbor]) })
-  //    }
-  //  });
-  //});
-
-  //{
-  //  nodes : [{name, voicing, root, id}],
-  //  links : [{source, target}]
-  //}
 
   return returnedObject;
 }

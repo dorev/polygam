@@ -6,6 +6,7 @@ class D3Graph
     this.svgHeight = iHostElement.offsetHeight;
     this.svgCenterX = iHostElement.offsetWidth / 2;
     this.svgCenterY = iHostElement.offsetHeight / 2;
+    this.debug = false;
     
     // Create SVG handle
     this.svg = d3.select(iHostElement)
@@ -111,7 +112,7 @@ class D3Graph
     }
 
     // Return if the node already exists
-    if(this.nodesData.map(n => n.id).includes(iNodeObject.id)) { console.error(`Node ${iNodeObject.id} already exists`); return; }    
+    if(this.nodesData.map(n => n.id).includes(iNodeObject.id)) { if(this.debug) { console.error(`Node ${iNodeObject.id} already exists`); } return; }    
     
     // Define a radius property if undefined
     if(iNodeObject.radius === undefined) { iNodeObject.radius = this.nodeRadius; }	
@@ -129,15 +130,15 @@ class D3Graph
     let linkObject = {source: iSource, target: iTarget};
 
     // Return if the target or source node does not exist
-    if (!this.nodesData.map(node => node.id).includes(linkObject.target)) { console.error(`Target node ${linkObject.target} does not exist`); return; }
-    if (!this.nodesData.map(node => node.id).includes(linkObject.source)) { console.error(`Source node ${linkObject.source} does not exist`); return; }
+    if (!this.nodesData.map(node => node.id).includes(linkObject.target)) { if(this.debug) {console.error(`Target node ${linkObject.target} does not exist`);} return; }
+    if (!this.nodesData.map(node => node.id).includes(linkObject.source)) { if(this.debug) {console.error(`Source node ${linkObject.source} does not exist`);} return; }
     
         // Return is target is also the source
-    if (linkObject.target === linkObject.source) { console.error("A link musk bind two different nodes"); return; }
+    if (linkObject.target === linkObject.source) { if(this.debug) {console.error("A link musk bind two different nodes");} return; }
     
     // Return if identical link already exists
     if(this.linksData.some(link => linkObject.target === link.target.id && linkObject.source === link.source.id)) 
-    {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`); return;}
+    {if(this.debug) {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`)}; return;}
     
     // Set distance
     linkObject.distance = iDistance != null ? iDistance : 1;
@@ -163,7 +164,7 @@ class D3Graph
   {
     // Return if link does not exist
     if(!this.linksData.map(link => `${link.source.id}-${link.target.id}`).includes(`${iSourceId}-${iTargetId}`)) 
-    { console.error(`Link ${iSourceId}-${iTargetId} does not exist`); return null; } 
+    { if(this.debug) {console.error(`Link ${iSourceId}-${iTargetId} does not exist`);} return null; } 
 
     return this.linksData.filter(l => l.source.id === iSourceId && l.target.id === iTargetId)[0].id;
   };
@@ -171,7 +172,7 @@ class D3Graph
   removeNode (iNodeId) 
   {
     // Return if the node does not exist
-    if (!this.nodesData.map(n => n.id).includes(iNodeId)) { console.error(`Node ${iNodeId} does not exist`); return; }
+    if (!this.nodesData.map(n => n.id).includes(iNodeId)) { if(this.debug) {console.error(`Node ${iNodeId} does not exist`);} return; }
 
     // Identify all the links connected to this node
     let wNodeIsTarget = this.linksData.filter(link => link.target.id === iNodeId);
@@ -192,7 +193,7 @@ class D3Graph
   {
     // Return if link does not exist
     if(!this.linksData.map(link => `${link.source.id}-${link.target.id}`).includes(`${iLinkSourceId}-${iLinkTargetId}`)) 
-    { console.error(`Link ${iLinkSourceId}-${iLinkTargetId} does not exist`); return; } 
+    { if(this.debug) {console.error(`Link ${iLinkSourceId}-${iLinkTargetId} does not exist`);} return; } 
     
     // Remove link
     this.linksData

@@ -79,38 +79,15 @@ customElements.define("polygam-graph", class extends HTMLElement
   initGraph()
   {
     this.graph = new D3Graph(this.container);
+    //this.graph.debug = true;
     this.graph.nodeClick = this.nodeClicked.bind(this);
 
-    var graphInitialNodes = [
-      {name: "C",   root: 0,  voicing: "major", id:},  // load all chords from tonnetze instead!!!
-      {name: "Cm",  root: 0,  voicing: "minor", id:},  // add chord names to tonnetze
-      {name: "C#",  root: 1,  voicing: "major", id:},
-      {name: "C#m", root: 1,  voicing: "minor", id:},
-      {name: "D",   root: 2,  voicing: "major", id:},
-      {name: "Dm",  root: 2,  voicing: "minor", id:},
-      {name: "Eb",  root: 3,  voicing: "major", id:},
-      {name: "Ebm", root: 3,  voicing: "minor", id:},
-      {name: "E",   root: 4,  voicing: "major", id:},
-      {name: "Em",  root: 4,  voicing: "minor", id:},
-      {name: "F",   root: 5,  voicing: "major", id:},
-      {name: "Fm",  root: 5,  voicing: "minor", id:},
-      {name: "F#",  root: 6,  voicing: "major", id:},
-      {name: "F#m", root: 6,  voicing: "minor", id:},
-      {name: "G",   root: 7,  voicing: "major", id:},
-      {name: "Gm",  root: 7,  voicing: "minor", id:},
-      {name: "Ab",  root: 8,  voicing: "major", id:},
-      {name: "Abm", root: 8,  voicing: "minor", id:},
-      {name: "A",   root: 9,  voicing: "major", id:},
-      {name: "Am",  root: 9,  voicing: "minor", id:},
-      {name: "Bb",  root: 10, voicing: "major", id:},
-      {name: "Bbm", root: 10, voicing: "minor", id:},
-      {name: "B",   root: 11, voicing: "major", id:},
-      {name: "Bm",  root: 11, voicing: "minor", id:}
-    ].forEach(chordData => 
+    
+    tonnetze.filter(t => t.id > 11).forEach(chordData => 
     {
       this.queueTask(()=>
       {
-        this.graph.addNode({name:chordData.name, root:chordData.root, voicing: chordData.voicing });
+        this.graph.addNode(chordData);
 
         let nodeCount = this.graph.nodesData.length;
         
@@ -145,12 +122,12 @@ customElements.define("polygam-graph", class extends HTMLElement
     if(this.graphTasks.length === 0) 
     { 
       this.processTick = null;
-      if(this.state = "uninit") 
+      if(this.state === "uninit") 
       { 
         // fluff
-        this.graph.addLink(0,this.graph.nodesData.length-1);
-        this.graph.addLink(0,this.graph.nodesData.length-2);
-        this.graph.addLink(1,this.graph.nodesData.length-1);
+        this.graph.addLink(this.graph.nodesData[0].id, this.graph.nodesData[this.graph.nodesData.length-1].id);
+        this.graph.addLink(this.graph.nodesData[0].id, this.graph.nodesData[this.graph.nodesData.length-2].id);
+        this.graph.addLink(this.graph.nodesData[1].id, this.graph.nodesData[this.graph.nodesData.length-1].id);
         this.graphInitDone();
       }
       return; 
@@ -175,7 +152,11 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing });
 
     this.updateGraph();   
-    this.updateHighlighting();
+    if( this.state !== "uninit" && this.state !== "init")
+    {
+      this.updateHighlighting();
+    }
+    
   }
 
   
@@ -190,38 +171,32 @@ customElements.define("polygam-graph", class extends HTMLElement
       .attr("stroke","red")
       .attr("stroke-width","4");
       
-      // If we're not the first node, highlight link with previous
+      // Highlight both directions if possible
       if(i > 0)
       {
-        var linkId = this.graph.findLink(this.progression[i-1].id, this.progression[i].id);
-        if(linkId === null)
+        let linksId = []
+        linksId.push(this.graph.findLink(this.progression[i-1].id, this.progression[i].id));
+        linksId.push(this.graph.findLink(this.progression[i].id, this.progression[i-1].id));
+
+        linksId.filter(id => id != null).forEach(id => 
         {
-          linkId = this.graph.findLink(this.progression[i].id, this.progression[i-1].id);
-        }
-        
-        // If no link exists between the nodes
-        if(linkId === null)
-        {
-          console.log(`No link exists between node ${this.progression[i].id} and node ${this.progression[i-1].id}`);
-          continue;
-        }
-        
-        this.graph.svg.selectAll(`.link [linkId='${linkId}']`)
-        .attr("stroke","red")
-        .attr("stroke-width","4");
+          this.graph.svg.selectAll(`.link [linkId='${id}']`)
+          .attr("stroke","red")
+          .attr("stroke-width","4");
+        });        
       }
     }
   }
   
   clearGraph(exceptionId = -1)
   {
-    var tempoAcceleration = 2;
+    var tempoAcceleration = 0.5;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
 
     // Remove all nodes
     this.graph.nodesData.map(n => n.id).filter(id => id != exceptionId).forEach(id =>
     {      
-      this.queueTask(() => { this.graph.removeNode(id); }); // some minor error occurs in here...
+      this.queueTask(() => { this.graph.removeNode(id); });
     });  
   
 
@@ -237,42 +212,34 @@ customElements.define("polygam-graph", class extends HTMLElement
       case 1 : 
       // FIRST NOTE
       this.clearGraph();
+      this.queueTask(() => { this.state = "started"; }); 
+
       let newGraphElements = firstChordNeighbors(this.progression[0]);
-      console.log(newGraphElements);
 
       this.queueTask(() => { this.graph.simulation.alphaTarget(1); });    
       
       newGraphElements.scaleChords.forEach(node => 
       {
-        this.queueTask(() => { this.graph.addNode(node); this.graph.addLink(this.progression[0].id, node.id, 1.5) });
+        this.queueTask(() => 
+        { 
+          this.graph.addNode(node); 
+          this.graph.addLink(this.progression[0].id, node.id, 1.5);
+        });
       });  
       
       newGraphElements.extendedChords.forEach(node => 
       {
-        this.queueTask(() => { this.graph.addNode(node); this.graph.addLink(this.progression[0].id, node.id, 3) });
+        this.queueTask(() => 
+        { 
+          this.graph.addNode(node); 
+          this.graph.addLink(this.progression[0].id, node.id, 3); 
+        });
       });
-
-  //newGraphElements.links.forEach(link => 
-  //{
-    //// find current graph node id with name [source]
-    //// find current graph node id with name [target]
-    //
-    //this.queueTask(() => 
-    //{ 
-    //  //console.log(`source ${link.source}   target ${link.target}`);
-    //  //console.log(this.graph.nodesData.find(node => node.name === link.source));
-    //  //console.log(this.graph.nodesData.find(node => node.name === link.target));
-    //  var sourceId = this.graph.nodesData.find(node => node.name === link.source).id;
-    //  var targetId = this.graph.nodesData.find(node => node.name === link.target).id;
-    //  this.graph.addLink(sourceId, targetId); 
-    //});
-  //});
       
       this.queueTask(() => 
       { 
         this.graph.simulation.alphaTarget(0); 
         this.updateHighlighting(); 
-        console.log(this.graph.nodesData)
       });    
       
       
@@ -292,10 +259,10 @@ customElements.define("polygam-graph", class extends HTMLElement
       
       return;
 
-    }
+    } // end of switch(this.progression.length) 
 
 
-  }
+  } // end of updateGraph()
 
 
 });
