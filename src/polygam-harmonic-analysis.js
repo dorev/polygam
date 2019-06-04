@@ -85,7 +85,7 @@ function firstChordNeighbors(iChord)
     }
   });
 
-  
+
   //
   // add major/minor potential borrowings
   // LETS KEEP THAT FOR LATER!!!
@@ -99,6 +99,41 @@ function firstChordNeighbors(iChord)
   };
 
   return returnedObject;
+}
+
+function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
+{
+  // we should add the current graph as input
+  // iCurrentGraph --> { nodes: ["Cm","F#"], links: [{source: "F#", target: "Db"},{source: "Db", target: "A"}]};
+
+  // STAY TONNETZE BASED!! DON'T GO "FULL HARMONIC NERD"
+
+  // according to the last chords, establish the most likely scales played
+
+  // calculate tension created in regard of the "tonic pole" of each move
+  // base on the most likely scales
+
+  // relative minors have the same tonic pole => Am and C pole is the C-E triad
+  // "-z" && "+y" add positive tension value
+  // "-y" && "+z" add negative tension value
+  
+  // ?? maybe firstChordNeighbors() could be reused here somehow...
+  
+  // 
+
+
+  // use current graph vs next to list modifications
+
+  var returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
+  /*
+  {
+    addNodes : ["Cm","F#"],
+    delNodes : [],
+    addLinks : [{"source: F#", target: "Db"},{"source: Db", target: "A"} ],
+    delLinks : [{"source: A", target: "C"}]
+  }
+  */
+ return returnedObject;
 }
 
 function buildChordName(iChord)

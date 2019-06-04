@@ -14,6 +14,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.taskTempo = 50;
     this.state = "uninit";
     this.progression = [];
+    this.currentGraph = { nodes: [], links: []};
 
     //--------------------------------------------------------
     // CSS style
@@ -190,7 +191,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   
   clearGraph(exceptionId = -1)
   {
-    var tempoAcceleration = 0.5;
+    var tempoAcceleration = 3;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
 
     // Remove all nodes
@@ -223,7 +224,9 @@ customElements.define("polygam-graph", class extends HTMLElement
         this.queueTask(() => 
         { 
           this.graph.addNode(node); 
+          // add node to this.currentGraph
           this.graph.addLink(this.progression[0].id, node.id, 1.5);
+          // add link to this.currentGraph
         });
       });  
       
@@ -232,7 +235,9 @@ customElements.define("polygam-graph", class extends HTMLElement
         this.queueTask(() => 
         { 
           this.graph.addNode(node); 
+          // add node to this.currentGraph
           this.graph.addLink(this.progression[0].id, node.id, 3); 
+          // add link to this.currentGraph
         });
       });
       
@@ -241,21 +246,23 @@ customElements.define("polygam-graph", class extends HTMLElement
         this.graph.simulation.alphaTarget(0); 
         this.updateHighlighting(); 
       });    
-      
-      
-
-      // Tighten the link between 
-      //
-      //
-
-       
+                   
       return;
 
       default :
       // PROGRESSION WITH AT LEAST 2 CHORDS
-      // look behind to evaluate our most likely scales
-      // remove nodes not belonging to these scales
+      
+      let maxLookback = this.progression.length > 3 ? 3 : this.progression.length;
 
+      let graphModifications = nextGraphIteration(this.progression, maxLookback, this.currentGraph);
+      /*
+      {
+        addNodes : ["Cm","F#"],
+        delNodes : [],
+        addLinks : [{"F#", "Db"},{"Db", "A"} ],
+        delLinks : [{"A", "C"}]
+      }
+      */
       
       return;
 
