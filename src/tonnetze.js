@@ -65,8 +65,6 @@ function getScaleNotes(root, scale)
   let scaleNotes = [root];    
   scalePatterns[scale].forEach( pattern => 
   {
-    //let currentNode = root;
-    //pattern.forEach(move => currentNode = tonnetze[currentNode].edges[move]);
     scaleNotes.push(tonnetze[tonnetzeMove(root, pattern)].id);
   });
   return scaleNotes.sort((a,b) => a - b);
@@ -140,7 +138,7 @@ function getAllChordsOfScale(root, scale)
   let scaleNotes = getScaleNotes(root, scale);
   let scaleChords = [];
   
-  scaleNotes.forEach(note => scaleChords.push(getAllChordsOfNote(note, root, scale)));
+  scaleNotes.forEach(note => scaleChords.push(getAllChordsOfNote(note, root, scale)[0]));
   
   return scaleChords;
 }
@@ -163,9 +161,7 @@ function getAllChordsOfNote(note, root, scale)
       {        
         // Do the moves
         let pattern = chordPatterns.extensions[extension];  
-        //let currentNote = note;
-        //pattern.forEach(move => currentNote = tonnetze[currentNote].edges[move]);
-        
+
         // Check the resulting note
         if(scaleNotes.includes(tonnetzeMove(note, pattern))) 
         { 
@@ -181,10 +177,6 @@ function getAllChordsOfNote(note, root, scale)
   {      
     let voicingIsPresent = !chordPatterns[voicing].some(pattern => 
     {
-      // Do the moves
-      //let currentNote = note;
-      //pattern.forEach(move => currentNote = tonnetze[currentNote].edges[move]);
-
       // Check the resulting note
       return !scaleNotes.includes(tonnetzeMove(note, pattern));
     });    
@@ -202,6 +194,18 @@ function getAllChordsOfNote(note, root, scale)
   });
   
   return noteChords;
+}
+
+function getScalesOfChord(chordNode)
+{
+  if(!(chordNode.hasOwnProperty("root") && chordNode.hasOwnProperty("voicing")))
+  {
+    console.error("Invalid chord node");
+  }
+  
+  return getAllChordsOfScale(chordNode.root, chordNode.voicing)
+  .filter(chord => chord.voicing !== "diminished")
+  .map(function(chord) {return {root: chord.root, voicing: chord.voicing }});
 }
 
 

@@ -11,7 +11,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     
     this.graphTasks = [];
     this.processTick = null;
-    this.taskTempo = 50;
+    this.taskTempo = 10;
     this.state = "uninit";
     this.progression = [];
     this.currentGraph = { nodes: [], links: []};
@@ -150,7 +150,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   nodeClicked(iNode)
   { 
     // Add node to progression
-    this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing });
+    this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing, name: iNode.name});
 
     this.updateGraph();   
     if( this.state !== "uninit" && this.state !== "init")
@@ -191,7 +191,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   
   clearGraph(exceptionId = -1)
   {
-    var tempoAcceleration = 3;
+    let tempoAcceleration = 5;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
 
     // Remove all nodes
@@ -199,9 +199,24 @@ customElements.define("polygam-graph", class extends HTMLElement
     {      
       this.queueTask(() => { this.graph.removeNode(id); });
     });  
-  
 
     this.queueTask(() => { this.taskTempo *= tempoAcceleration; });
+  }
+
+  addNodeToCurrentGraph(iNode)
+  {
+    if(!this.currentGraph.nodes.includes(iNode.name))
+    {
+      this.currentGraph.nodes.push(iNode.name)
+    }
+  }
+
+  addLinkToCurrentGraph(iLinkSource, iLinkTarget)
+  {    
+    if(!this.currentGraph.links.includes({source: iLinkSource.name, target: iLinkTarget.name}))
+    {
+      this.currentGraph.links.push({source: iLinkSource.name, target: iLinkTarget.name})
+    }
   }
   
   updateGraph()
@@ -211,36 +226,49 @@ customElements.define("polygam-graph", class extends HTMLElement
       case 0 : return;
 
       case 1 : 
-      // FIRST NOTE
+      // First chord has been selected
       this.clearGraph();
       this.queueTask(() => { this.state = "started"; }); 
 
+      // Analyze and grab first set of chords
       let newGraphElements = firstChordNeighbors(this.progression[0]);
 
+      // Warm up the graph
       this.queueTask(() => { this.graph.simulation.alphaTarget(1); });    
       
-      newGraphElements.scaleChords.forEach(node => 
-      {
+      // Add all new nodes
+      newGraphElements.scaleChords.concat(newGraphElements.extendedChords).forEach(node => 
+      {        
         this.queueTask(() => 
         { 
           this.graph.addNode(node); 
-          // add node to this.currentGraph
+          
+          // Add node to this.currentGraph
+          this.addNodeToCurrentGraph(node);
+        });
+      });  
+
+      // Add closer new links
+      newGraphElements.scaleChords.forEach(node => 
+      {        
+        this.queueTask(() => 
+        { 
           this.graph.addLink(this.progression[0].id, node.id, 1.5);
-          // add link to this.currentGraph
+          this.addLinkToCurrentGraph(this.progression[0].id, node.id)
         });
       });  
       
+      // Add farther new links
       newGraphElements.extendedChords.forEach(node => 
       {
         this.queueTask(() => 
         { 
-          this.graph.addNode(node); 
-          // add node to this.currentGraph
           this.graph.addLink(this.progression[0].id, node.id, 3); 
-          // add link to this.currentGraph
+          this.addLinkToCurrentGraph(this.progression[0].id, node.id)
         });
       });
       
+      // Cool down the graph
       this.queueTask(() => 
       { 
         this.graph.simulation.alphaTarget(0); 
@@ -254,7 +282,8 @@ customElements.define("polygam-graph", class extends HTMLElement
       
       let maxLookback = this.progression.length > 3 ? 3 : this.progression.length;
 
-      let graphModifications = nextGraphIteration(this.progression, maxLookback, this.currentGraph);
+      // implement this.currentGraph update!!!
+      let graphModifications = nextGraph(this.progression, maxLookback, this.currentGraph);
       /*
       {
         addNodes : ["Cm","F#"],

@@ -14,9 +14,9 @@ function firstChordNeighbors(iChord)
   var voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
 
   // List chords of scale as if input chord is I
-  var chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).map(a => a[0]).filter(c => c.voicing != "diminished");
-  var chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).map(a => a[0]).filter(c => c.voicing != "diminished");
-  //var chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).map(a => a[0]).filter(c => c.voicing != "diminished");
+  var chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).filter(c => c.voicing != "diminished");
+  var chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).filter(c => c.voicing != "diminished");
+  //var chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
 
   var scaleChords = [];
   scaleChords = scaleChords.concat(chordsAsI, chordsAsV/*, chordsAsVI*/);
@@ -102,13 +102,53 @@ function firstChordNeighbors(iChord)
 }
 
 function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
-{
+{ 
+
+  if(iProgression.length < 2) { console.error("Something went wrong, the progression should have 2 chords or more at this point"); return; }
+
+  // Extract at most the 4 last chords of the progression
+  let chords = [];
+  for(let i = iProgression.length > 3 ? 3 :iProgression.length; i > 0; --i)
+  {
+    chords.push(iProgression[iProgression.length - i]);
+  }
+
+  // Find all the scales where all these chords belong
+  let potentialScales = [];
+  chords.forEach(chord => 
+  {
+    potentialScales = potentialScales.concat(getScalesOfChord(chord));
+  });
+
+  console.log(potentialScales);
+  
+  // Remove least occuring scales
+  // Might add more loose here... as if we considered the chords as 5ths of their scales
+  let relevantScales = [];
+  potentialScales.forEach(scale =>
+  {
+    if(potentialScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length >= 2)
+    {
+      if(!relevantScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length)
+      {
+        relevantScales.push(scale);
+      }
+    }
+  });
+
+
+  console.log(relevantScales);
+
+
   // we should add the current graph as input
   // iCurrentGraph --> { nodes: ["Cm","F#"], links: [{source: "F#", target: "Db"},{source: "Db", target: "A"}]};
 
   // STAY TONNETZE BASED!! DON'T GO "FULL HARMONIC NERD"
 
   // according to the last chords, establish the most likely scales played
+
+
+
 
   // calculate tension created in regard of the "tonic pole" of each move
   // base on the most likely scales
