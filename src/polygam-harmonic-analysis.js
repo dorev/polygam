@@ -106,65 +106,95 @@ function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
 
   if(iProgression.length < 2) { console.error("Something went wrong, the progression should have 2 chords or more at this point"); return; }
 
-  // Extract at most the 4 last chords of the progression
+  // Load at most X last chords of the progression
+  let maxLookBehind = 4;
   let chords = [];
-  for(let i = iProgression.length > 3 ? 3 :iProgression.length; i > 0; --i)
+
+  for(let i = iProgression.length > maxLookBehind ? maxLookBehind :iProgression.length; i > 0; --i)
   {
     chords.push(iProgression[iProgression.length - i]);
   }
 
-  // Find all the scales where all these chords belong
-  let potentialScales = [];
-  chords.forEach(chord => 
+  // List all different permutation of the chords
+  let permutationsBoolMap = boolArrayOfPermutations(chords.length);
+
+  let permutations = [];
+  permutationsBoolMap.forEach( boolArray =>
   {
-    potentialScales = potentialScales.concat(getScalesOfChord(chord));
+    let permutationInstance = [];
+
+    for(let i = 0; i < chords.length; ++i)
+    {
+      if(boolArray[i])
+      {
+        permutationInstance.push(chords[i]);
+      }
+    }
+    permutations.push(permutationInstance);
+    
   });
 
-  console.log(potentialScales);
+  // Find all the scales where all these chords belong
+  let relatableScales = [];
+  permutations.forEach(permutationOfChords => 
+  {
+    permutationOfChords.forEach(chord => 
+    {
+      relatableScales = relatableScales.concat(getScalesOfChord(chord));
+    });
+
+  });
   
   // Remove least occuring scales
-  // Might add more loose here... as if we considered the chords as 5ths of their scales
-  let relevantScales = [];
-  potentialScales.forEach(scale =>
+  let reoccuringScales = [];
+  relatableScales.forEach(scale =>
   {
-    if(potentialScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length >= 2)
+    if(relatableScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length >= 2)
     {
-      if(!relevantScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length)
+      if(!reoccuringScales.filter(ps => ps.root === scale.root && ps.voicing === scale.voicing).length)
       {
-        relevantScales.push(scale);
+        scale.occurences = 1;
+        reoccuringScales.push(scale);
+      }
+      else
+      {
+        reoccuringScales.find(rs => { return rs.root === scale.root && rs.voicing === scale.voicing; }).occurences++;
       }
     }
   });
 
+  // Sort based on occurences
+  reoccuringScales = reoccuringScales.sort((a,b) => a.occurences < b.occurences);
 
-  console.log(relevantScales);
+  // Consider here that we might have no commonscales, then we should take a step back to offer other possibilities
+  if(reoccuringScales.length === 0)
+  {
+    // consider adding major/minor flip in the equation 
+    // or just put all the chords as if they were both the first chord
+    // something... later...
+    // for now just take the roots of both chords
+    reoccuringScales = chords.map(chord => { return { root: chord.root, voicing: chord.voicing, occurences: 1 }; });
+        
+  }
+
+  // Keep the most occuring scales
+  let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
+  let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
+
+  // Calculate polarity score of the candidate scales
+  candidateScales.forEach(scale => 
+  {
+    scale.polarity = chords.reduce((polarity, chord) => polarity += tonnetzeChordTension(scale, chord), 0);
+  });
 
 
-  // we should add the current graph as input
-  // iCurrentGraph --> { nodes: ["Cm","F#"], links: [{source: "F#", target: "Db"},{source: "Db", target: "A"}]};
+  console.log(candidateScales.map(s => {return {name: buildChordName(s) ,polarity: s.polarity}}));
 
-  // STAY TONNETZE BASED!! DON'T GO "FULL HARMONIC NERD"
-
-  // according to the last chords, establish the most likely scales played
-
-
-
-
-  // calculate tension created in regard of the "tonic pole" of each move
-  // base on the most likely scales
-
-  // relative minors have the same tonic pole => Am and C pole is the C-E triad
-  // "-z" && "+y" add positive tension value
-  // "-y" && "+z" add negative tension value
   
-  // ?? maybe firstChordNeighbors() could be reused here somehow...
-  
-  // 
-
 
   // use current graph vs next to list modifications
 
-  var returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
+  let returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
   /*
   {
     addNodes : ["Cm","F#"],
@@ -179,4 +209,93 @@ function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
 function buildChordName(iChord)
 {
   return ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+}
+
+function boolArrayOfPermutations(iBitCount)
+{
+  let returnedArray = [];
+  for(let i = 1; i < Math.pow(2,iBitCount); ++i)
+  {
+    let temp = i.toString(2).split("").map(b => b == 1);
+    
+    // Only add permutations with more than one positive
+    if(temp.filter(b => b === true).length > 1)
+    {
+      returnedArray.push(temp);
+    }
+  }
+  return returnedArray;
+}
+
+
+// Relative minors have the same tonic pole => Am and C pole is the C-E triad
+function tonnetzeChordTension(iSource, iDestination) // based on root and voicing properties
+{
+  if(iSource.root === iDestination.root && iSource.voicing === iDestination.voicing)
+  {
+    return 0;
+  }
+  
+  // Is chord major or minor (to establish the "handicap" depending on where is the tonic pole and in what direction we're going)
+  let tensionLeft  = iSource.voicing === "major" ?  1 : 0;
+  let tensionRight = iSource.voicing === "minor" ? -1 : 0;
+  
+  srcNode = tonnetze.find(node => node.root == iSource.root && node.voicing == iSource.voicing);
+  dstNode = tonnetze.find(node => node.root == iDestination.root && node.voicing == iDestination.voicing);
+  
+  if(srcNode === undefined || dstNode === undefined)
+  {
+    console.error("Undefined tonnetze node in tension calculation");
+    return 0;
+  }
+  
+  // Set initial node
+  let visitedNode = srcNode;
+  
+  // Left direction
+  // "-y" && "+z" add negative tension value
+  while(visitedNode.id != dstNode.id)
+  {
+    if(visitedNode.edges.hasOwnProperty("-y"))
+    {
+      visitedNode = tonnetze[visitedNode.edges["-y"]];
+      --tensionLeft;
+    }
+    else if(visitedNode.edges.hasOwnProperty("+z"))
+    {
+      visitedNode = tonnetze[visitedNode.edges["+z"]];
+      --tensionLeft;
+    }
+    else
+    {
+      console.error("Something went wrong, a chord node should have at least a -y or +z edge");
+    }
+  }
+  
+  // Reset initial node
+  visitedNode = srcNode;
+  
+  // Right direction
+  // "-z" && "+y" add positive tension value
+  while(visitedNode.id != dstNode.id)
+  {
+    if(visitedNode.edges.hasOwnProperty("+y"))
+    {
+      visitedNode = tonnetze[visitedNode.edges["+y"]];
+      ++tensionRight;
+    }
+    else if(visitedNode.edges.hasOwnProperty("-z"))
+    {
+      visitedNode = tonnetze[visitedNode.edges["-z"]];
+      ++tensionRight;
+    }
+    else
+    {
+      console.error("Something went wrong, a chord node should have at least a +y or -z edge");
+    }
+  }
+
+  // Return the tension with the smallest absolute value
+  return Math.abs(tensionLeft) < tensionRight ? tensionLeft : tensionRight;
+
 }

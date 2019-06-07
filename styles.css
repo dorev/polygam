@@ -1,4 +1,6 @@
-@font-face { /* https://www.1001freefonts.com/vanilla-extract.font */
+@font-face 
+{ 
+  /* https://www.1001freefonts.com/vanilla-extract.font */
   font-family: "Polygam";
   src: url("fonts/VanillaExtractRegular.ttf") format("truetype");
 }
@@ -76,4 +78,11 @@ body
   color:black;
   font-family: "Polygam", sans-serif;
   font-size: 2em;
+}
+.polygram-bw-beta
+{
+  color:black;
+  font-family: "Polygam", sans-serif;
+  font-size: 1em;
+  vertical-align: bottom;
 }
