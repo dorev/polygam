@@ -280,10 +280,11 @@ customElements.define("polygam-graph", class extends HTMLElement
       default :
       // PROGRESSION WITH AT LEAST 2 CHORDS
       
-      let maxLookback = this.progression.length > 3 ? 3 : this.progression.length;
+      let maxLookback = this.progression.length > 4 ? 4 : this.progression.length;
 
       // implement this.currentGraph update!!!
       let graphModifications = nextGraph(this.progression, maxLookback, this.currentGraph);
+
       /*
       {
         addNodes : ["Cm","F#"],

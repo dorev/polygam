@@ -250,20 +250,25 @@ function oppositeEdge(edgeName)
 
 function tonnetzeMove(originNode, movePattern) 
 {
-  var currentNode = originNode;
+  let currentNode = originNode;
   movePattern.forEach(move => currentNode = tonnetze[currentNode].edges[move]);
   return currentNode;
 }
 
 function findChordTonnetzeId(iRoot, iVoicing)
 {
-  var wVoicing;
+  let wVoicing;
 
   if      (iVoicing === "diminished") { wVoicing = "minor"; }
   else if (iVoicing === "augmented")  { wVoicing = "major"; }
   else    { wVoicing = iVoicing; }
 
   return tonnetze.find(node => node.root === iRoot && node.voicing === wVoicing).id;
+}
+
+function findChordTonnetzeIdByName(iName)
+{
+  return tonnetze.find(node => node.name === iName && node.id >= 12).id;
 }
 
 function tonnetzeRandomChord() 

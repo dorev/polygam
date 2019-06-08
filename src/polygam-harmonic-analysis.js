@@ -70,7 +70,7 @@ function firstChordNeighbors(iChord)
   {
     if(!filteredScaleChords.map(c => c.id).includes(chord.id))
     {
-      chord.name = buildChordName(chord);
+      buildChordName(chord);
       filteredScaleChords.push(chord);
     }
   });
@@ -80,7 +80,7 @@ function firstChordNeighbors(iChord)
   {
     if(!filteredExtendedChords.map(c => c.id).includes(chord.id) && !filteredScaleChords.map(c => c.id).includes(chord.id))
     {
-      chord.name = buildChordName(chord);
+      buildChordName(chord);
       filteredExtendedChords.push(chord);
     }
   });
@@ -101,16 +101,15 @@ function firstChordNeighbors(iChord)
   return returnedObject;
 }
 
-function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
+
+function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
 { 
 
   if(iProgression.length < 2) { console.error("Something went wrong, the progression should have 2 chords or more at this point"); return; }
 
-  // Load at most X last chords of the progression
-  let maxLookBehind = 4;
   let chords = [];
 
-  for(let i = iProgression.length > maxLookBehind ? maxLookBehind :iProgression.length; i > 0; --i)
+  for(let i = iProgression.length > iMaxLookBehind ? iMaxLookBehind :iProgression.length; i > 0; --i)
   {
     chords.push(iProgression[iProgression.length - i]);
   }
@@ -162,10 +161,7 @@ function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
       }
     }
   });
-
-  // Sort based on occurences
-  reoccuringScales = reoccuringScales.sort((a,b) => a.occurences < b.occurences);
-
+  
   // Consider here that we might have no commonscales, then we should take a step back to offer other possibilities
   if(reoccuringScales.length === 0)
   {
@@ -174,28 +170,49 @@ function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
     // something... later...
     // for now just take the roots of both chords
     reoccuringScales = chords.map(chord => { return { root: chord.root, voicing: chord.voicing, occurences: 1 }; });
-        
+    
   }
-
+  
   // Keep the most occuring scales
   let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
   let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
-
+  
   // Calculate polarity score of the candidate scales
   candidateScales.forEach(scale => 
   {
     scale.polarity = chords.reduce((polarity, chord) => polarity += tonnetzeChordTension(scale, chord), 0);
   });
-
-
-  console.log(candidateScales.map(s => {return {name: buildChordName(s) ,polarity: s.polarity}}));
-
+    
   
-
-  // use current graph vs next to list modifications
+  // Sort with lowest polarity first
+  candidateScales = candidateScales.sort((a,b) => Math.abs(a.polarity) > Math.abs(b.polarity));
+  
+  
+  // Keep the most scales with polarity above average
+  let averagePolarity = candidateScales.map(s => s.polarity).reduce((sum, value) => sum += value, 0) / candidateScales.length;
+  let finalScales = candidateScales.filter(scale => scale.polarity >= averagePolarity);
+  
+  
+  // Keep every chords from finalScales chords
+  let finalChords = [];
+  finalScales.forEach(scale =>
+  {    
+    getAllChordsOfScale(scale.root, scale.voicing)
+    .filter(c => c.voicing != "diminished")
+    .forEach(chord => 
+    {
+      if(!finalChords.map(c => c.id).includes(chord.id))
+      {
+        buildChordName(chord);
+        finalChords.push(chord);
+      }
+    });
+  });
+    
+  // Compare to current graph state
 
   let returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
-  /*
+  /* Expected content :
   {
     addNodes : ["Cm","F#"],
     delNodes : [],
@@ -203,12 +220,42 @@ function nextGraph(iProgression, iMaxLookback, iCurrentGraph)
     delLinks : [{"source: A", target: "C"}]
   }
   */
- return returnedObject;
+
+  finalChords.forEach(chord => 
+  {
+    // Chords to add
+    if(!iCurrentGraph.nodes.includes(chord.nameFlat) && !iCurrentGraph.nodes.includes(chord.nameSharp))
+    {
+      returnedObject.addNodes.push(chord.name);
+    }
+  });
+
+  
+  returnedObject.addNodes.forEach(chordName => 
+  {
+    // List neighbor chords 
+    tonnetze[findChordTonnetzeIdByName(chordName)].neighbors.forEach(neighbor => 
+    {
+      let neighborName = tonnetze[neighbor].name;
+
+      // Add links if chords are present
+      if(returnedObject.addNodes.includes(neighborName) || iCurrentGraph.nodes.includes(neighborName))
+      {
+        returnedObject.addLinks.push({source: chordName, target: neighborName});
+        returnedObject.addLinks.push({source: neighborName, target: chordName});
+      }
+    });
+  });
+
+  return returnedObject;
 }
 
 function buildChordName(iChord)
 {
-  return ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+  iChord.name       = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+  iChord.nameFlat   = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+  iChord.nameSharp  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+  return iChord;
 }
 
 function boolArrayOfPermutations(iBitCount)
