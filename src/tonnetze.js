@@ -133,7 +133,7 @@ function getScaleChords(root, scale)
 }
 
 // Explore every chord pattern possibility with every note of the scale
-function getAllChordsOfScale(root, scale)
+function getAllScaleChords(root, scale)
 {
   let scaleNotes = getScaleNotes(root, scale);
   let scaleChords = [];
@@ -203,7 +203,7 @@ function getScalesOfChord(chordNode)
     console.error("Invalid chord node");
   }
   
-  return getAllChordsOfScale(chordNode.root, chordNode.voicing)
+  return getAllScaleChords(chordNode.root, chordNode.voicing)
   .filter(chord => chord.voicing !== "diminished")
   .map(function(chord) {return {root: chord.root, voicing: chord.voicing }});
 }

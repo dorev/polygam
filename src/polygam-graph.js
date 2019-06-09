@@ -283,7 +283,15 @@ customElements.define("polygam-graph", class extends HTMLElement
       let maxLookback = this.progression.length > 4 ? 4 : this.progression.length;
 
       // implement this.currentGraph update!!!
-      let graphModifications = nextGraph(this.progression, maxLookback, this.currentGraph);
+      let graphScales = nextGraph(this.progression, maxLookback, this.currentGraph);
+
+      // so this contains all the possible scales of all possible permutations of the progression
+      // lets keep only the scales which roots are already in the graph
+      let filteredGraphScales = graphScales.filter(scale => this.currentGraph.nodes.some(node => node === scale.name));
+
+      console.log(filteredGraphScales);
+      // add the scale and extended chords of the progression chords
+      // plus all the possible links of the scales returned by nextGraph()
 
       /*
       {

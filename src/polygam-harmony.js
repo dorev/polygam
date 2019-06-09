@@ -15,9 +15,9 @@ function firstChordNeighbors(iChord)
   let voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
 
   // List chords of scales
-  let chordsAsI  = getAllChordsOfScale(rootAsI, voicingAsI).filter(c => c.voicing != "diminished");
-  let chordsAsV  = getAllChordsOfScale(rootAsV, voicingAsV).filter(c => c.voicing != "diminished");
-  //let chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
+  let chordsAsI  = getAllScaleChords(rootAsI, voicingAsI).filter(c => c.voicing != "diminished");
+  let chordsAsV  = getAllScaleChords(rootAsV, voicingAsV).filter(c => c.voicing != "diminished");
+  //let chordsAsVI = getAllScaleChords(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
 
   let scaleChords = chordsAsI.concat(chordsAsV/*, chordsAsVI*/);
   
@@ -112,7 +112,7 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     
   });
 
-  // Find all the scales where all these chords ensembles belong
+  // Find all the scales where all these chord groups belong
   let relatableScales = [];
   permutations.forEach(permutationOfChords => 
   {
@@ -122,7 +122,7 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     });
   });
   
-  // Count scales occurences
+  // Build scales occurences property
   let reoccuringScales = [];
   relatableScales.forEach(scale =>
   {
@@ -173,10 +173,55 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
   let finalScales = candidateScales;
   
   // Keep every chords from finalScales chords
+  
+  /*// v2:
+  //Expected content :
+  //
+  //  scales = [
+  //    {
+  //      name : "G#",
+  //      root : "8",
+  //      voicing : "major",
+  //      scaleChords : [],
+  //      extendedChords : [],
+  //    },  
+  //    ...
+  //  ]
+  //
+  */
+    
+  let returnedScales = [];
+
+  finalScales.forEach(scale =>
+  {
+    returnedScales.push(
+    buildChordName({ 
+      root: scale.root, 
+      voicing: scale.voicing, 
+      scaleChords : getAllScaleChords(scale.root, scale.voicing).filter(c => c.voicing != "diminished"),
+      extendedChords : getExtendedChords(scale.root, scale.voicing)
+    }))
+  });
+    
+  //console.log(returnedScales);
+  return returnedScales;  
+
+  /*// v1 output
+  //Expected content :
+  //{
+    //  addNodes : ["Cm","F#"],
+    //  delNodes : [],
+    //  addLinks : [{"source: F#", target: "Db"},{"source: Db", target: "A"} ],
+    //  delLinks : [{"source: A", target: "C"}]
+  //} 
+           
+           
+  let returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
+
   let finalChords = [];
   finalScales.forEach(scale =>
   {    
-    getAllChordsOfScale(scale.root, scale.voicing)
+    getAllScaleChords(scale.root, scale.voicing)
     .filter(c => c.voicing != "diminished")
     .forEach(chord => 
     {
@@ -199,18 +244,7 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
 
   });
     
-  // Compare to current graph state
-
-  let returnedObject = { addNodes: [], delNodes: [], addLinks: [], delLinks: [] };
-  /* Expected content :
-  {
-    addNodes : ["Cm","F#"],
-    delNodes : [],
-    addLinks : [{"source: F#", target: "Db"},{"source: Db", target: "A"} ],
-    delLinks : [{"source: A", target: "C"}]
-  }
-  */
-
+  // Compare to current graph state 
   finalChords.forEach(chord => 
   {
     // Chords to add
@@ -219,7 +253,6 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
       returnedObject.addNodes.push(chord.name);
     }
   });
-
   
   returnedObject.addNodes.forEach(chordName => 
   {
@@ -236,9 +269,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
       }
     });
   });
-
   console.log(returnedObject);
   return returnedObject;
+ */
 }
 
 function buildChordName(iChord)
