@@ -3,7 +3,8 @@ function firstChordNeighbors(iChord)
   // Validate chord object
   if(!(iChord.hasOwnProperty("root") && iChord.hasOwnProperty("voicing")))
   {
-    console.error("Chord is missing a 'root' or 'voicing' property");
+    console.error("Input chord is missing a 'root' or 'voicing' property");
+    return;
   }
 
   let rootAsI = iChord.root;
@@ -13,27 +14,20 @@ function firstChordNeighbors(iChord)
   let voicingAsV = iChord.voicing;
   let voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
 
-  // List chords of scale as if input chord is I
-  let chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).filter(c => c.voicing != "diminished");
-  let chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).filter(c => c.voicing != "diminished");
+  // List chords of scales
+  let chordsAsI  = getAllChordsOfScale(rootAsI, voicingAsI).filter(c => c.voicing != "diminished");
+  let chordsAsV  = getAllChordsOfScale(rootAsV, voicingAsV).filter(c => c.voicing != "diminished");
   //let chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
 
   let scaleChords = chordsAsI.concat(chordsAsV/*, chordsAsVI*/);
   
-  let extendedChords = getExtendedChords(rootAsI, voicingAsI);
-  extendedChords = extendedChords.concat(getExtendedChords(rootAsV, voicingAsV));
+  let extendedChords = getExtendedChords(rootAsI, voicingAsI).concat(getExtendedChords(rootAsV, voicingAsV));
 
   // Remove duplicates
   let filteredScaleChords = removeDuplicatesById(scaleChords);
   let filteredExtendedChords = removeDuplicatesById(extendedChords);
 
-  var returnedObject = 
-  { 
-    scaleChords:    filteredScaleChords   ,
-    extendedChords: filteredExtendedChords
-  };
-
-  return returnedObject;
+  return { scaleChords: filteredScaleChords, extendedChords: filteredExtendedChords };
 }
 
 
@@ -49,12 +43,16 @@ function getExtendedChords(iRoot, iVoicing)
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z","+y"])]);  // V/V
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);  // IV/IV
   }
-  else
+  else if(iVoicing === "minor") 
   {
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z"])]);       // Brighter chord
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);  // Darker chord
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);  // V/V
     returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z","-y"])]);  // IV/IV
+  }
+  else
+  {
+    console.error("Input chords of 'getExtendedChords' should only be 'major' or 'minor'");
   }
   
   //
@@ -86,7 +84,7 @@ function removeDuplicatesById(iChordArray)
 function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
 { 
 
-  if(iProgression.length < 2) { console.error("Something went wrong, the progression should have 2 chords or more at this point"); return; }
+  if(iProgression.length < 2) { console.error("The progression should have 2 chords or more when calling 'nextGraph()'"); return; }
 
   let chords = [];
 
@@ -194,6 +192,7 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     {      
       if(!finalChords.map(c => c.id).includes(chord.id))
       {
+        buildChordName(chord);
         finalChords.push(chord);
       }
     });
