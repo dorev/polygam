@@ -6,100 +6,81 @@ function firstChordNeighbors(iChord)
     console.error("Chord is missing a 'root' or 'voicing' property");
   }
 
-  var rootAsI = iChord.root;
-  var rootAsV = (iChord.root + 5) % 12;
-  var rootAsVI = (iChord.root + 3) % 12;
-  var voicingAsI = iChord.voicing;
-  var voicingAsV = iChord.voicing;
-  var voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
+  let rootAsI = iChord.root;
+  let rootAsV = (iChord.root + 5) % 12;
+  let rootAsVI = (iChord.root + 3) % 12;
+  let voicingAsI = iChord.voicing;
+  let voicingAsV = iChord.voicing;
+  let voicingAsVI = iChord.voicing === "major" ? "minor" : "major";
 
   // List chords of scale as if input chord is I
-  var chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).filter(c => c.voicing != "diminished");
-  var chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).filter(c => c.voicing != "diminished");
-  //var chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
+  let chordsAsI  = getAllChordsOfScale(iChord.root, voicingAsI).filter(c => c.voicing != "diminished");
+  let chordsAsV  = getAllChordsOfScale(rootAsV,     voicingAsV).filter(c => c.voicing != "diminished");
+  //let chordsAsVI = getAllChordsOfScale(rootAsVI,    voicingAsVI).filter(c => c.voicing != "diminished");
 
-  var scaleChords = [];
-  scaleChords = scaleChords.concat(chordsAsI, chordsAsV/*, chordsAsVI*/);
+  let scaleChords = chordsAsI.concat(chordsAsV/*, chordsAsVI*/);
   
-  // add first brighter(+5st)/darker(+7st) scale stranger chord
-  // C-Am first brighter => Bb
-  // C-Am first darker => Bm
-  var extendedChords = [];
-  [[rootAsI, voicingAsI], [rootAsV, voicingAsV],/* [rootAsVI, voicingAsVI]*/].forEach(array =>
-  {    
-    var root = array[0];
-    var voicing = array[1];
-    var tonnetzeId = findChordTonnetzeId(root, voicing);
-    
-    if(voicing === "major")
-    {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z"])]);
-    }
-    else
-    {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z"])]);
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);
-    }
-  });
-  
-  
-  //
-  // Add IV/V and V/V
-  //
-  [[rootAsI, voicingAsI], [rootAsV, voicingAsV]/*, [rootAsVI, voicingAsVI]*/].forEach(array =>
-  {    
-    var root = array[0];
-    var voicing = array[1];
-    var tonnetzeId = findChordTonnetzeId(root, voicing);
-    
-    if(voicing === "major")
-    {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z","+y"])]); // V/V
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]); // IV/IV
-    }
-    else
-    {
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]); // V/V
-      extendedChords.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z","-y"])]); // IV/IV
-    }
-  });
+  let extendedChords = getExtendedChords(rootAsI, voicingAsI);
+  extendedChords = extendedChords.concat(getExtendedChords(rootAsV, voicingAsV));
 
-  var filteredScaleChords = [];
-  scaleChords.forEach( chord =>
-  {
-    if(!filteredScaleChords.map(c => c.id).includes(chord.id))
-    {
-      buildChordName(chord);
-      filteredScaleChords.push(chord);
-    }
-  });
-
-  var filteredExtendedChords = [];
-  extendedChords.forEach( chord =>
-  {
-    if(!filteredExtendedChords.map(c => c.id).includes(chord.id) && !filteredScaleChords.map(c => c.id).includes(chord.id))
-    {
-      buildChordName(chord);
-      filteredExtendedChords.push(chord);
-    }
-  });
-
-
-  //
-  // add major/minor potential borrowings
-  // LETS KEEP THAT FOR LATER!!!
-  //
-  
+  // Remove duplicates
+  let filteredScaleChords = removeDuplicatesById(scaleChords);
+  let filteredExtendedChords = removeDuplicatesById(extendedChords);
 
   var returnedObject = 
   { 
-    scaleChords:    filteredScaleChords   .map(chord => { return { name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id }; }) , 
-    extendedChords: filteredExtendedChords.map(chord => { return { name: chord.name, voicing: chord.voicing, root: chord.root, id: chord.id }; }) 
+    scaleChords:    filteredScaleChords   ,
+    extendedChords: filteredExtendedChords
   };
 
   return returnedObject;
 }
+
+
+function getExtendedChords(iRoot, iVoicing)
+{
+  var returnedArray = [];
+  var tonnetzeId = findChordTonnetzeId(iRoot, iVoicing);
+  
+  if(iVoicing === "major")
+  {
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);  // Brighter chord
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z"])]);       // Darker chord
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-z","+y","-z","+y"])]);  // V/V
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["-y","+z","-y","+z"])]);  // IV/IV
+  }
+  else
+  {
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z"])]);       // Brighter chord
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);  // Darker chord
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+y","-z","+y","-z"])]);  // V/V
+    returnedArray.push(tonnetze[tonnetzeMove(tonnetzeId, ["+z","-y","+z","-y"])]);  // IV/IV
+  }
+  
+  //
+  // add major/minor potential borrowings
+  // LETS KEEP THAT FOR LATER!!!
+  //
+
+  return returnedArray;
+}
+
+
+function removeDuplicatesById(iChordArray)
+{
+  var returnedChordArray = [];
+  iChordArray.forEach( chord =>
+  {
+    if(!returnedChordArray.map(c => c.id).includes(chord.id))
+    {
+      buildChordName(chord);
+      returnedChordArray.push(chord);
+    }
+  });
+
+  return returnedChordArray;
+}
+
 
 
 function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
@@ -133,7 +114,7 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     
   });
 
-  // Find all the scales where all these chords belong
+  // Find all the scales where all these chords ensembles belong
   let relatableScales = [];
   permutations.forEach(permutationOfChords => 
   {
@@ -141,10 +122,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     {
       relatableScales = relatableScales.concat(getScalesOfChord(chord));
     });
-
   });
   
-  // Remove least occuring scales
+  // Count scales occurences
   let reoccuringScales = [];
   relatableScales.forEach(scale =>
   {
@@ -173,10 +153,11 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     
   }
   
-  // Keep the most occuring scales
-  let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
-  let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
-  
+  // Keep the most occuring scales ( => average occurence value)
+  //let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
+  //let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
+  let candidateScales = reoccuringScales;
+
   // Calculate polarity score of the candidate scales
   candidateScales.forEach(scale => 
   {
@@ -189,9 +170,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
   
   
   // Keep the most scales with polarity above average
-  let averagePolarity = candidateScales.map(s => s.polarity).reduce((sum, value) => sum += value, 0) / candidateScales.length;
-  let finalScales = candidateScales.filter(scale => scale.polarity >= averagePolarity);
-  
+  //let averagePolarity = candidateScales.map(s => s.polarity).reduce((sum, value) => sum += value, 0) / candidateScales.length;
+  //let finalScales = candidateScales.filter(scale => scale.polarity >= averagePolarity);
+  let finalScales = candidateScales;
   
   // Keep every chords from finalScales chords
   let finalChords = [];
@@ -207,6 +188,16 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
         finalChords.push(chord);
       }
     });
+
+    getExtendedChords(scale.root, scale.voicing)
+    .forEach(chord => 
+    {      
+      if(!finalChords.map(c => c.id).includes(chord.id))
+      {
+        finalChords.push(chord);
+      }
+    });
+
   });
     
   // Compare to current graph state
@@ -247,14 +238,24 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
     });
   });
 
+  console.log(returnedObject);
   return returnedObject;
 }
 
 function buildChordName(iChord)
 {
-  iChord.name       = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
-  iChord.nameFlat   = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
-  iChord.nameSharp  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"][iChord.root] + (iChord.voicing === "minor" ? "m" : "");
+  // Check if properties already exist
+  if(iChord.hasOwnProperty("name") && iChord.hasOwnProperty("nameFlat") && iChord.hasOwnProperty("nameSharp"))
+  {
+    return iChord;
+  }
+
+  let voicing = (iChord.voicing === "minor" ? "m" : "");
+
+  iChord.name       = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][iChord.root] + voicing;
+  iChord.nameFlat   = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"][iChord.root] + voicing;
+  iChord.nameSharp  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"][iChord.root] + voicing;
+
   return iChord;
 }
 
@@ -344,5 +345,4 @@ function tonnetzeChordTension(iSource, iDestination) // based on root and voicin
 
   // Return the tension with the smallest absolute value
   return Math.abs(tensionLeft) < tensionRight ? tensionLeft : tensionRight;
-
 }
