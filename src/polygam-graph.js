@@ -205,17 +205,20 @@ customElements.define("polygam-graph", class extends HTMLElement
 
   addNodeToCurrentGraph(iNode)
   {
-    if(!this.currentGraph.nodes.includes(iNode.name))
+    if(!this.currentGraph.nodes.map(n => n.id).includes(iNode.id))
     {
-      this.currentGraph.nodes.push(iNode.name)
+      this.currentGraph.nodes.push(iNode)
     }
   }
 
   addLinkToCurrentGraph(iLinkSource, iLinkTarget)
   {    
-    if(!this.currentGraph.links.includes({source: iLinkSource.name, target: iLinkTarget.name}))
+    if(!this.currentGraph
+      .links
+      .map(l => { return { source: l.id, target: l.id};})
+      .includes(l => iLinkSource.id === l.source && iLinkTarget.id === l.target))
     {
-      this.currentGraph.links.push({source: iLinkSource.name, target: iLinkTarget.name})
+      this.currentGraph.links.push({source: iLinkSource, target: iLinkTarget});
     }
   }
   
@@ -285,22 +288,109 @@ customElements.define("polygam-graph", class extends HTMLElement
       // implement this.currentGraph update!!!
       let graphScales = nextGraph(this.progression, maxLookback, this.currentGraph);
 
-      // so this contains all the possible scales of all possible permutations of the progression
-      // lets keep only the scales which roots are already in the graph
-      let filteredGraphScales = graphScales.filter(scale => this.currentGraph.nodes.some(node => node === scale.name));
+      console.log("this.currentGraph :");
+      console.log(this.currentGraph);
+      console.log("graphScales :");
+      console.log(graphScales);
 
-      console.log(filteredGraphScales);
-      // add the scale and extended chords of the progression chords
-      // plus all the possible links of the scales returned by nextGraph()
-
-      /*
+      let nodesToAdd =  [];
+      graphScales.forEach(scale => 
       {
-        addNodes : ["Cm","F#"],
-        delNodes : [],
-        addLinks : [{"F#", "Db"},{"Db", "A"} ],
-        delLinks : [{"A", "C"}]
-      }
-      */
+        scale.scaleChords.forEach(chord =>
+        {
+          if(!nodesToAdd.map(n => n.id).includes(chord.id))
+          {
+            nodesToAdd.push(chord);
+          }
+        })
+        scale.extendedChords.forEach(chord =>
+        {
+          if(!nodesToAdd.map(n => n.id).includes(chord.id))
+          {
+            nodesToAdd.push(chord);
+          }
+        })
+        
+
+      });
+      console.log(nodesToAdd);
+
+      // Add all new nodes
+      nodesToAdd.forEach(node => 
+      {        
+        this.queueTask(() => 
+        { 
+          this.graph.addNode(node); 
+          this.addNodeToCurrentGraph(node);
+        });
+      });  
+      // display scales by linking all the related chords to their root
+      
+      // Add all new links
+      // For each chord shown in the current graph...
+      this.currentGraph.nodes.forEach(currentGraphNode =>
+      {
+        // Looking in the return of nextGraph()
+        graphScales.forEach(scaleDescription =>
+        {
+          let scaleLinksToAdd = [];
+          let normalLinkLength = 1.5;
+          let extendedLinkLength = 3;
+
+          // For each scale root found
+          // Add chords belonging to scale with proper link distance
+          if(scaleDescription.scaleChords.map(s => s.id).includes(currentGraphNode.id))
+          {
+            scaleDescription.scaleChords.forEach(scaleChord => 
+            {
+
+              if(!this.currentGraph.links.includes(currentGraphLink => 
+                (currentGraphLink.source.id === currentGraphNode.id && currentGraphLink.target.id === scaleChord.id)
+                || (currentGraphLink.source.id === scaleChord.id && currentGraphLink.target.id === currentGraphNode.id) ))
+              {
+                  this.queueTask(() => 
+                  { 
+                    console.log("Adding a liiink!");
+                    
+                    this.graph.addLink(currentGraphNode.id, scaleChord.id, normalLinkLength); 
+                    this.graph.addLink(scaleChord.id, currentGraphNode.id, normalLinkLength); 
+                    this.addLinkToCurrentGraph(scaleChord.id, currentGraphNode);
+
+                  });
+                }
+            });  
+          }
+                    
+          // Add chords belonging to extended scale with proper link distance
+          if(scaleDescription.extendedChords.map(s => s.id).includes(currentGraphNode.id))
+          {
+            scaleDescription.extendedChords.forEach(extendedChord => 
+            {
+              if(!this.currentGraph.links.includes(currentGraphLink => 
+                (currentGraphLink.source.id === currentGraphNode.id && currentGraphLink.target.id === extendedChord.id)
+                || (currentGraphLink.source.id === extendedChord.id && currentGraphLink.target.id === currentGraphNode.id) ))
+              {                  
+                  this.queueTask(() => 
+                  { 
+                    this.graph.addLink(currentGraphNode.id, extendedChord.id, extendedLinkLength); 
+                    this.graph.addLink(extendedChord.id, currentGraphNode.id, extendedLinkLength); 
+                    this.addLinkToCurrentGraph(extendedChord.id, currentGraphNode);
+                  });
+                }
+            });  
+          }
+          
+        });
+      });
+      
+             
+      this.queueTask(() => 
+      { 
+        // DUPLICATED LINK IS ADDED!!!
+        console.log(this.currentGraph);
+      });
+      // add nodes missing from current graph
+      // compare and add missing linkgs
       
       return;
 
@@ -308,6 +398,7 @@ customElements.define("polygam-graph", class extends HTMLElement
 
 
   } // end of updateGraph()
+
 
 
 });

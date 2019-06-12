@@ -19,8 +19,9 @@ class D3Graph
     this.nodesData = [];
     this.nodeRadius = 20;
     this.manyBodyStrength = -200;
-    this.centerForceRatio = 0.08;
-    this.linkDistance = 50;
+    this.centerForceRatio = 0.01;
+    this.linkDistance = 50; // its a modifier
+    this.linkStrength = 0.05;
         
     // Create links structure
     this.svg.append("g").attr("class", "links");
@@ -35,6 +36,7 @@ class D3Graph
     this.simulation = d3.forceSimulation(this.nodesData)
       .force("charge", d3.forceManyBody().strength(this.manyBodyStrength))
       .force("link", d3.forceLink(this.linksData).distance(this.linkDistance))
+      .force("linkStr", d3.forceLink(this.linksData).strength(this.linkStrength))
       .force("forceX", d3.forceX().strength(this.centerForceRatio).x(this.svgCenterX))
       .force("forceY", d3.forceY().strength(this.centerForceRatio).y(this.svgCenterY))
       .alphaTarget(1)
@@ -76,6 +78,7 @@ class D3Graph
     this.simulation.nodes(this.nodesData);
     //this.simulation.force("link").links(this.linksData); //*** NOT SURE IF THIS IS REQUIRED ***
     this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.distance * this.linkDistance));
+    this.simulation.force("linkStr", d3.forceLink(this.linksData).id( d => d.id).strength(d => 1/d.distance));
     this.simulation.restart();
   };  
   
