@@ -140,16 +140,6 @@ customElements.define("polygam-app", class extends HTMLElement
     // Graph calls main app
     this.graph.progressionChanged = this.progressionChanged.bind(this);
 
-    
-
-    // TEST ********************************************************
-    //this.progression.addChord({root:0, voicing:"major", octave:5});
-    //this.progression.addChord({root:5, voicing:"major", octave:5});
-    //this.progression.addChord({root:0, voicing:"major", octave:5});
-    //this.progression.addChord({root:7, voicing:"major", octave:5});
-    //**************************************************************
-
-
   } // end of constructor
 
   progressionChanged(caller)
