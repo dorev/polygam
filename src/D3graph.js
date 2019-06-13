@@ -18,10 +18,11 @@ class D3Graph
     this.linksData = [];
     this.nodesData = [];
     this.nodeRadius = 20;
-    this.manyBodyStrength = -200;
-    this.centerForceRatio = 0.01;
-    this.linkDistance = 50; // its a modifier
-    this.linkStrength = 0.05;
+    this.manyBodyStrength = -500;
+    this.centerForceRatio = 0.2;
+    this.linkScaleFactor = 2;
+    this.linkDefaultDistance = 30;
+    this.linkStrength = 0.025;
         
     // Create links structure
     this.svg.append("g").attr("class", "links");
@@ -35,7 +36,7 @@ class D3Graph
     // Init simulation
     this.simulation = d3.forceSimulation(this.nodesData)
       .force("charge", d3.forceManyBody().strength(this.manyBodyStrength))
-      .force("link", d3.forceLink(this.linksData).distance(this.linkDistance))
+      .force("link", d3.forceLink(this.linksData).distance(this.linkScaleFactor))
       .force("linkStr", d3.forceLink(this.linksData).strength(this.linkStrength))
       .force("forceX", d3.forceX().strength(this.centerForceRatio).x(this.svgCenterX))
       .force("forceY", d3.forceY().strength(this.centerForceRatio).y(this.svgCenterY))
@@ -77,7 +78,7 @@ class D3Graph
     // Restart simulation
     this.simulation.nodes(this.nodesData);
     //this.simulation.force("link").links(this.linksData); //*** NOT SURE IF THIS IS REQUIRED ***
-    this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.distance * this.linkDistance));
+    this.simulation.force("link", d3.forceLink(this.linksData).id( d => d.id).distance(d => d.distance * this.linkScaleFactor));
     this.simulation.force("linkStr", d3.forceLink(this.linksData).id( d => d.id).strength(d => 1/d.distance));
     this.simulation.restart();
   };  
@@ -128,7 +129,7 @@ class D3Graph
   };
   
   
-  addLink (iSource, iTarget, iDistance = null) 
+  addLink (iSource, iTarget, iDistance = this.linkDefaultDistance) 
   {    
     let linkObject = {source: iSource, target: iTarget};
 
@@ -144,10 +145,10 @@ class D3Graph
     {if(this.debug) {console.error(`Link ${linkObject.source}-${linkObject.target} already exists`)}; return;}
     
     // Set distance
-    linkObject.distance = iDistance != null ? iDistance : 1;
+    linkObject.distance = iDistance;
 
     // Set link id
-    if (linkObject.id === undefined)     { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1;  }    
+    if (linkObject.id === undefined) { linkObject.id = this.linksData.length === 0 ? 0 : Math.max.apply(Math, this.linksData.map(n => n.id)) + 1;  }    
     
     var sourceNode = this.nodesData.filter(n => n.id === iSource)[0];
     var targetNode = this.nodesData.filter(n => n.id === iTarget)[0];

@@ -152,9 +152,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
   }
   
   // Keep the most occuring scales ( => average occurence value)
-  //let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
-  //let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
-  let candidateScales = reoccuringScales;
+  let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
+  let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
+  //let candidateScales = reoccuringScales;
 
   // Calculate polarity score of the candidate scales
   candidateScales.forEach(scale => 
@@ -168,9 +168,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
   
   
   // Keep the most scales with polarity above average
-  //let averagePolarity = candidateScales.map(s => s.polarity).reduce((sum, value) => sum += value, 0) / candidateScales.length;
-  //let finalScales = candidateScales.filter(scale => scale.polarity >= averagePolarity);
-  let finalScales = candidateScales;
+  let averagePolarity = candidateScales.map(s => s.polarity).reduce((sum, value) => sum += value, 0) / candidateScales.length;
+  let finalScales = candidateScales.filter(scale => scale.polarity >= averagePolarity);
+  //let finalScales = candidateScales;
   
   // Keep every chords from finalScales chords
   
@@ -194,13 +194,19 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
 
   finalScales.forEach(scale =>
   {
-    returnedScales.push(
-    buildChordName({ 
+    let newScale = 
+    { 
       root: scale.root, 
       voicing: scale.voicing, 
       scaleChords : getAllScaleChords(scale.root, scale.voicing).filter(c => c.voicing != "diminished"),
-      extendedChords : getExtendedChords(scale.root, scale.voicing)
-    }))
+      extendedChords : []//getExtendedChords(scale.root, scale.voicing)
+    };
+
+    buildChordName(newScale);
+    newScale.scaleChords.forEach(s => buildChordName(s));
+    newScale.extendedChords.forEach(s => buildChordName(s));
+
+    returnedScales.push(newScale);
   });
     
   //console.log(returnedScales);
