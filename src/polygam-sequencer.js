@@ -124,10 +124,10 @@ customElements.define("polygam-sequencer", class extends HTMLElement
   play()
   {    
     this.isPlaying = true;
-    if(!this.progression.length) { return; }
     
     // Set timeout until next beat (allows dynamic tempo change)
     this.timeout = setTimeout(()=>{ this.play(); }, 60000 / (this.tempo * 4) );   
+    if(!this.progression.length) { return; }
 
     if(this.currentBeat === 15)
     {
@@ -161,11 +161,11 @@ customElements.define("polygam-sequencer", class extends HTMLElement
   {    
     if(!this.isPlaying) { return; }    
     this.isPlaying = false;    
-    if(!this.progression.length) {} return;
     
     clearTimeout(this.timeout);
     this.currentBeat = -1;
     this.currentBar  = 0;  
+    if(!this.progression.length) {} return;
     
     
     this.container.querySelector("[highlight='true']").setAttribute("highlight", "false");
