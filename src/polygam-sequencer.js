@@ -165,7 +165,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     clearTimeout(this.timeout);
     this.currentBeat = -1;
     this.currentBar  = 0;  
-    if(!this.progression.length) {} return;
+    if(!this.progression.length) { return; }
     
     
     this.container.querySelector("[highlight='true']").setAttribute("highlight", "false");
