@@ -137,21 +137,36 @@ customElements.define("polygam-app", class extends HTMLElement
     // Progression calls main app
     this.progression.progressionChanged = this.progressionChanged.bind(this);
 
+    // Graph calls main app
+    this.graph.progressionChanged = this.progressionChanged.bind(this);
+
     
 
     // TEST ********************************************************
-    this.progression.addChord({root:0, voicing:"major", octave:5});
-    this.progression.addChord({root:5, voicing:"major", octave:5});
-    this.progression.addChord({root:0, voicing:"major", octave:5});
-    this.progression.addChord({root:7, voicing:"major", octave:5});
+    //this.progression.addChord({root:0, voicing:"major", octave:5});
+    //this.progression.addChord({root:5, voicing:"major", octave:5});
+    //this.progression.addChord({root:0, voicing:"major", octave:5});
+    //this.progression.addChord({root:7, voicing:"major", octave:5});
     //**************************************************************
 
 
   } // end of constructor
 
-  progressionChanged(iProgression)
+  progressionChanged(caller)
   {
-    // Update progression in sequencer
-    this.sequencer.setProgression(iProgression.progression);  }
+    console.log("progressionChanged called")
+    switch(caller.name)
+    {
+      case "progression" :
+        // Update progression in sequencer    
+        this.sequencer.setProgression(caller.progression);
+        break;
+
+      case "graph" :
+        let lastChord = caller.progression[caller.progression.length - 1];
+        this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:5});
+        break;
+    }
+  }
 
 });

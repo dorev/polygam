@@ -8,7 +8,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    
+    this.name = "graph";
     this.graphTasks = [];
     this.processTick = null;
     this.taskTempo = 10;
@@ -36,8 +36,9 @@ customElements.define("polygam-graph", class extends HTMLElement
     }
 
     .link {
-      stroke: #000;
-      stroke-width: 1px;
+      stroke: #AAA;
+      stroke-width: 2px;
+      opacity: 0.5;
     }
 
     line {
@@ -76,6 +77,9 @@ customElements.define("polygam-graph", class extends HTMLElement
 
          
   } // end of constructor
+
+  // Callback
+  progressionChanged(){}
 
   initGraph()
   {
@@ -152,6 +156,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   { 
     // Add node to progression
     this.progression.push({ id:iNode.id, root: iNode.root, voicing: iNode.voicing, name: iNode.name});
+    this.progressionChanged(this);
 
     this.updateGraph();   
     if( this.state !== "uninit" && this.state !== "init")
@@ -370,24 +375,20 @@ customElements.define("polygam-graph", class extends HTMLElement
                 });
               }
             });  
-          }
-          
+          }          
         });
-      });
-      
-             
-      this.queueTask(() => 
-      { 
-        // DUPLICATED LINK IS ADDED!!!
-        //console.log(this.currentGraph);
-      });
-      // add nodes missing from current graph
-      // compare and add missing linkgs
-      
-      return;
-
+      });        
     } // end of switch(this.progression.length) 
+    
+        
+    this.queueTask(() => 
+    { 
+    // DUPLICATED LINK IS ADDED!!!
+    //console.log(this.currentGraph);
+    });
 
+    // Send update to chord progression
+    //this.progressionChanged(this);
 
   } // end of updateGraph()
 

@@ -7,7 +7,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    this.progression = [[48,52,55],[45,48,52]];  // array of array of notes
+    this.progression = [];  // array of array of notes
     this.beats = [];
     this.currentBeat = -1;
     this.currentBar = 0;
@@ -124,10 +124,11 @@ customElements.define("polygam-sequencer", class extends HTMLElement
   play()
   {    
     this.isPlaying = true;
+    if(!this.progression.length) { return; }
     
     // Set timeout until next beat (allows dynamic tempo change)
-    this.timeout = setTimeout(()=>{ this.play(); }, 60000 / (this.tempo * 4) );
-    
+    this.timeout = setTimeout(()=>{ this.play(); }, 60000 / (this.tempo * 4) );   
+
     if(this.currentBeat === 15)
     {
       this.currentBar = (this.currentBar + 1) % this.progression.length;
@@ -158,11 +159,15 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
   stop()
   {    
-    if(!this.isPlaying) { return; }
-    this.isPlaying = false;
+    if(!this.isPlaying) { return; }    
+    this.isPlaying = false;    
+    if(!this.progression.length) {} return;
+    
     clearTimeout(this.timeout);
     this.currentBeat = -1;
-    this.currentBar  = 0;    
+    this.currentBar  = 0;  
+    
+    
     this.container.querySelector("[highlight='true']").setAttribute("highlight", "false");
   }
 
@@ -209,7 +214,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
 
   sendNotes()
-  {
+  {    
     let sequencerNotes = [];
     for(let i = 0; i < 10; ++i)
     {
@@ -223,6 +228,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
   updateNoteLabels()
   {
+    if(!this.progression.length) { return; }
     for(let i = 9; i >= 0; --i)
     {
       this.noteLabels[i].innerHTML = 

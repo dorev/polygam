@@ -9,7 +9,7 @@ customElements.define("polygam-progression",class extends HTMLElement
     //--------------------------------------------------------    
     this.chords = [];
     this.progression = [];
-    
+    this.name = "progression";
     
     //--------------------------------------------------------
     // CSS style
@@ -81,7 +81,5 @@ customElements.define("polygam-progression",class extends HTMLElement
   {
 
   }
-
-
 
 });
