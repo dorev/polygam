@@ -292,9 +292,6 @@ customElements.define("polygam-graph", class extends HTMLElement
       let maxLookback = this.progression.length > 4 ? 4 : this.progression.length;
 
       let graphScales = nextGraph(this.progression, maxLookback, this.currentGraph).filter(scale => scale.voicing === "major");
-      console.clear();
-      console.log("graphScales");
-      console.log(graphScales);
 
       let nodesToAdd =  [];
       graphScales.forEach(scale => 

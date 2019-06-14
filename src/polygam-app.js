@@ -48,7 +48,7 @@ customElements.define("polygam-app", class extends HTMLElement
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: auto 1fr auto auto 100px;
+      grid-template-rows: auto auto auto auto 100px;
       place-items: stretch;
     }
 
@@ -154,7 +154,7 @@ customElements.define("polygam-app", class extends HTMLElement
 
       case "graph" :
         let lastChord = caller.progression[caller.progression.length - 1];
-        this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:5});
+        this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:4});
         break;
     }
   }

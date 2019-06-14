@@ -33,6 +33,14 @@ customElements.define("polygam-chord",class extends HTMLElement
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =`        
+    
+    div
+    {
+      border: solid black 1px;
+      text-align: center;
+    }
+    
+    
     .chord-container
     {   
       margin : 0; padding : 0;
@@ -40,70 +48,50 @@ customElements.define("polygam-chord",class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(6, 1fr);
-      grid-template-rows:    repeat(8, 1fr);
+      grid-template-rows:    repeat(6, 1fr);
+      grid-template-column:    repeat(3, 1fr);
       width: 100px;
-      height: 200px;
-      border: solid black 1px;
       place-items: stretch;
-    }
-    
-    .chord-name
-    {   
-      grid-column : 1/5;
-      grid-row    : 1/5;
-      border: solid black 1px;
     }
     
     .inversion-button-up
     {   
+      grid-row    : 1/3;
       grid-column : 1/4;
-      grid-row    : 5/6;
-      border: solid black 1px;
     }
-    
-    .inversion-label
+
+    .chord-name
     {   
+      grid-row    : 2/5;
       grid-column : 1/4;
-      grid-row    : 6/8;
-      border: solid black 1px;
-    }
+      font-size : 2em;
+      place-self: center;
+    }    
     
     .inversion-button-down
     {   
+      grid-row    : 4/6;
       grid-column : 1/4;
-      grid-row    : 8/9;
-      border: solid black 1px;
     }
     
-    .octave
+    .swap-left-button
     {   
-      grid-column : 5/7;
-      grid-row    : 1/5;
-      border: solid black 1px;
+      grid-row    : 6/7;
+      grid-column : 1/2;
     }
     
-    .octave-button-up
+    .swap-right-button
     {   
-      grid-column : 4/7;
-      grid-row    : 5/6;
-      border: solid black 1px;
+      grid-row    : 6/7;
+      grid-column : 3/4;
     }
     
-    .octave-label
+    .delete-button
     {   
-      grid-column : 4/7;
-      grid-row    : 6/8;
-      border: solid black 1px;
-
+      grid-row    : 6/7;
+      grid-column : 2/3;
     }
     
-    .octave-button-down
-    {   
-      grid-column : 4/7;
-      grid-row    : 8/9;
-      border: solid black 1px;
-    }
     `;  
       
     
@@ -116,48 +104,42 @@ customElements.define("polygam-chord",class extends HTMLElement
     this.container     = document.createElement("div");
     this.chordName     = document.createElement("div");
     this.invButtonUp   = document.createElement("div");
-    this.invLabel      = document.createElement("div");
-    this.invButtonDown = document.createElement("div");        
-    this.octaveName    = document.createElement("div");
-    this.octButtonUp   = document.createElement("div");
-    this.octLabel      = document.createElement("div");
-    this.octButtonDown = document.createElement("div");
+    this.invButtonDown = document.createElement("div");
+    this.swapLeftButton  = document.createElement("div");
+    this.swapRightButton = document.createElement("div");
+    this.deleteButton    = document.createElement("div");
 
 
     this.container     .setAttribute("class","chord-container");
     this.chordName     .setAttribute("class","chord-name");  
     this.invButtonUp   .setAttribute("class","inversion-button-up"); 
-    this.invLabel      .setAttribute("class","inversion-label"); 
     this.invButtonDown .setAttribute("class","inversion-button-down"); 
-    this.octaveName    .setAttribute("class","octave");  
-    this.octButtonUp   .setAttribute("class","octave-button-up"); 
-    this.octLabel      .setAttribute("class","octave-label"); 
-    this.octButtonDown .setAttribute("class","octave-button-down"); 
+    this.swapLeftButton  .setAttribute("class","swap-left-button");
+    this.swapRightButton .setAttribute("class","swap-right-button");
+    this.deleteButton    .setAttribute("class","delete-button");
     
     this.container.appendChild(this.chordName);
     this.container.appendChild(this.invButtonUp);
-    this.container.appendChild(this.invLabel);
     this.container.appendChild(this.invButtonDown);
-    this.container.appendChild(this.octaveName);
-    this.container.appendChild(this.octButtonUp);
-    this.container.appendChild(this.octLabel);
-    this.container.appendChild(this.octButtonDown);
+    this.container.appendChild(this.swapLeftButton);
+    this.container.appendChild(this.swapRightButton);
+    this.container.appendChild(this.deleteButton);
     shadow.appendChild(this.container);
 
-    this.invLabel.innerHTML = "INV";
-    this.octLabel.innerHTML = "OCT";
     this.invButtonDown.innerHTML = "-";
-    this.octButtonDown.innerHTML = "-";
     this.invButtonUp.innerHTML = "+";
-    this.octButtonUp.innerHTML = "+";
+    this.swapLeftButton.innerHTML = "<";
+    this.swapRightButton.innerHTML = ">";
+    this.deleteButton.innerHTML = "x";
 
     //--------------------------------------------------------
     // Setup events
     //--------------------------------------------------------
     this.invButtonUp    .addEventListener("click", this.inversionUp.bind(this)); 
     this.invButtonDown  .addEventListener("click", this.inversionDown.bind(this));
-    this.octButtonUp    .addEventListener("click", this.octaveUp.bind(this));
-    this.octButtonDown  .addEventListener("click", this.octaveDown.bind(this));
+    this.swapLeftButton .addEventListener("click", this.swapLeft.bind(this)); 
+    this.swapRightButton.addEventListener("click", this.swapRight.bind(this));
+    this.deleteButton   .addEventListener("click", this.delete.bind(this)); 
 
     //setChord(properties);
 
@@ -238,7 +220,6 @@ customElements.define("polygam-chord",class extends HTMLElement
     
     // Update octave value
     this.octave = this.octaveOf(this.getBass());
-    this.octaveName.innerHTML = this.octave;
     
     // Callback
     this.chordChanged(this);
@@ -263,7 +244,6 @@ customElements.define("polygam-chord",class extends HTMLElement
     
     // Update octave value
     this.octave = this.octaveOf(this.getBass());
-    this.octaveName.innerHTML = this.octave;
 
     // Callback
     this.chordChanged(this);
@@ -282,50 +262,29 @@ customElements.define("polygam-chord",class extends HTMLElement
     }
 
     this.chordName.innerHTML = this.name;
-    this.octaveName.innerHTML = this.octave;
   }
 
-  octaveUp()
+
+  swapLeft()
   {
-    // Check no note busts octave 8
-    if(this.octaveOf(this.getSoprano() + 12) > 8)
-    {
-      console.error("Chords note to high to increase of an octave");
-      return;
-    }
-
-    // Update octave value
-    this.octave++;
-    this.octaveName.innerHTML = this.octave;
-
-    // Increase pitch by 12
-    this.notes = this.notes.map(n => n + 12);
-
     // Callback
-    this.chordChanged(this);
+    this.progressionChanged(this, "swapLeft");
   }
 
-  octaveDown()
+  swapRight()
   {
-    // Check no note busts octave 1
-    if(this.octaveOf(this.getBass() - 12) < 1)
-    {
-      console.error("Chords note to low to decrease of an octave");
-      return;
-    }
-
-    // Update octave value
-    this.octave--;
-    this.octaveName.innerHTML = this.octave;
-
-    // Increase pitch by 12
-    this.notes = this.notes.map(n => n - 12);
-
     // Callback
-    this.chordChanged(this);
+    this.progressionChanged(this, "swapRight");
   }
 
-  // Utilities
+  delete()
+  {
+    // Callback
+    this.progressionChanged(this, "delete");
+  }
+  
+
+  // Utilities  
   octaveOf(iNoteNumber) 
   {
     return Math.floor(iNoteNumber / 12);
