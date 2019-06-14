@@ -119,6 +119,17 @@ customElements.define("polygam-progression",class extends HTMLElement
 
       case "swapRight" : 
 
+      if(iChord.position === this.progression.length - 1) { break; }
+
+      // Swap chords
+      this.chords.splice(iChord.position, 0, this.chords.splice(iChord.position+1,1)[0]); 
+      this.progression.splice(iChord.position, 0, this.progression.splice(iChord.position+1,1)[0]);        
+      this.chords[iChord.position+1].parentNode.style.gridArea = `pos${iChord.position+2}`;
+      this.chords[iChord.position].parentNode.style.gridArea = `pos${iChord.position+1}`;
+      
+      // Update chord inner values
+        this.chords[iChord.position].position = iChord.position;
+        this.chords[iChord.position-1].position = iChord.position-1;
       break;
 
       case "delete" : 
