@@ -170,10 +170,25 @@ customElements.define("polygam-graph", class extends HTMLElement
   updateHighlighting()
   {    
     // For each node of the progression,  find a link with the previous node and highlight it
+    
+    // Reset all nodes
+    this.graph.svg.selectAll(`.node`)
+    .attr("stroke","black")
+    .attr("stroke-width","1");    
+    
+    // Reset all links
+    this.graph.svg.selectAll(`.link`)
+    .attr("stroke", "green")
+    .attr("stroke-width","2");
+
+    console.log(this.graph.svg.selectAll(`.link`))
+
+
     for(let i = 0; i < this.progression.length; ++i)
     {
       let nodeId = this.progression[i].id;
       
+
       this.graph.svg.selectAll(`.node [nodeId='${nodeId}']`)
       .attr("stroke","red")
       .attr("stroke-width","4");
@@ -184,6 +199,7 @@ customElements.define("polygam-graph", class extends HTMLElement
         let linksId = []
         linksId.push(this.graph.findLink(this.progression[i-1].id, this.progression[i].id));
         linksId.push(this.graph.findLink(this.progression[i].id, this.progression[i-1].id));
+
 
         linksId.filter(id => id != null).forEach(id => 
         {
@@ -199,6 +215,12 @@ customElements.define("polygam-graph", class extends HTMLElement
   {
     let tempoAcceleration = 5;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
+
+    // Remove all links
+    this.graph.linksData.map(l => { return {source: l.source.id, target: l.target.id} }).forEach(link =>
+    {      
+      this.queueTask(() => { this.graph.removeLink(link.source, link.target); });
+    });  
 
     // Remove all nodes
     this.graph.nodesData.map(n => n.id).filter(id => id != exceptionId).forEach(id =>
@@ -388,7 +410,26 @@ customElements.define("polygam-graph", class extends HTMLElement
     //this.progressionChanged(this);
 
   } // end of updateGraph()
+  
+  setProgression(iProgression)
+  {
+    let updatedProg = [];
 
+    iProgression.forEach(chordElement => 
+    {
+      let chord = { id:null, root: null, voicing: null, name: null };
+
+      chord.root = chordElement.root;
+      chord.voicing = chordElement.voicing;
+      chord.name = chordElement.name;
+      chord.id = findChordTonnetzeId(chordElement.root, chordElement.voicing);
+      updatedProg.push(chord);      
+    });
+
+    this.progression = updatedProg;
+
+    this.updateHighlighting();
+  }
 
 
 });

@@ -144,12 +144,12 @@ customElements.define("polygam-app", class extends HTMLElement
 
   progressionChanged(caller)
   {
-    console.log("progressionChanged called")
     switch(caller.name)
     {
       case "progression" :
         // Update progression in sequencer    
         this.sequencer.setProgression(caller.progression);
+        this.graph.setProgression(caller.chords);
         break;
 
       case "graph" :

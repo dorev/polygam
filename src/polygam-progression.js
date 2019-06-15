@@ -51,19 +51,25 @@ customElements.define("polygam-progression",class extends HTMLElement
   // Callback
   progressionChanged(){}
 
-  addChord(iChord)
-  {    
+  resizeProgression(iSize)
+  {
     // Adjust style 
-    this.container.style.gridTemplateColumns = `repeat(${this.chords.length + 1}, 1fr)`;
-    
+    this.container.style.gridTemplateColumns = `repeat(${iSize}, 1fr)`;
+
     let gridAreas = "";
-    for(let i = 1; i <= this.progression.length + 1; ++i)
+
+    for(let i = 1; i <= iSize; ++i)
     {
       gridAreas += `pos${i} `;
     }
+
     gridAreas.trim();
-    console.log(gridAreas)
-    this.container.style.gridTemplateAreas = `"${gridAreas}"`;   
+    this.container.style.gridTemplateAreas = `"${gridAreas}"`;  
+  }
+
+  addChord(iChord)
+  {    
+    this.resizeProgression(this.progression.length + 1);
 
     // Create chord element
     let newChord = document.createElement("polygam-chord");
@@ -99,11 +105,9 @@ customElements.define("polygam-progression",class extends HTMLElement
 
   chordManipulation(iChord, iEvent)
   {
-    console.log(`chord ${iChord.position} asked ${iEvent}`);
     switch(iEvent)
     {
-      case "swapLeft" : 
-      
+      case "swapLeft" :       
         if(iChord.position === 0) { break; }
 
         // Swap chords
@@ -118,22 +122,33 @@ customElements.define("polygam-progression",class extends HTMLElement
         break;
 
       case "swapRight" : 
+        if(iChord.position === this.progression.length - 1) { break; }
 
-      if(iChord.position === this.progression.length - 1) { break; }
-
-      // Swap chords
-      this.chords.splice(iChord.position, 0, this.chords.splice(iChord.position+1,1)[0]); 
-      this.progression.splice(iChord.position, 0, this.progression.splice(iChord.position+1,1)[0]);        
-      this.chords[iChord.position+1].parentNode.style.gridArea = `pos${iChord.position+2}`;
-      this.chords[iChord.position].parentNode.style.gridArea = `pos${iChord.position+1}`;
-      
-      // Update chord inner values
+        // Swap chords
+        this.chords.splice(iChord.position, 0, this.chords.splice(iChord.position+1,1)[0]); 
+        this.progression.splice(iChord.position, 0, this.progression.splice(iChord.position+1,1)[0]);        
+        this.chords[iChord.position+1].parentNode.style.gridArea = `pos${iChord.position+2}`;
+        this.chords[iChord.position].parentNode.style.gridArea = `pos${iChord.position+1}`;
+        
+        // Update chord inner values
         this.chords[iChord.position].position = iChord.position;
-        this.chords[iChord.position-1].position = iChord.position-1;
+        this.chords[iChord.position+1].position = iChord.position+1;
       break;
 
-      case "delete" : 
-      break;
+      case "delete" :       
+        let nodeToRemove = this.chords[iChord.position].parentNode
+        nodeToRemove.parentNode.removeChild(nodeToRemove);
+        this.chords.splice(iChord.position, 1); 
+        this.progression.splice(iChord.position, 1); 
+
+        for(let i = 0; i < this.progression.length; ++i)
+        {
+          this.chords[i].position = i;
+          this.chords[i].parentNode.style.gridArea = `pos${ i + 1 }`;
+        }
+
+        this.resizeProgression(this.progression.length)
+        break;
     }
     
     // Callback
