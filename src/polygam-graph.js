@@ -171,26 +171,26 @@ customElements.define("polygam-graph", class extends HTMLElement
   {    
     // For each node of the progression,  find a link with the previous node and highlight it
     
+    let selectedColor = "black";
+
     // Reset all nodes
-    this.graph.svg.selectAll(`.node`)
+    this.graph.svg.selectAll(`.node [stroke='${selectedColor}']`)
     .attr("stroke","black")
     .attr("stroke-width","1");    
     
     // Reset all links
-    this.graph.svg.selectAll(`.link`)
-    .attr("stroke", "green")
-    .attr("stroke-width","2");
-
-    console.log(this.graph.svg.selectAll(`.link`))
-
+    this.graph.svg.selectAll(`.link [stroke='${selectedColor}']`)
+    .attr("stroke", "#AAA")
+    .attr("stroke-width","2")
+    .attr("opacity","0.5");
 
     for(let i = 0; i < this.progression.length; ++i)
     {
       let nodeId = this.progression[i].id;
       
 
-      this.graph.svg.selectAll(`.node [nodeId='${nodeId}']`)
-      .attr("stroke","red")
+      this.graph.svg.select(`.node [nodeId='${nodeId}']`)
+      .attr("stroke",selectedColor)
       .attr("stroke-width","4");
       
       // Highlight both directions if possible
@@ -203,9 +203,10 @@ customElements.define("polygam-graph", class extends HTMLElement
 
         linksId.filter(id => id != null).forEach(id => 
         {
-          this.graph.svg.selectAll(`.link [linkId='${id}']`)
-          .attr("stroke","red")
-          .attr("stroke-width","4");
+          this.graph.svg.select(`.link [linkId='${id}']`)
+          .attr("stroke", selectedColor)
+          .attr("stroke-width","4")
+          .attr("opacity","1");
         });        
       }
     }
