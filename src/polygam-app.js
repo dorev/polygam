@@ -115,9 +115,10 @@ customElements.define("polygam-app", class extends HTMLElement
     this.container.appendChild(this.sequencer);
 
     // Create oscillator
-    this.oscillator = document.createElement("div");
+    this.oscillator = document.createElement("polygam-oscillator");
     this.oscillator.setAttribute("class", "app-oscillator");
     this.container.appendChild(this.oscillator);
+    
 
     //--------------------------------------------------------
     // Connect elements
