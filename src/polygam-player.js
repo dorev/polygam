@@ -135,6 +135,9 @@ customElements.define("polygam-player", class extends HTMLElement
     
   } // end of constructor
         
+  // Callback
+  playerEvent(){};
+
   playStopEvent(iButton)
   {
     this.isPlaying = iButton.isPlaying;
@@ -142,12 +145,12 @@ customElements.define("polygam-player", class extends HTMLElement
     if(this.isPlaying)
     {
       // Callback
-      this.sequencerPlay();
+      this.playerEvent({type:"play"});
     }
     else
     {
       // Callback
-      this.sequencerStop();
+      this.playerEvent({type:"stop"});
     }
   }
   
@@ -164,7 +167,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoValue.innerHTML = this.tempo;
     
     // Callback
-    this.sequencerTempo(this.tempo);
+    this.playerEvent({type:"tempo", value:this.tempo});
   }
 
 

@@ -123,10 +123,8 @@ customElements.define("polygam-app", class extends HTMLElement
     // Connect elements
     //--------------------------------------------------------
 
-    // Player calls sequencer
-    this.player.sequencerPlay   = this.sequencer.play.bind(this.sequencer);
-    this.player.sequencerStop   = this.sequencer.stop.bind(this.sequencer);
-    this.player.sequencerTempo  = this.sequencer.setTempo.bind(this.sequencer);
+    // Player calls main app
+    this.player.playerEvent  = this.playerEvent.bind(this);
 
     // Sequencer calls player
     this.sequencer.playerPlayNotes = this.player.playNotes.bind(this.player);
@@ -157,6 +155,26 @@ customElements.define("polygam-app", class extends HTMLElement
         this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:4});
         break;
     }
+  }
+
+  playerEvent(iEvent)
+  {
+    switch(iEvent.type)
+    {
+      case "play" :
+        this.sequencer.play();
+        break;
+
+      case "stop" :
+        this.sequencer.stop();
+        this.progression.highlightChord(-1);
+        break;
+
+      case "tempo" :
+        this.sequencer.setTempo(iEvent.value);
+        break;
+    }
+
   }
 
 });

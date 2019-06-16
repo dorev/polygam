@@ -10,6 +10,7 @@ customElements.define("polygam-progression",class extends HTMLElement
     this.chords = [];
     this.progression = [];
     this.name = "progression";
+    this.currentChordIndex = -1;
     
     //--------------------------------------------------------
     // CSS style
@@ -30,7 +31,7 @@ customElements.define("polygam-progression",class extends HTMLElement
 
     .progression-chord-container
     {   
-      
+      background : rgb(200,200,200);
     }
 
     `;  
@@ -89,7 +90,7 @@ customElements.define("polygam-progression",class extends HTMLElement
     newChord.progressionChanged = this.chordManipulation.bind(this);
 
     this.chords.push(newChord);
-    this.progression.push(newChord.notes)
+    this.progression.push(newChord.notes);
 
     // Callback
     this.progressionChanged(this);
@@ -136,7 +137,7 @@ customElements.define("polygam-progression",class extends HTMLElement
       break;
 
       case "delete" :       
-        let nodeToRemove = this.chords[iChord.position].parentNode
+        let nodeToRemove = this.chords[iChord.position].parentNode;
         nodeToRemove.parentNode.removeChild(nodeToRemove);
         this.chords.splice(iChord.position, 1); 
         this.progression.splice(iChord.position, 1); 
@@ -147,7 +148,8 @@ customElements.define("polygam-progression",class extends HTMLElement
           this.chords[i].parentNode.style.gridArea = `pos${ i + 1 }`;
         }
 
-        this.resizeProgression(this.progression.length)
+        this.resizeProgression(this.progression.length);              
+        this.highlightChord(this.currentChordIndex, true)
         break;
     }
     
@@ -155,9 +157,19 @@ customElements.define("polygam-progression",class extends HTMLElement
     this.progressionChanged(this);
   }
 
-  highlightChord(iChordIndex)
+  highlightChord(iChordIndex, iForceUpdate = false)
   {
+    if(iChordIndex === this.currentChordIndex && !iForceUpdate) { return; }
+    this.currentChordIndex = iChordIndex;
+    
+    let highlightToRemove = this.container.querySelectorAll("progression-chord-container:not([background='rgb(200,200,200)'])");
+    if(highlightToRemove)
+    {
+      highlightToRemove.forEach(element => element.style.background = "none");
+    }
 
+    if(iChordIndex < 0) { return; }
+    this.chords[iChordIndex].parentNode.style.background = "rgb(200,200,200)";
   }
 
 });

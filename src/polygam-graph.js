@@ -285,7 +285,7 @@ customElements.define("polygam-graph", class extends HTMLElement
       {        
         this.queueTask(() => 
         { 
-          this.graph.addLink(this.progression[0].id, node.id, 50);
+          this.graph.addLink(this.progression[0].id, node.id, 30);
           this.addLinkToCurrentGraph(this.progression[0].id, node.id)
         });
       });  
@@ -354,7 +354,7 @@ customElements.define("polygam-graph", class extends HTMLElement
         // Looking in the return of nextGraph()
         graphScales.forEach(scaleDescription =>
         {
-          let normalLinkLength = 50;
+          let normalLinkLength = 30;
           let extendedLinkLength = 100;
           let rootId = findChordTonnetzeId(scaleDescription.root, scaleDescription.voicing);
 
