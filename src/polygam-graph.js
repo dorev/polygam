@@ -15,6 +15,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     this.state = "uninit";
     this.progression = [];
     this.currentGraph = { nodes: [], links: []};
+    this.currentBigNodes = [];
 
     //--------------------------------------------------------
     // CSS style
@@ -33,6 +34,8 @@ customElements.define("polygam-graph", class extends HTMLElement
       fill: #FFF;
       stroke: #000;
       stroke-width: 1px;
+      transition: r 0.5s;
+      -webkit-transition: r 0.5s;
     }
 
     .link {
@@ -321,17 +324,11 @@ customElements.define("polygam-graph", class extends HTMLElement
       {
         scale.scaleChords.forEach(chord =>
         {
-          if(!nodesToAdd.map(n => n.id).includes(chord.id))
-          {
-            nodesToAdd.push(chord);
-          }
+          if(!nodesToAdd.map(n => n.id).includes(chord.id)) { nodesToAdd.push(chord); }
         })
         scale.extendedChords.forEach(chord =>
         {
-          if(!nodesToAdd.map(n => n.id).includes(chord.id))
-          {
-            nodesToAdd.push(chord);
-          }
+          if(!nodesToAdd.map(n => n.id).includes(chord.id)) { nodesToAdd.push(chord); }
         })        
 
       });
@@ -395,9 +392,11 @@ customElements.define("polygam-graph", class extends HTMLElement
                 });
               }
             });  
-          }          
+          } 
         });
+
       });        
+      this.setBigNodes(graphScales.map(scaleDescription => { return {root: scaleDescription.root, voicing: scaleDescription.voicing};}));
     } // end of switch(this.progression.length) 
     
         
@@ -411,6 +410,52 @@ customElements.define("polygam-graph", class extends HTMLElement
     //this.progressionChanged(this);
 
   } // end of updateGraph()
+
+  setBigNodes(iScales)
+  {
+    let nodesToGrow = [];
+    let nodesToShrink = [];
+
+    // Grow nodes if not already grown
+    iScales.forEach(scale => 
+    { 
+      if(this.currentBigNodes.filter(currentBigNode => currentBigNode.root === scale.root && currentBigNode.voicing === scale.voicing).length === 0)
+      {
+        nodesToGrow.push(findChordTonnetzeId(scale.root, scale.voicing))
+      }
+    });
+    
+    // Shrink nodes if big nodes are not in iScales
+    this.currentBigNodes.forEach(currentBigNode =>
+    {
+      if(iScales.filter(scale => currentBigNode.root === scale.root && currentBigNode.voicing === scale.voicing).length === 0)
+      {
+        nodesToShrink.push(findChordTonnetzeId(currentBigNode.root, currentBigNode.voicing))
+      }
+    });    
+
+    nodesToGrow.forEach(node => 
+    {
+      this.graph.svg.selectAll(`.node [nodeId='${node}']`)
+      .transition(500)
+      .attr("r", 30);
+    });
+
+    nodesToShrink.forEach(node => 
+    {
+      this.graph.svg.selectAll(`.node [nodeId='${node}']`)
+      .transition(500)
+      .attr("r", 20);
+    });
+
+    this.currentBigNodes = iScales;
+
+
+
+
+  }
+
+
   
   setProgression(iProgression)
   {
