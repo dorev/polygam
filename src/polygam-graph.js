@@ -396,7 +396,46 @@ customElements.define("polygam-graph", class extends HTMLElement
         });
 
       });        
-      this.setBigNodes(graphScales.map(scaleDescription => { return {root: scaleDescription.root, voicing: scaleDescription.voicing};}));
+
+
+      // Decide what nodes should be big
+      let majorScore = 0;
+      let minorScore = 0;
+      let majorBigNodes = graphScales.map(scaleDescription => { return {root: scaleDescription.root, voicing: scaleDescription.voicing};});
+      let finalBigNodes = [];
+
+      majorBigNodes.forEach(node =>
+      {
+        let nodeId = findChordTonnetzeId(node.root, node.voicing);
+
+        [0,5,7].forEach(majorRoot =>
+          {
+            if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12))
+            {
+              ++majorScore;
+            }        
+          });
+    
+          [2,4,9].forEach(minorRoot =>
+          {
+            if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12))
+            {
+              ++minorScore;
+            }        
+          });
+    
+          let nodeToGrow = nodeId;
+          if(minorScore > majorScore)
+          {
+            // Find minor relative of node
+            nodeToGrow = tonnetze[nodeId].edges["-y"];
+          }
+
+          finalBigNodes.push(tonnetze[nodeToGrow]);
+    
+      });
+
+      this.setBigNodes(finalBigNodes);
     } // end of switch(this.progression.length) 
     
         
@@ -434,6 +473,7 @@ customElements.define("polygam-graph", class extends HTMLElement
       }
     });    
 
+    
     nodesToGrow.forEach(node => 
     {
       this.graph.svg.selectAll(`.node [nodeId='${node}']`)
@@ -449,10 +489,6 @@ customElements.define("polygam-graph", class extends HTMLElement
     });
 
     this.currentBigNodes = iScales;
-
-
-
-
   }
 
 
