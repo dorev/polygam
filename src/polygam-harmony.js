@@ -152,9 +152,9 @@ function nextGraph(iProgression, iMaxLookBehind, iCurrentGraph)
   }
   
   // Keep the most occuring scales ( => average occurence value)
-  let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
-  let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
-  //let candidateScales = reoccuringScales;
+  //let averageOccurence = reoccuringScales.map(s => s.occurences).reduce((sum, value) => sum += value, 0) / reoccuringScales.length;
+  //let candidateScales = reoccuringScales.filter(scale => scale.occurences >= averageOccurence);
+  let candidateScales = reoccuringScales;
 
   // Calculate polarity score of the candidate scales
   candidateScales.forEach(scale => 

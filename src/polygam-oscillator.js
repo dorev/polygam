@@ -96,8 +96,6 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     //this.container.setAttribute("class", "oscillator-container");
     shadow.appendChild(this.container);  
 
-
-
     this.waveShape = document.createElement("osc-wave-shape");
     this.waveShape.innerHTML = "waveShape";
     this.waveDetune = document.createElement("osc-wave-detune");

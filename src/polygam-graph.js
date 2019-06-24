@@ -333,7 +333,9 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       });
 
+      //
       // Add all new nodes
+      //
       nodesToAdd.forEach(node => 
       {        
         this.queueTask(() => 
@@ -342,10 +344,11 @@ customElements.define("polygam-graph", class extends HTMLElement
           this.addNodeToCurrentGraph(node);
         });
       });  
-      // display scales by linking all the related chords to their root
       
+      //
       // Add all new links
       // For each chord shown in the current graph...
+      //
       this.currentGraph.nodes.forEach(currentGraphNode =>
       {
         // Looking in the return of nextGraph()
@@ -397,8 +400,11 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       });        
 
+      console.log(graphScales.map(s => s.name))
 
+      //
       // Decide what nodes should be big
+      //
       let majorScore = 0;
       let minorScore = 0;
       let majorBigNodes = graphScales.map(scaleDescription => { return {root: scaleDescription.root, voicing: scaleDescription.voicing};});
@@ -408,8 +414,13 @@ customElements.define("polygam-graph", class extends HTMLElement
       {
         let nodeId = findChordTonnetzeId(node.root, node.voicing);
 
+        console.log(node);
+
         [0,5,7].forEach(majorRoot =>
           {
+            console.log("this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12)")
+            console.log(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12))
+
             if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12))
             {
               ++majorScore;
@@ -418,6 +429,8 @@ customElements.define("polygam-graph", class extends HTMLElement
     
           [2,4,9].forEach(minorRoot =>
           {
+            console.log("this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12)")
+            console.log(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12))
             if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12))
             {
               ++minorScore;
@@ -429,6 +442,7 @@ customElements.define("polygam-graph", class extends HTMLElement
           {
             // Find minor relative of node
             nodeToGrow = tonnetze[nodeId].edges["-y"];
+            console.error(`Minor relative is ${nodeToGrow}`);
           }
 
           finalBigNodes.push(tonnetze[nodeToGrow]);

@@ -123,15 +123,15 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     // Connect elements
     //--------------------------------------------------------
-
-    // Player calls main app
-    this.player.playerEvent  = this.playerEvent.bind(this);
-
+    
     // Sequencer calls player
     this.sequencer.playerPlayNotes = this.player.playNotes.bind(this.player);
     
     // Sequencer calls progression
     this.sequencer.progHighlightChord = this.progression.highlightChord.bind(this.progression);
+    
+    // Player calls main app
+    this.player.playerEvent  = this.playerEvent.bind(this);
     
     // Progression calls main app
     this.progression.progressionChanged = this.progressionChanged.bind(this);
