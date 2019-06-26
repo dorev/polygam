@@ -10,12 +10,18 @@ customElements.define("polygam-knob", class extends HTMLElement
     //--------------------------------------------------------    
     
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;    
+    this.profile = this.hasAttribute("profile") ? this.getAttribute("profile") : "equalrange";    
     this.knobActive = false;
     this.mouseY = 0;
     this.initialMouseY = 0;
     this.initialRotation = 180;
     this.rotation = 0;
-    this.value = 50;
+    this.value = 0;
+    this.min;
+    this.max;
+    this.updateFunc = () => {};
+
+    this.initKnob();
 
     //--------------------------------------------------------
     // CSS style
@@ -89,16 +95,65 @@ customElements.define("polygam-knob", class extends HTMLElement
         this.rotate();
       }  
     });   
+
+    this.initKnob();
          
   } // end of constructor
 
   // Callback
   knobEvent() {}  
+
+  initKnob()
+  {
+    this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;    
+    this.profile = this.hasAttribute("profile") ? this.getAttribute("profile") : "equalrange";   
+
+    switch(this.profile)
+    {
+      default :
+      case "equalrange" :        
+        this.min = this.hasAttribute("min") ? parseInt(this.getAttribute("min")) : 0;  
+        this.max = this.hasAttribute("max") ? parseInt(this.getAttribute("max")) : 100;
+
+        this.updateFunc = () => 
+        { 
+          return (this.max - this.min) * this.rotationPercentage() + this.min;
+        }
+        break;
+
+      case "10log2" :
+        this.min = -80;
+        this.max = 0;
+        this.updateFunc = () => 
+        {
+          let value = 10 * Math.log2(this.rotationPercentage());
+          if(value < this.min) return this.min;
+          if(value > this.max) return this.max;
+          return value;
+        }
+        break;
+    }
+
+    this.updateValue();
+
+  }
   
   rotate()
   {
     let newRotation = (this.initialRotation + this.initialMouseY - this.mouseY); 
-    if(newRotation > -151 && newRotation < 151)
+    if(newRotation < -151)
+    {
+      this.rotation = -151;
+      this.value = this.min;
+      this.knobEvent(this);
+    }
+    else if(newRotation > 151)
+    {
+      this.rotation = 151;
+      this.value = this.max;
+      this.knobEvent(this);
+    }
+    else
     {
       this.svg.style.transform = `rotate(${newRotation}deg)`;
       this.rotation = newRotation;
@@ -106,9 +161,17 @@ customElements.define("polygam-knob", class extends HTMLElement
     }
   }
 
+  rotationPercentage()
+  {
+    let rotation = (this.rotation + 150) / 300;
+    if(rotation < 0) return 0;
+    if(rotation > 1) return 1;
+    return rotation;
+  }
+
   updateValue()
   {
-    this.value = (this.rotation + 150) / 3;
+    this.value = this.updateFunc();
     
     // Callback
     this.knobEvent(this);

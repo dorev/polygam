@@ -104,35 +104,40 @@ customElements.define("polygam-player", class extends HTMLElement
     // Volume knob
     this.volumeKnob = document.createElement("polygam-knob");
     this.volumeKnob.setAttribute("class","player-volume"); 
+    this.volumeKnob.setAttribute("profile","10log2");  
     this.volumeKnob.knobEvent = this.volumeEvent.bind(this);
     this.container.appendChild(this.volumeKnob);
-
+    
     this.volumeValue = document.createElement("div");
     this.volumeValue.setAttribute("class","player-volume-value");  
-    this.volumeValue.innerHTML = "50";
     this.container.appendChild(this.volumeValue);
-
+    
     this.volumeLabel = document.createElement("div");
     this.volumeLabel.setAttribute("class","player-volume-label");  
     this.volumeLabel.innerHTML = "VOL";
     this.container.appendChild(this.volumeLabel);
+    
+    this.volumeKnob.initKnob();
 
     // Tempo knob
     this.tempoKnob = document.createElement("polygam-knob");
     this.tempoKnob.setAttribute("class","player-tempo");  
+    this.tempoKnob.setAttribute("min","30");  
+    this.tempoKnob.setAttribute("max","240");  
     this.tempoKnob.knobEvent = this.tempoEvent.bind(this);
     this.container.appendChild(this.tempoKnob);
-
+    
     this.tempoValue = document.createElement("div");
     this.tempoValue.setAttribute("class","player-tempo-value");  
-    this.tempoValue.innerHTML = "120";
     this.container.appendChild(this.tempoValue);
-
+    
     this.tempoLabel = document.createElement("div");
     this.tempoLabel.setAttribute("class","player-tempo-label");  
     this.tempoLabel.innerHTML = "TEMPO";
     this.container.appendChild(this.tempoLabel);
     
+    this.tempoKnob.initKnob();
+
   } // end of constructor
         
   // Callback
@@ -156,14 +161,14 @@ customElements.define("polygam-player", class extends HTMLElement
   
   volumeEvent(iVolumeKnob)
   {
-    this.volume = iVolumeKnob.value > 99.1 ? 100 : Math.floor(iVolumeKnob.value);
-    this.volumeValue.innerHTML = this.volume;
-    this.synth.volume.value = -100 + this.volume; 
+    this.volume = iVolumeKnob.value;
+    this.volumeValue.innerHTML = iVolumeKnob.value.toFixed(2) + " dB";
+    this.synth.volume.value = iVolumeKnob.value;
   }
   
   tempoEvent(iTempoKnob)
   {
-    this.tempo = iTempoKnob.value > 99.5 ? 180 : Math.floor(iTempoKnob.value * 1.2 + 60);
+    this.tempo = Math.floor(iTempoKnob.value);
     this.tempoValue.innerHTML = this.tempo;
     
     // Callback
