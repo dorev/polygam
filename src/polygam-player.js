@@ -11,7 +11,8 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volume = 50;
     this.tempo = 120;
     this.isPlaying = false;
-    this.synth = new Tone.PolySynth(8, Tone.Synth).toMaster();
+    this.synth = new Tone.PolySynth(8, Tone.Synth);
+    this.synth.toMaster();
     this.synth.volume.value = -50;
     
     //--------------------------------------------------------
@@ -183,6 +184,11 @@ customElements.define("polygam-player", class extends HTMLElement
     let notesToPlay = iNotesArray.filter(n => n != null);
 
     this.synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
+  }
+
+  setSynthProperties(iProperties)
+  {
+    this.synth.set(iProperties);
   }
 
   

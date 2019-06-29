@@ -183,6 +183,23 @@ customElements.define("polygam-app", class extends HTMLElement
   oscillatorEvent(iProperty, iValue)
   {
     console.log(`property : ${iProperty}     value : ${iValue}`);
+    
+    let propertyObject;
+
+    // format propertyObject
+    /*
+    example:
+    {
+      "filter" : {
+        "type" : "highpass"
+      },
+      "envelope" : {
+        "attack" : 0.25
+      }
+    }
+    */
+
+    this.player.setSynthProperties(propertyObject);
   }
 
 });

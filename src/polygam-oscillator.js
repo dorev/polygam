@@ -55,7 +55,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       text-align: center;
     }
 
-    osc-wave-transpose
+    osc-wave-portamento
     {
       grid-column : 2/3;
       grid-row    : 3/4;
@@ -133,17 +133,17 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetune.appendChild(this.waveDetuneKnob); 
     this.waveDetune.appendChild(this.waveDetuneLabel);
 
-    this.waveTranspose = document.createElement("osc-wave-transpose");
-    this.waveTransposeKnob = document.createElement("polygam-knob");
-    this.waveTransposeKnob.setAttribute("min","-24");  
-    this.waveTransposeKnob.setAttribute("max","24");   
-    this.waveTransposeKnob.knobEvent = this.knobChange.bind(this);
-    this.waveTransposeKnob.name = "transpose";    
-    this.waveTransposeKnob.initKnob();
-    this.waveTransposeLabel = document.createElement("span");
-    this.waveTransposeLabel.innerHTML = "transpose";  
-    this.waveTranspose.appendChild(this.waveTransposeKnob); 
-    this.waveTranspose.appendChild(this.waveTransposeLabel);    
+    this.wavePortamento = document.createElement("osc-wave-portamento");
+    this.wavePortamentoKnob = document.createElement("polygam-knob");
+    this.wavePortamentoKnob.setAttribute("min","0");  
+    this.wavePortamentoKnob.setAttribute("max","100");   
+    this.wavePortamentoKnob.knobEvent = this.knobChange.bind(this);
+    this.wavePortamentoKnob.name = "portamento";    
+    this.wavePortamentoKnob.initKnob();
+    this.wavePortamentoLabel = document.createElement("span");
+    this.wavePortamentoLabel.innerHTML = "portamento";  
+    this.wavePortamento.appendChild(this.wavePortamentoKnob); 
+    this.wavePortamento.appendChild(this.wavePortamentoLabel);    
 
     this.filterShape = document.createElement("osc-filter-shape");
     ["lowpass", "highpass", "bandpass", "bandcut"].forEach( filterType =>
@@ -164,8 +164,8 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     this.filterFreq = document.createElement("osc-filter-frequency");
     this.filterFreqKnob = document.createElement("polygam-knob");
-    this.filterFreqKnob.setAttribute("min","-100");  
-    this.filterFreqKnob.setAttribute("max","100"); 
+    this.filterFreqKnob.setAttribute("min","20");  
+    this.filterFreqKnob.setAttribute("max","20000"); 
     this.filterFreqKnob.knobEvent = this.knobChange.bind(this);
     this.filterFreqKnob.name = "frequency";
     this.filterFreqKnob.initKnob();
@@ -177,8 +177,8 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     this.filterQ = document.createElement("osc-filter-q");
     this.filterQKnob = document.createElement("polygam-knob");
-    this.filterQKnob.setAttribute("min","-100");  
-    this.filterQKnob.setAttribute("max","100"); 
+    this.filterQKnob.setAttribute("min","0");  
+    this.filterQKnob.setAttribute("max","4"); 
     this.filterQKnob.knobEvent = this.knobChange.bind(this);
     this.filterQKnob.name = "q"; 
     this.filterQKnob.initKnob();
@@ -190,7 +190,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetune);
-    this.container.appendChild(this.waveTranspose);
+    this.container.appendChild(this.wavePortamento);
     this.container.appendChild(this.filterShape);
     this.container.appendChild(this.filterFreq);
     this.container.appendChild(this.filterQ);   
