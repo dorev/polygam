@@ -11,7 +11,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volume = 50;
     this.tempo = 120;
     this.isPlaying = false;
-    this.synth = new Tone.PolySynth(8, Tone.Synth);
+    this.synth = new Tone.PolySynth(10, Tone.Synth);
     this.synth.toMaster();
     this.synth.volume.value = -50;
     
@@ -188,7 +188,9 @@ customElements.define("polygam-player", class extends HTMLElement
 
   setSynthProperties(iProperties)
   {
+    console.log(iProperties);
     this.synth.set(iProperties);
+
   }
 
   

@@ -1,26 +1,4 @@
 /*
-LOADING STUFF
-
-// Wait for page to have loaded :
-window.onload = function ...
-
-
-// dynamically call js
-function require(url, callback) 
-{
-  var e = document.createElement("script");
-  e.src = url;
-  e.type="text/javascript";
-  e.addEventListener('load', callback);
-  document.getElementsByTagName("head")[0].appendChild(e);
-}
-
-require("some.js", function() { 
-   // Do this and that
-});
-
-
-
 // CUTE CSS!!
 https://cssfx.dev/
 */
@@ -34,6 +12,10 @@ customElements.define("polygam-app", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
+
+    this.prevTranspose = 0;
+    this.prevDetune = 0;
+    this.prevFilter = { type: null, frequency: 1000, Q: 0.707 };
 
     
     //--------------------------------------------------------
@@ -182,9 +164,45 @@ customElements.define("polygam-app", class extends HTMLElement
 
   oscillatorEvent(iProperty, iValue)
   {
-    console.log(`property : ${iProperty}     value : ${iValue}`);
-    
-    let propertyObject;
+    //console.log(`property : ${iProperty}     value : ${iValue}`);
+
+    switch(iProperty)
+    {
+      case "waveform" :
+          this.player.setSynthProperties({ oscillator: { type: iValue } });
+        break;
+        
+      case "detune" :
+          this.prevDetune = iValue;
+          this.player.setSynthProperties({ detune: this.prevDetune + this.prevTranspose });
+
+        break;
+          
+      case "transpose" :
+        this.prevTranspose = Math.floor(iValue) * 100;
+        this.player.setSynthProperties({ detune: this.prevDetune + this.prevTranspose });
+        break;
+            
+      case "filterType" :
+        this.prevFilter.type = iValue;
+        this.player.setSynthProperties({ filter: { type: null, frequency: null, Q:null }});
+        break;
+
+      case "frequency":
+          this.prevFilter.frequency = iValue;
+          if(this.prevFilter.type === "none") { break; }
+          this.player.setSynthProperties({ filter : {type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q} });
+        break;
+      
+      case "q" :
+          this.prevFilter.Q = iValue;
+          if(this.prevFilter.type === "none") { break; }
+          this.player.setSynthProperties({ filter : {type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q} });
+        break;
+    }
+
+    //console.log(this.prevFilter);
+
 
     // format propertyObject
     /*
@@ -193,13 +211,11 @@ customElements.define("polygam-app", class extends HTMLElement
       "filter" : {
         "type" : "highpass"
       },
-      "envelope" : {
-        "attack" : 0.25
+      "oscillator" : {
+        "type" : 0.25
       }
     }
     */
-
-    this.player.setSynthProperties(propertyObject);
   }
 
 });

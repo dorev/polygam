@@ -55,7 +55,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       text-align: center;
     }
 
-    osc-wave-portamento
+    osc-wave-transpose
     {
       grid-column : 2/3;
       grid-row    : 3/4;
@@ -105,7 +105,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     shadow.appendChild(this.container);  
 
     this.waveShape = document.createElement("osc-wave-shape");
-    ["sine", "square", "saw", "triangle"].forEach( waveform =>
+    ["sine", "square", "sawtooth", "triangle"].forEach( waveform =>
     {
       let radioButton = document.createElement("input");
       radioButton.setAttribute("type", "radio");
@@ -133,20 +133,20 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetune.appendChild(this.waveDetuneKnob); 
     this.waveDetune.appendChild(this.waveDetuneLabel);
 
-    this.wavePortamento = document.createElement("osc-wave-portamento");
-    this.wavePortamentoKnob = document.createElement("polygam-knob");
-    this.wavePortamentoKnob.setAttribute("min","0");  
-    this.wavePortamentoKnob.setAttribute("max","100");   
-    this.wavePortamentoKnob.knobEvent = this.knobChange.bind(this);
-    this.wavePortamentoKnob.name = "portamento";    
-    this.wavePortamentoKnob.initKnob();
-    this.wavePortamentoLabel = document.createElement("span");
-    this.wavePortamentoLabel.innerHTML = "portamento";  
-    this.wavePortamento.appendChild(this.wavePortamentoKnob); 
-    this.wavePortamento.appendChild(this.wavePortamentoLabel);    
+    this.wavetranspose = document.createElement("osc-wave-transpose");
+    this.wavetransposeKnob = document.createElement("polygam-knob");
+    this.wavetransposeKnob.setAttribute("min","-12");  
+    this.wavetransposeKnob.setAttribute("max","12");   
+    this.wavetransposeKnob.knobEvent = this.knobChange.bind(this);
+    this.wavetransposeKnob.name = "transpose";    
+    this.wavetransposeKnob.initKnob();
+    this.wavetransposeLabel = document.createElement("span");
+    this.wavetransposeLabel.innerHTML = "transpose";  
+    this.wavetranspose.appendChild(this.wavetransposeKnob); 
+    this.wavetranspose.appendChild(this.wavetransposeLabel);    
 
     this.filterShape = document.createElement("osc-filter-shape");
-    ["lowpass", "highpass", "bandpass", "bandcut"].forEach( filterType =>
+    ["lowpass", "highpass", "bandpass", "none"].forEach( filterType =>
     {
       let radioButton = document.createElement("input");
       radioButton.setAttribute("type", "radio");
@@ -190,7 +190,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetune);
-    this.container.appendChild(this.wavePortamento);
+    this.container.appendChild(this.wavetranspose);
     this.container.appendChild(this.filterShape);
     this.container.appendChild(this.filterFreq);
     this.container.appendChild(this.filterQ);   
