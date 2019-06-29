@@ -139,6 +139,8 @@ customElements.define("polygam-app", class extends HTMLElement
     // Graph calls main app
     this.graph.progressionChanged = this.progressionChanged.bind(this);
 
+    this.oscillator.oscillatorEvent = this.oscillatorEvent.bind(this);
+
   } // end of constructor
 
   progressionChanged(caller)
@@ -176,6 +178,11 @@ customElements.define("polygam-app", class extends HTMLElement
         break;
     }
 
+  }
+
+  oscillatorEvent(iProperty, iValue)
+  {
+    console.log(`property : ${iProperty}     value : ${iValue}`);
   }
 
 });

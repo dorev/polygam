@@ -104,7 +104,6 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     //this.container.setAttribute("class", "oscillator-container");
     shadow.appendChild(this.container);  
 
-
     this.waveShape = document.createElement("osc-wave-shape");
     ["sine", "square", "saw", "triangle"].forEach( waveform =>
     {
@@ -112,6 +111,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       radioButton.setAttribute("type", "radio");
       radioButton.setAttribute("name", "waveform");
       radioButton.setAttribute("value", waveform);
+      radioButton.addEventListener("change", this.radioButtonChange.bind(this));
       
       let buttonLabel = document.createElement("label");      
       buttonLabel.setAttribute("for", waveform);
@@ -124,22 +124,26 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetune = document.createElement("osc-wave-detune");
     this.waveDetuneKnob = document.createElement("polygam-knob");
     this.waveDetuneKnob.setAttribute("min","-100");  
-    this.waveDetuneKnob.setAttribute("max","100");      
+    this.waveDetuneKnob.setAttribute("max","100");     
+    this.waveDetuneKnob.knobEvent = this.knobChange.bind(this);
+    this.waveDetuneKnob.name = "detune";
+    this.waveDetuneKnob.initKnob();
     this.waveDetuneLabel = document.createElement("span");
     this.waveDetuneLabel.innerHTML = "detune";
     this.waveDetune.appendChild(this.waveDetuneKnob); 
-    this.waveDetune.appendChild(this.waveDetuneLabel);     
-    //this.waveDetune.innerHTML = "waveDetune";
+    this.waveDetune.appendChild(this.waveDetuneLabel);
 
     this.waveTranspose = document.createElement("osc-wave-transpose");
     this.waveTransposeKnob = document.createElement("polygam-knob");
     this.waveTransposeKnob.setAttribute("min","-24");  
-    this.waveTransposeKnob.setAttribute("max","24");       
+    this.waveTransposeKnob.setAttribute("max","24");   
+    this.waveTransposeKnob.knobEvent = this.knobChange.bind(this);
+    this.waveTransposeKnob.name = "transpose";    
+    this.waveTransposeKnob.initKnob();
     this.waveTransposeLabel = document.createElement("span");
     this.waveTransposeLabel.innerHTML = "transpose";  
     this.waveTranspose.appendChild(this.waveTransposeKnob); 
     this.waveTranspose.appendChild(this.waveTransposeLabel);    
-    //this.waveTranspose.innerHTML = "waveTranspose";
 
     this.filterShape = document.createElement("osc-filter-shape");
     ["lowpass", "highpass", "bandpass", "bandcut"].forEach( filterType =>
@@ -148,6 +152,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       radioButton.setAttribute("type", "radio");
       radioButton.setAttribute("name", "filterType");
       radioButton.setAttribute("value", filterType);
+      radioButton.addEventListener("change", this.radioButtonChange.bind(this));
       
       let buttonLabel = document.createElement("label");      
       buttonLabel.setAttribute("for", filterType);
@@ -160,7 +165,10 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterFreq = document.createElement("osc-filter-frequency");
     this.filterFreqKnob = document.createElement("polygam-knob");
     this.filterFreqKnob.setAttribute("min","-100");  
-    this.filterFreqKnob.setAttribute("max","100");  
+    this.filterFreqKnob.setAttribute("max","100"); 
+    this.filterFreqKnob.knobEvent = this.knobChange.bind(this);
+    this.filterFreqKnob.name = "frequency";
+    this.filterFreqKnob.initKnob();
     this.filterFreqLabel = document.createElement("span");
     this.filterFreqLabel.innerHTML = "frequency";  
     this.filterFreq.appendChild(this.filterFreqKnob);  
@@ -170,7 +178,10 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterQ = document.createElement("osc-filter-q");
     this.filterQKnob = document.createElement("polygam-knob");
     this.filterQKnob.setAttribute("min","-100");  
-    this.filterQKnob.setAttribute("max","100");  
+    this.filterQKnob.setAttribute("max","100"); 
+    this.filterQKnob.knobEvent = this.knobChange.bind(this);
+    this.filterQKnob.name = "q"; 
+    this.filterQKnob.initKnob();
     this.filterQLabel = document.createElement("span");
     this.filterQLabel.innerHTML = "q";   
     this.filterQ.appendChild(this.filterQKnob);      
@@ -200,6 +211,20 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
          
   } // end of constructor
+
+  // Callback
+  oscillatorEvent(property, value){};
+
+  radioButtonChange(event)
+  {
+    let button = event.target;
+    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"));
+  }
+
+  knobChange(iKnob)
+  {
+    this.oscillatorEvent(iKnob.name, iKnob.value);
+  }
   
 
   

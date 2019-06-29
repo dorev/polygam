@@ -19,6 +19,7 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.value = 0;
     this.min;
     this.max;
+    this.name = "";
     this.updateFunc = () => {};
 
     this.initKnob();
