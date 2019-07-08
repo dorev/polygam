@@ -164,8 +164,9 @@ customElements.define("polygam-app", class extends HTMLElement
 
   oscillatorEvent(iProperty, iValue)
   {
-    //console.log(`property : ${iProperty}     value : ${iValue}`);
-/*
+
+    /*
+    console.log(`property : ${iProperty}     value : ${iValue}`);
     switch(iProperty)
     {
       case "waveform" :

@@ -122,17 +122,30 @@ customElements.define("polygam-knob", class extends HTMLElement
         }
         break;
 
-      case "10log2" :
-        this.min = -80;
-        this.max = 0;
-        this.updateFunc = () => 
-        {
-          let value = 10 * Math.log2(this.rotationPercentage());
-          if(value < this.min) return this.min;
-          if(value > this.max) return this.max;
-          return value;
-        }
-        break;
+        case "10log2" :
+          this.min = this.hasAttribute("min") ? parseInt(this.getAttribute("min")) : -80;
+          this.max = this.hasAttribute("max") ? parseInt(this.getAttribute("max")) : 0;
+          this.updateFunc = () => 
+          {
+            let value = 10 * Math.log2(this.rotationPercentage());
+            if(value < this.min) return this.min;
+            if(value > this.max) return this.max;
+            return value;
+          }
+          break;
+
+        case "antilog" :
+          this.min = this.hasAttribute("min") ? parseInt(this.getAttribute("min")) : 20;
+          this.max = this.hasAttribute("max") ? parseInt(this.getAttribute("max")) : 20000;
+          this.updateFunc = () => 
+          {
+            let value = Math.pow(10, (3 * this.rotationPercentage() - 2 )) * 2000;
+            console.log(`${this.rotationPercentage()}% is ${value}`);
+            if(value < this.min) return this.min;
+            if(value > this.max) return this.max;
+            return value;
+          }
+          break;
     }
 
     this.updateValue();

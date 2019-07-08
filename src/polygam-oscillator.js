@@ -164,12 +164,11 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     this.filterFreq = document.createElement("osc-filter-frequency");
     this.filterFreqKnob = document.createElement("polygam-knob");
-    this.filterFreqKnob.setAttribute("min","20");  
-    this.filterFreqKnob.setAttribute("max","20000"); 
+    this.filterFreqKnob.setAttribute("profile","antilog"); 
     this.filterFreqKnob.knobEvent = this.knobChange.bind(this);
     this.filterFreqKnob.name = "frequency";
     this.filterFreqKnob.initKnob();
-    this.filterFreqLabel = document.createElement("span");
+    this.filterFreqLabel = document.createElement("div");
     this.filterFreqLabel.innerHTML = "frequency";  
     this.filterFreq.appendChild(this.filterFreqKnob);  
     this.filterFreq.appendChild(this.filterFreqLabel);    
@@ -208,7 +207,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.container.appendChild(waveShapeTitle);   
     this.container.appendChild(filterShapeTitle);   
 
-
+    this.ready = true;
          
   } // end of constructor
 
@@ -223,7 +222,30 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
   knobChange(iKnob)
   {
+    if(!this.ready) return;
+
     this.oscillatorEvent(iKnob.name, iKnob.value);
+    switch(iKnob.name)
+    {          
+        case "detune" :
+          this.waveDetuneLabel.innerHTML = `detune<br>${iKnob.value.toFixed(0)}`;   
+          break;
+            
+        case "transpose" :
+            this.wavetransposeLabel.innerHTML = `transpose<br>${iKnob.value.toFixed(0)}`;   
+          break;
+  
+        case "frequency":
+            this.filterFreqLabel.innerHTML = `frequency<br>${iKnob.value.toFixed(0)}`;
+          break;
+        
+        case "q" :   
+          this.filterQLabel.innerHTML = `q<br>${iKnob.value.toFixed(3)}`;   
+          break;
+
+        default : console.error("Unknown knob name");
+    }
+
   }
   
 
