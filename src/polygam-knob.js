@@ -140,7 +140,6 @@ customElements.define("polygam-knob", class extends HTMLElement
           this.updateFunc = () => 
           {
             let value = Math.pow(10, (3 * this.rotationPercentage() - 2 )) * 2000;
-            console.log(`${this.rotationPercentage()}% is ${value}`);
             if(value < this.min) return this.min;
             if(value > this.max) return this.max;
             return value;

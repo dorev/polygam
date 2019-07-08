@@ -7,6 +7,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
+    this.id = 0;
 
     
     //--------------------------------------------------------
@@ -146,7 +147,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.wavetranspose.appendChild(this.wavetransposeLabel);    
 
     this.filterShape = document.createElement("osc-filter-shape");
-    ["lowpass", "highpass", "bandpass", "none"].forEach( filterType =>
+    ["lowpass", "highpass", "bandpass", "allpass"].forEach( filterType =>
     {
       let radioButton = document.createElement("input");
       radioButton.setAttribute("type", "radio");

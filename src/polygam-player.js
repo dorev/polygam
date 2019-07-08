@@ -11,10 +11,22 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volume = 50;
     this.tempo = 120;
     this.isPlaying = false;
-    this.synth = new Tone.PolySynth(10, Tone.Synth);
-    this.synth.volume.value = -50;
+
+    // Tone.js nodes
+    this.synth1 = new Tone.PolySynth(10, Tone.Synth);
+    this.synth1.volume.value = 0;
+
+    this.synth2 = new Tone.PolySynth(10, Tone.Synth);
+    this.synth2.volume.value = 0;
+
+    this.synths = [this.synth1, this.synth2];
+
     this.filter = new Tone.Filter();
-    this.synth.chain(this.filter, Tone.Master);
+    
+    // Nodes connection
+    this.synth1.connect(this.filter)
+    this.synth2.connect(this.filter)
+    this.filter.toMaster();
     
     //--------------------------------------------------------
     // CSS style
@@ -140,6 +152,8 @@ customElements.define("polygam-player", class extends HTMLElement
     
     this.tempoKnob.initKnob();
 
+    this.isReady = true;
+
   } // end of constructor
         
   // Callback
@@ -165,7 +179,7 @@ customElements.define("polygam-player", class extends HTMLElement
   {
     this.volume = iVolumeKnob.value;
     this.volumeValue.innerHTML = iVolumeKnob.value.toFixed(2) + " dB";
-    this.synth.volume.value = iVolumeKnob.value;
+    Tone.Master.volume.value = iVolumeKnob.value;
   }
   
   tempoEvent(iTempoKnob)
@@ -180,35 +194,37 @@ customElements.define("polygam-player", class extends HTMLElement
 
   playNotes(iNotesArray)
   {
+    if(!this.isReady) return;
+
     // attackrelease with Tone.js    
     if(!iNotesArray.some(n => n != null)) { return; }
     let notesToPlay = iNotesArray.filter(n => n != null);
 
-    this.synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
+    this.synths.forEach( synth =>
+    {
+      synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
+    });
   }
 
-  setOscillatorProperties(iProperties)
+  setOscillatorProperties(iProperties, iSynthId = 0)
   {
-    //console.log(iProperties);
-    //this.synth.set(iProperties);
+    let synth = this.synths[iSynthId];
+
     for(let iProperty in iProperties)
     {
       switch(iProperty)
       {
         case "type" :
-          this.synth.set({oscillator: {type: iProperties[iProperty] }});
+          synth.set({oscillator: {type: iProperties[iProperty] }});
           break;
         case "detune" :
-          this.synth.detune.value = iProperties[iProperty];
+          synth.detune.value = iProperties[iProperty];
           break;
         default :
           console.log("Invalid synth property")
           break;
       }
     }
-
-
-
   }
 
   setFilterProperties(iProperties)
