@@ -15,7 +15,7 @@ customElements.define("polygam-app", class extends HTMLElement
 
     this.prevTranspose = 0;
     this.prevDetune = 0;
-    this.prevFilter = { type: null, frequency: 1000, Q: 0.707 };
+    this.prevFilter = { type: "allpass", frequency: 1000, Q: 0.707 };
 
     
     //--------------------------------------------------------
@@ -165,7 +165,7 @@ customElements.define("polygam-app", class extends HTMLElement
   oscillatorEvent(iProperty, iValue)
   {
     //console.log(`property : ${iProperty}     value : ${iValue}`);
-
+/*
     switch(iProperty)
     {
       case "waveform" :
@@ -200,22 +200,43 @@ customElements.define("polygam-app", class extends HTMLElement
           this.player.setSynthProperties({ filter : {type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q} });
         break;
     }
+*/
 
-    //console.log(this.prevFilter);
 
-
-    // format propertyObject
-    /*
-    example:
+    switch(iProperty)
     {
-      "filter" : {
-        "type" : "highpass"
-      },
-      "oscillator" : {
-        "type" : 0.25
-      }
+      case "waveform" :
+          this.player.setOscillatorProperties({ type: iValue });
+        break;
+        
+      case "detune" :
+          this.prevDetune = iValue;
+          this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
+
+        break;
+          
+      case "transpose" :
+        this.prevTranspose = Math.floor(iValue) * 100;
+        this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
+        break;
+            
+      case "filterType" :
+        this.prevFilter.type = iValue;
+        this.player.setFilterProperties({ type: this.prevFilter.type, Q:this.prevFilter.Q, frequency: this.prevFilter.frequency,  });
+        break;
+
+      case "frequency":
+          this.prevFilter.frequency = iValue;
+          if(this.prevFilter.type === "none") { break; }
+          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+        break;
+      
+      case "q" :
+          this.prevFilter.Q = iValue;
+          if(this.prevFilter.type === "none") { break; }
+          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+        break;
     }
-    */
   }
 
 });

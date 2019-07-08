@@ -12,8 +12,9 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempo = 120;
     this.isPlaying = false;
     this.synth = new Tone.PolySynth(10, Tone.Synth);
-    this.synth.toMaster();
     this.synth.volume.value = -50;
+    this.filter = new Tone.Filter();
+    this.synth.chain(this.filter, Tone.Master);
     
     //--------------------------------------------------------
     // CSS style
@@ -186,12 +187,50 @@ customElements.define("polygam-player", class extends HTMLElement
     this.synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
   }
 
-  setSynthProperties(iProperties)
+  setOscillatorProperties(iProperties)
   {
-    console.log(iProperties);
-    this.synth.set(iProperties);
+    //console.log(iProperties);
+    //this.synth.set(iProperties);
+    for(let iProperty in iProperties)
+    {
+      switch(iProperty)
+      {
+        case "type" :
+          this.synth.set({oscillator: {type: iProperties[iProperty] }});
+          break;
+        case "detune" :
+          this.synth.detune.value = iProperties[iProperty];
+          break;
+        default :
+          console.log("Invalid synth property")
+          break;
+      }
+    }
+
+
 
   }
 
+  setFilterProperties(iProperties)
+  {
+    for(let iProperty in iProperties)
+    {
+      switch(iProperty)
+      {
+        case "type" :
+          this.filter.type = iProperties[iProperty];
+          break;
+        case "Q" :
+          this.filter.Q.value = iProperties[iProperty];
+          break;
+        case "frequency" :
+          this.filter.frequency.value = iProperties[iProperty];
+          break;
+        default :
+          console.log("Invalid filter property")
+          break;
+      }
+    }
+  }
   
 });
