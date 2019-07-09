@@ -7,8 +7,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-    this.id = 0;
-
+    this.oscId = 0;
     
     //--------------------------------------------------------
     // CSS style

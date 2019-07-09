@@ -30,15 +30,12 @@
         X graph tonnetze logic <br>
         X complete connections between elements for chord propagation<br>
         X refactor chords (add highlights) <br>
-        # single osc feeding polysynth properties <br>
-        | clean-up page <br>
+        X single osc feeding polysynth properties <br>
+        # dual osc with mixer <br>
+        | UI design <br>
         -> publish to gather feedback<br>
-        | dual oscillators with mixing, player audio flow <br>
-        | enlarge current important scales, don't necessary add link if polarity is to low <br>
-        | polish knob smoothness, enable touch control, add log scale<br>
-        | tonnetze logic for random generation <br>
-        | sequencer logic for random generation <br>
-        | update sequencer to SVG to edit note size <br>
+        | improve graph logic<br>
+        | update sequencer to SVG (edit note size) <br>
         <br><br><br>   
     </div> 
 </div>
@@ -92,6 +89,9 @@
     }
 
     let timestamp;    
+    let head = document.querySelector("head");
+    let blog = document.querySelector(".blog");
+
     function init(sources, callback)
     {
         if(!sources.length)
@@ -107,18 +107,18 @@
         let e = document.createElement("script");
         e.setAttribute("src", source);
         e.setAttribute("type", "text/javascript");
-        document.querySelector("head").appendChild(e);
+        head.appendChild(e);
         
         e.addEventListener('load', () => 
         {
-            document.querySelector(".blog").innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
+            blog.innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
             init(sources, callback);
         });
     }
     
     function isLoaded()
     {
-        document.querySelector(".blog").innerHTML += "Init complete!";
+        blog.innerHTML += "Init complete!";
         document.querySelector(".app").appendChild(document.createElement("polygam-app"));
     }
     
