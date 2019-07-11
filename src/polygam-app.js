@@ -15,7 +15,7 @@ customElements.define("polygam-app", class extends HTMLElement
 
     this.prevTranspose = 0;
     this.prevDetune = 0;
-    this.prevFilter = { type: "allpass", frequency: 1000, Q: 0.707 };
+    this.prevFilters = [{ type: "allpass", frequency: 1000, Q: 0.707 }, { type: "allpass", frequency: 1000, Q: 0.707 }];
 
     
     //--------------------------------------------------------
@@ -176,41 +176,39 @@ customElements.define("polygam-app", class extends HTMLElement
 
   }
 
-  oscillatorEvent(iProperty, iValue)
+  oscillatorEvent(iProperty, iValue, iOscId = 0)
   {
+    console.log(`${iProperty}\t${iValue}\t${iOscId}`);
 
     switch(iProperty)
     {
       case "waveform" :
-          this.player.setOscillatorProperties({ type: iValue });
+          this.player.setOscillatorProperties({ type: iValue }, iOscId);
         break;
         
       case "detune" :
           this.prevDetune = iValue;
-          this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
-
+          this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
         break;
           
       case "transpose" :
         this.prevTranspose = Math.floor(iValue) * 100;
-        this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
+        this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
         break;
             
       case "filterType" :
-        this.prevFilter.type = iValue;
-        this.player.setFilterProperties({ type: this.prevFilter.type, Q:this.prevFilter.Q, frequency: this.prevFilter.frequency,  });
+        this.prevFilters[iOscId].type = iValue;
+        this.player.setFilterProperties({ type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
         break;
 
       case "frequency":
-          this.prevFilter.frequency = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+          this.prevFilters[iOscId].frequency = iValue;
+          this.player.setFilterProperties({type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
         break;
       
       case "q" :
-          this.prevFilter.Q = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+          this.prevFilters[iOscId].Q = iValue;
+          this.player.setFilterProperties({type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
         break;
     }
   }

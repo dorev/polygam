@@ -14,19 +14,23 @@ customElements.define("polygam-player", class extends HTMLElement
 
     // Tone.js nodes
     this.synth1 = new Tone.PolySynth(10, Tone.Synth);
-    this.synth1.volume.value = 0;
+    this.synth1.volume.value = -6;
 
     this.synth2 = new Tone.PolySynth(10, Tone.Synth);
-    this.synth2.volume.value = 0;
+    this.synth2.volume.value = -6;
 
     this.synths = [this.synth1, this.synth2];
 
-    this.filter = new Tone.Filter();
+    this.filter1 = new Tone.Filter();
+    this.filter2 = new Tone.Filter();
+
+    this.filters = [this.filter1, this.filter2];
     
     // Nodes connection
-    this.synth1.connect(this.filter)
-    this.synth2.connect(this.filter)
-    this.filter.toMaster();
+    this.synth1.chain(this.filter1, Tone.Master)
+    this.synth2.chain(this.filter2, Tone.Master)
+    //this.filter1.toMaster();
+    //this.filter2.toMaster();
     
     //--------------------------------------------------------
     // CSS style
@@ -227,20 +231,24 @@ customElements.define("polygam-player", class extends HTMLElement
     }
   }
 
-  setFilterProperties(iProperties)
+  setFilterProperties(iProperties, iFilterId = 0)
   {
+
+
+    let filter = this.filters[iFilterId];
+    console.log(`${iProperties} \nfilterId = ${iFilterId}`);
     for(let iProperty in iProperties)
     {
       switch(iProperty)
       {
         case "type" :
-          this.filter.type = iProperties[iProperty];
+          filter.type = iProperties[iProperty];
           break;
         case "Q" :
-          this.filter.Q.value = iProperties[iProperty];
+          filter.Q.value = iProperties[iProperty];
           break;
         case "frequency" :
-          this.filter.frequency.value = iProperties[iProperty];
+          filter.frequency.value = iProperties[iProperty];
           break;
         default :
           console.log("Invalid filter property")

@@ -217,14 +217,15 @@ customElements.define("polygam-oscillator", class extends HTMLElement
   radioButtonChange(event)
   {
     let button = event.target;
-    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"));
+    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"), this.oscId);
   }
 
   knobChange(iKnob)
   {
     if(!this.ready) return;
 
-    this.oscillatorEvent(iKnob.name, iKnob.value);
+    this.oscillatorEvent(iKnob.name, iKnob.value, this.oscId);
+    
     switch(iKnob.name)
     {          
         case "detune" :
