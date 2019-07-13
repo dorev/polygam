@@ -15,7 +15,17 @@ customElements.define("polygam-app", class extends HTMLElement
 
     this.prevTranspose = 0;
     this.prevDetune = 0;
-    this.prevFilters = [{ type: "allpass", frequency: 1000, Q: 0.707 }, { type: "allpass", frequency: 1000, Q: 0.707 }];
+    this.prevFilters = 
+    [
+      {
+        lowpass : 20000,
+        highpass : 20
+      },
+      {
+        lowpass : 20000,
+        highpass : 20
+      }
+    ];
 
     
     //--------------------------------------------------------
@@ -195,20 +205,20 @@ customElements.define("polygam-app", class extends HTMLElement
         this.prevTranspose = Math.floor(iValue) * 100;
         this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
         break;
-            
+      /*      
       case "filterType" :
         this.prevFilters[iOscId].type = iValue;
         this.player.setFilterProperties({ type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
         break;
-
-      case "frequency":
-          this.prevFilters[iOscId].frequency = iValue;
-          this.player.setFilterProperties({type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
+      */
+      case "lowpass":
+          this.prevFilters[iOscId].lowpass = iValue;
+          this.player.setFilterProperties({ frequency: this.prevFilters[iOscId].lowpass }, iOscId, "lowpass");
         break;
       
-      case "q" :
-          this.prevFilters[iOscId].Q = iValue;
-          this.player.setFilterProperties({type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
+      case "highpass" :
+          this.prevFilters[iOscId].highpass = iValue;
+          this.player.setFilterProperties({ frequency: this.prevFilters[iOscId].highpass }, iOscId, "highpass");
         break;
     }
   }

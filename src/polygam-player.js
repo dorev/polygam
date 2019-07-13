@@ -19,18 +19,32 @@ customElements.define("polygam-player", class extends HTMLElement
     this.synth2 = new Tone.PolySynth(10, Tone.Synth);
     this.synth2.volume.value = -6;
 
-    this.synths = [this.synth1, this.synth2];
+    this.synths = 
+    [
+      this.synth1, 
+      this.synth2
+    ];
 
-    this.filter1 = new Tone.Filter();
-    this.filter2 = new Tone.Filter();
+    this.filter1LP = new Tone.Filter(20000, "lowpass", -24);
+    this.filter1HP = new Tone.Filter(20, "highpass", -24);
+    this.filter2LP = new Tone.Filter(20000, "lowpass", -24);
+    this.filter2HP = new Tone.Filter(20, "highpass", -24);
 
-    this.filters = [this.filter1, this.filter2];
+    this.filters = 
+    [
+      {
+        "lowpass" : this.filter1LP, 
+        "highpass" : this.filter1HP
+      },
+      {
+        "lowpass" : this.filter2LP, 
+        "highpass" : this.filter2HP
+      }
+    ];
     
     // Nodes connection
-    this.synth1.chain(this.filter1, Tone.Master)
-    this.synth2.chain(this.filter2, Tone.Master)
-    //this.filter1.toMaster();
-    //this.filter2.toMaster();
+    this.synth1.chain(this.filter1HP, this.filter1LP, Tone.Master)
+    this.synth2.chain(this.filter2HP, this.filter2LP, Tone.Master)
     
     //--------------------------------------------------------
     // CSS style
@@ -231,24 +245,18 @@ customElements.define("polygam-player", class extends HTMLElement
     }
   }
 
-  setFilterProperties(iProperties, iFilterId = 0)
+  setFilterProperties(iProperties, iOscId = 0, iFilterType)
   {
+    let filter = this.filters[iOscId];
+    console.log(iProperties);
+    //console.log(filter);
 
-
-    let filter = this.filters[iFilterId];
-    console.log(`${iProperties} \nfilterId = ${iFilterId}`);
     for(let iProperty in iProperties)
     {
       switch(iProperty)
       {
-        case "type" :
-          filter.type = iProperties[iProperty];
-          break;
-        case "Q" :
-          filter.Q.value = iProperties[iProperty];
-          break;
         case "frequency" :
-          filter.frequency.value = iProperties[iProperty];
+          filter[iFilterType].frequency.value = iProperties[iProperty];
           break;
         default :
           console.log("Invalid filter property")

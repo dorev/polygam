@@ -145,6 +145,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.wavetranspose.appendChild(this.wavetransposeKnob); 
     this.wavetranspose.appendChild(this.wavetransposeLabel);    
 
+    /*
     this.filterShape = document.createElement("osc-filter-shape");
     ["lowpass", "highpass", "bandpass", "allpass"].forEach( filterType =>
     {
@@ -161,19 +162,31 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       this.filterShape.appendChild(radioButton);
       this.filterShape.appendChild(buttonLabel);
     });
+    */
 
-    this.filterFreq = document.createElement("osc-filter-frequency");
-    this.filterFreqKnob = document.createElement("polygam-knob");
-    this.filterFreqKnob.setAttribute("profile","antilog"); 
-    this.filterFreqKnob.knobEvent = this.knobChange.bind(this);
-    this.filterFreqKnob.name = "frequency";
-    this.filterFreqKnob.initKnob();
-    this.filterFreqLabel = document.createElement("div");
-    this.filterFreqLabel.innerHTML = "frequency";  
-    this.filterFreq.appendChild(this.filterFreqKnob);  
-    this.filterFreq.appendChild(this.filterFreqLabel);    
-    //this.filterFreq.innerHTML = "filterFreq";
+    this.filterLowpass = document.createElement("osc-filter-lowpass");
+    this.filterLowpassKnob = document.createElement("polygam-knob");
+    this.filterLowpassKnob.setAttribute("profile","antilog"); 
+    this.filterLowpassKnob.knobEvent = this.knobChange.bind(this);
+    this.filterLowpassKnob.name = "lowpass";
+    this.filterLowpassKnob.initKnob();
+    this.filterLowpassLabel = document.createElement("div");
+    this.filterLowpassLabel.innerHTML = "lowpass";  
+    this.filterLowpass.appendChild(this.filterLowpassKnob);  
+    this.filterLowpass.appendChild(this.filterLowpassLabel);  
 
+    this.filterHighpass = document.createElement("osc-filter-highpass");
+    this.filterHighpassKnob = document.createElement("polygam-knob");
+    this.filterHighpassKnob.setAttribute("profile","antilog"); 
+    this.filterHighpassKnob.knobEvent = this.knobChange.bind(this);
+    this.filterHighpassKnob.name = "highpass";
+    this.filterHighpassKnob.initKnob();
+    this.filterHighpassLabel = document.createElement("div");
+    this.filterHighpassLabel.innerHTML = "highpass";  
+    this.filterHighpass.appendChild(this.filterHighpassKnob);  
+    this.filterHighpass.appendChild(this.filterHighpassLabel);    
+
+    /*
     this.filterQ = document.createElement("osc-filter-q");
     this.filterQKnob = document.createElement("polygam-knob");
     this.filterQKnob.setAttribute("min","0");  
@@ -186,13 +199,13 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterQ.appendChild(this.filterQKnob);      
     this.filterQ.appendChild(this.filterQLabel);       
     //this.filterQ.innerHTML = "filterQ";
-
+*/
     this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetune);
     this.container.appendChild(this.wavetranspose);
-    this.container.appendChild(this.filterShape);
-    this.container.appendChild(this.filterFreq);
-    this.container.appendChild(this.filterQ);   
+    //this.container.appendChild(this.filterShape);
+    this.container.appendChild(this.filterLowpass);
+    this.container.appendChild(this.filterHighpass);   
 
 
     
@@ -236,12 +249,12 @@ customElements.define("polygam-oscillator", class extends HTMLElement
             this.wavetransposeLabel.innerHTML = `transpose<br>${iKnob.value.toFixed(0)}`;   
           break;
   
-        case "frequency":
-            this.filterFreqLabel.innerHTML = `frequency<br>${iKnob.value.toFixed(0)}`;
+        case "lowpass":
+            this.filterLowpassLabel.innerHTML = `lowpass<br>${iKnob.value.toFixed(0)}`;
           break;
         
-        case "q" :   
-          this.filterQLabel.innerHTML = `q<br>${iKnob.value.toFixed(3)}`;   
+        case "highpass" :   
+          this.filterHighpassLabel.innerHTML = `highpass<br>${iKnob.value.toFixed(0)}`;   
           break;
 
         default : console.error("Unknown knob name");
