@@ -205,7 +205,6 @@ customElements.define("polygam-app", class extends HTMLElement
         
         this.prevTranspose = (iValue >= 0 ? Math.floor(iValue) : Math.ceil(iValue)) * 100;
         this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
-        console.log("value : ", iValue, "   computed : ", this.prevTranspose);
 
         break;
 
