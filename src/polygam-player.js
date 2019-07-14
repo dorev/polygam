@@ -149,7 +149,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volumeLabel.innerHTML = "VOL";
     this.container.appendChild(this.volumeLabel);
     
-    this.volumeKnob.initKnob();
+    this.volumeKnob.initKnob(0.25);
 
     // Tempo knob
     this.tempoKnob = document.createElement("polygam-knob");
@@ -168,7 +168,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoLabel.innerHTML = "TEMPO";
     this.container.appendChild(this.tempoLabel);
     
-    this.tempoKnob.initKnob();
+    this.tempoKnob.initKnob(0.470);
 
     this.isReady = true;
 

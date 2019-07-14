@@ -202,15 +202,13 @@ customElements.define("polygam-app", class extends HTMLElement
         break;
           
       case "transpose" :
-        this.prevTranspose = Math.floor(iValue) * 100;
+        
+        this.prevTranspose = (iValue >= 0 ? Math.floor(iValue) : Math.ceil(iValue)) * 100;
         this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
+        console.log("value : ", iValue, "   computed : ", this.prevTranspose);
+
         break;
-      /*      
-      case "filterType" :
-        this.prevFilters[iOscId].type = iValue;
-        this.player.setFilterProperties({ type: this.prevFilters[iOscId].type, frequency: this.prevFilters[iOscId].frequency, Q:this.prevFilters[iOscId].Q }, iOscId);
-        break;
-      */
+
       case "lowpass":
           this.prevFilters[iOscId].lowpass = iValue;
           this.player.setFilterProperties({ frequency: this.prevFilters[iOscId].lowpass }, iOscId, "lowpass");
