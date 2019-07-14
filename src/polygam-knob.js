@@ -69,7 +69,7 @@ customElements.define("polygam-knob", class extends HTMLElement
     // Knob cursor
     this.knobCursor = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
     this.knobCursor.setAttribute("cx", s*0.5);
-    this.knobCursor.setAttribute("cy", s*0.2);
+    this.knobCursor.setAttribute("cy", s*0.25);
     this.knobCursor.setAttribute("r", s*0.1);
     this.knobCursor.setAttribute("fill","#000");   
     this.svg.appendChild(this.knobCursor);
@@ -104,7 +104,7 @@ customElements.define("polygam-knob", class extends HTMLElement
   // Callback
   knobEvent() {}  
 
-  initKnob()
+  initKnob(iInitialPosition)
   {
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;    
     this.profile = this.hasAttribute("profile") ? this.getAttribute("profile") : "equalrange";   
@@ -140,7 +140,6 @@ customElements.define("polygam-knob", class extends HTMLElement
           this.updateFunc = () => 
           {
             let value = Math.pow(10, (3 * this.rotationPercentage() - 2 )) * 2000;
-            console.log(`${this.rotationPercentage()}% is ${value}`);
             if(value < this.min) return this.min;
             if(value > this.max) return this.max;
             return value;
@@ -148,8 +147,16 @@ customElements.define("polygam-knob", class extends HTMLElement
           break;
     }
 
-    this.updateValue();
+    if(iInitialPosition != undefined)
+    {
+      this.initialRotation = iInitialPosition * 300 - 150;
+      this.initialMouseY = 0;
+      this.mouseY = 0;
+      this.rotate();
+    }
 
+    this.updateValue();
+    this.knobEvent(this);
   }
   
   rotate()

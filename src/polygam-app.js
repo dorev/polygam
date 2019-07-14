@@ -15,7 +15,17 @@ customElements.define("polygam-app", class extends HTMLElement
 
     this.prevTranspose = 0;
     this.prevDetune = 0;
-    this.prevFilter = { type: "allpass", frequency: 1000, Q: 0.707 };
+    this.prevFilters = 
+    [
+      {
+        lowpass : 20000,
+        highpass : 20
+      },
+      {
+        lowpass : 20000,
+        highpass : 20
+      }
+    ];
 
     
     //--------------------------------------------------------
@@ -30,7 +40,7 @@ customElements.define("polygam-app", class extends HTMLElement
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: auto auto auto auto 100px;
+      grid-template-rows: auto auto auto auto auto 100px;
       place-items: stretch;
     }
 
@@ -58,10 +68,16 @@ customElements.define("polygam-app", class extends HTMLElement
       grid-row : 4/5;
     }
 
-    .app-oscillator
+    .app-oscillator0
     {   
       place-self: stretch; 
       grid-row : 5/6;
+    }
+
+    .app-oscillator0
+    {   
+      place-self: stretch; 
+      grid-row : 6/7;
     }
     `;  
     
@@ -97,9 +113,16 @@ customElements.define("polygam-app", class extends HTMLElement
     this.container.appendChild(this.sequencer);
 
     // Create oscillator
-    this.oscillator = document.createElement("polygam-oscillator");
-    this.oscillator.setAttribute("class", "app-oscillator");
-    this.container.appendChild(this.oscillator);
+    this.oscillator0 = document.createElement("polygam-oscillator");
+    this.oscillator0.setAttribute("class", "app-oscillator0");
+    this.oscillator0.oscId = 0;
+    this.container.appendChild(this.oscillator0);
+
+    // Create oscillator
+    this.oscillator1 = document.createElement("polygam-oscillator");
+    this.oscillator1.setAttribute("class", "app-oscillator1");
+    this.oscillator1.oscId = 1;
+    this.container.appendChild(this.oscillator1);
     
 
     //--------------------------------------------------------
@@ -121,7 +144,8 @@ customElements.define("polygam-app", class extends HTMLElement
     // Graph calls main app
     this.graph.progressionChanged = this.progressionChanged.bind(this);
 
-    this.oscillator.oscillatorEvent = this.oscillatorEvent.bind(this);
+    this.oscillator0.oscillatorEvent = this.oscillatorEvent.bind(this);
+    this.oscillator1.oscillatorEvent = this.oscillatorEvent.bind(this);
 
   } // end of constructor
 
@@ -162,80 +186,36 @@ customElements.define("polygam-app", class extends HTMLElement
 
   }
 
-  oscillatorEvent(iProperty, iValue)
+  oscillatorEvent(iProperty, iValue, iOscId = 0)
   {
-
-    /*
-    console.log(`property : ${iProperty}     value : ${iValue}`);
-    switch(iProperty)
-    {
-      case "waveform" :
-          this.player.setSynthProperties({ oscillator: { type: iValue } });
-        break;
-        
-      case "detune" :
-          this.prevDetune = iValue;
-          this.player.setSynthProperties({ detune: this.prevDetune + this.prevTranspose });
-
-        break;
-          
-      case "transpose" :
-        this.prevTranspose = Math.floor(iValue) * 100;
-        this.player.setSynthProperties({ detune: this.prevDetune + this.prevTranspose });
-        break;
-            
-      case "filterType" :
-        this.prevFilter.type = iValue;
-        this.player.setSynthProperties({ filter: { type: null, frequency: null, Q:null }});
-        break;
-
-      case "frequency":
-          this.prevFilter.frequency = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setSynthProperties({ filter : {type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q} });
-        break;
-      
-      case "q" :
-          this.prevFilter.Q = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setSynthProperties({ filter : {type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q} });
-        break;
-    }
-*/
-
+    console.log(`${iProperty}\t${iValue}\t${iOscId}`);
 
     switch(iProperty)
     {
       case "waveform" :
-          this.player.setOscillatorProperties({ type: iValue });
+          this.player.setOscillatorProperties({ type: iValue }, iOscId);
         break;
         
       case "detune" :
           this.prevDetune = iValue;
-          this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
-
+          this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
         break;
           
       case "transpose" :
-        this.prevTranspose = Math.floor(iValue) * 100;
-        this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose });
-        break;
-            
-      case "filterType" :
-        this.prevFilter.type = iValue;
-        this.player.setFilterProperties({ type: this.prevFilter.type, Q:this.prevFilter.Q, frequency: this.prevFilter.frequency,  });
+        
+        this.prevTranspose = (iValue >= 0 ? Math.floor(iValue) : Math.ceil(iValue)) * 100;
+        this.player.setOscillatorProperties({ detune: this.prevDetune + this.prevTranspose }, iOscId);
+
         break;
 
-      case "frequency":
-          this.prevFilter.frequency = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+      case "lowpass":
+          this.prevFilters[iOscId].lowpass = iValue;
+          this.player.setFilterProperties({ frequency: this.prevFilters[iOscId].lowpass }, iOscId, "lowpass");
         break;
       
-      case "q" :
-          this.prevFilter.Q = iValue;
-          if(this.prevFilter.type === "none") { break; }
-          this.player.setFilterProperties({type: this.prevFilter.type, frequency: this.prevFilter.frequency, Q:this.prevFilter.Q});
+      case "highpass" :
+          this.prevFilters[iOscId].highpass = iValue;
+          this.player.setFilterProperties({ frequency: this.prevFilters[iOscId].highpass }, iOscId, "highpass");
         break;
     }
   }

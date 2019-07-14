@@ -7,7 +7,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     //--------------------------------------------------------
     // Custom element members
     //--------------------------------------------------------    
-
+    this.oscId = 0;
     
     //--------------------------------------------------------
     // CSS style
@@ -18,37 +18,19 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     oscillator-container
     {
       display: grid;
-      grid-template-columns : repeat(4, 1fr);
-      grid-template-row : repeat(3, 1fr);
+      grid-template-columns : repeat(5, 1fr);
       grid-gap : 2px;
-    }
-
-
-    .wave-shape-title
-    {      
-      grid-column : 1/3;
-      grid-row    : 1/2;
-      place-self: center;
-    }
-    .filter-shape-title
-    {      
-      grid-column : 3/5;
-      grid-row    : 1/2;
-      place-self: center;
-      min-height : 20px;
     }
 
     osc-wave-shape
     {      
-      grid-column : 1/3;
-      grid-row    : 2/3;
+      grid-column : 1/2;
       place-self: center;
     }
 
     osc-wave-detune
     {
-      grid-column : 1/2;
-      grid-row    : 3/4;
+      grid-column : 2/3;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -57,35 +39,25 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     osc-wave-transpose
     {
-      grid-column : 2/3;
-      grid-row    : 3/4;
-      place-self: center;
-      min-height : 50px;
-      min-width : 50px;
-      text-align: center;
-    }
-
-    osc-filter-shape
-    {
-      grid-column : 3/5;
-      grid-row    : 2/3;
-      place-self: center;
-    }
-
-    osc-filter-frequency
-    {
       grid-column : 3/4;
-      grid-row    : 3/4;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
       text-align: center;
     }
 
-    osc-filter-q
+    osc-filter-lowpass
     {
       grid-column : 4/5;
-      grid-row    : 3/4;
+      place-self: center;
+      min-height : 50px;
+      min-width : 50px;
+      text-align: center;
+    }
+
+    osc-filter-highpass
+    {
+      grid-column : 5/6;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -101,7 +73,6 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     shadow.appendChild(style);  
 
     this.container = document.createElement("oscillator-container");
-    //this.container.setAttribute("class", "oscillator-container");
     shadow.appendChild(this.container);  
 
     this.waveShape = document.createElement("osc-wave-shape");
@@ -115,7 +86,10 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       
       let buttonLabel = document.createElement("label");      
       buttonLabel.setAttribute("for", waveform);
-      buttonLabel.innerHTML = waveform;
+      buttonLabel.innerHTML = waveform === "sine"     ? "sin" :
+                              waveform === "square"   ? "squ" :
+                              waveform === "sawtooth" ? "saw" :
+                              waveform === "triangle" ? "tri" : "NULL" ;
 
       this.waveShape.appendChild(radioButton);
       this.waveShape.appendChild(buttonLabel);
@@ -127,104 +101,80 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetuneKnob.setAttribute("max","100");     
     this.waveDetuneKnob.knobEvent = this.knobChange.bind(this);
     this.waveDetuneKnob.name = "detune";
-    this.waveDetuneKnob.initKnob();
+    this.waveDetuneKnob.initKnob(0.5);
     this.waveDetuneLabel = document.createElement("span");
     this.waveDetuneLabel.innerHTML = "detune";
     this.waveDetune.appendChild(this.waveDetuneKnob); 
     this.waveDetune.appendChild(this.waveDetuneLabel);
 
-    this.wavetranspose = document.createElement("osc-wave-transpose");
-    this.wavetransposeKnob = document.createElement("polygam-knob");
-    this.wavetransposeKnob.setAttribute("min","-12");  
-    this.wavetransposeKnob.setAttribute("max","12");   
-    this.wavetransposeKnob.knobEvent = this.knobChange.bind(this);
-    this.wavetransposeKnob.name = "transpose";    
-    this.wavetransposeKnob.initKnob();
-    this.wavetransposeLabel = document.createElement("span");
-    this.wavetransposeLabel.innerHTML = "transpose";  
-    this.wavetranspose.appendChild(this.wavetransposeKnob); 
-    this.wavetranspose.appendChild(this.wavetransposeLabel);    
+    this.waveTranspose = document.createElement("osc-wave-transpose");
+    this.waveTransposeKnob = document.createElement("polygam-knob");
+    this.waveTransposeKnob.setAttribute("min","-12");  
+    this.waveTransposeKnob.setAttribute("max","12");   
+    this.waveTransposeKnob.knobEvent = this.knobChange.bind(this);
+    this.waveTransposeKnob.name = "transpose";    
+    this.waveTransposeKnob.initKnob(0.5);
+    this.waveTransposeLabel = document.createElement("span");
+    this.waveTransposeLabel.innerHTML = "transpose";  
+    this.waveTranspose.appendChild(this.waveTransposeKnob); 
+    this.waveTranspose.appendChild(this.waveTransposeLabel);    
 
-    this.filterShape = document.createElement("osc-filter-shape");
-    ["lowpass", "highpass", "bandpass", "none"].forEach( filterType =>
-    {
-      let radioButton = document.createElement("input");
-      radioButton.setAttribute("type", "radio");
-      radioButton.setAttribute("name", "filterType");
-      radioButton.setAttribute("value", filterType);
-      radioButton.addEventListener("change", this.radioButtonChange.bind(this));
-      
-      let buttonLabel = document.createElement("label");      
-      buttonLabel.setAttribute("for", filterType);
-      buttonLabel.innerHTML = filterType;
+    this.filterLowpass = document.createElement("osc-filter-lowpass");
+    this.filterLowpassKnob = document.createElement("polygam-knob");
+    this.filterLowpassKnob.setAttribute("profile","antilog"); 
+    this.filterLowpassKnob.knobEvent = this.knobChange.bind(this);
+    this.filterLowpassKnob.name = "lowpass";
+    this.filterLowpassKnob.initKnob(1);
+    this.filterLowpassLabel = document.createElement("div");
+    this.filterLowpassLabel.innerHTML = "lowpass";  
+    this.filterLowpass.appendChild(this.filterLowpassKnob);  
+    this.filterLowpass.appendChild(this.filterLowpassLabel);  
 
-      this.filterShape.appendChild(radioButton);
-      this.filterShape.appendChild(buttonLabel);
-    });
-
-    this.filterFreq = document.createElement("osc-filter-frequency");
-    this.filterFreqKnob = document.createElement("polygam-knob");
-    this.filterFreqKnob.setAttribute("profile","antilog"); 
-    this.filterFreqKnob.knobEvent = this.knobChange.bind(this);
-    this.filterFreqKnob.name = "frequency";
-    this.filterFreqKnob.initKnob();
-    this.filterFreqLabel = document.createElement("div");
-    this.filterFreqLabel.innerHTML = "frequency";  
-    this.filterFreq.appendChild(this.filterFreqKnob);  
-    this.filterFreq.appendChild(this.filterFreqLabel);    
-    //this.filterFreq.innerHTML = "filterFreq";
-
-    this.filterQ = document.createElement("osc-filter-q");
-    this.filterQKnob = document.createElement("polygam-knob");
-    this.filterQKnob.setAttribute("min","0");  
-    this.filterQKnob.setAttribute("max","4"); 
-    this.filterQKnob.knobEvent = this.knobChange.bind(this);
-    this.filterQKnob.name = "q"; 
-    this.filterQKnob.initKnob();
-    this.filterQLabel = document.createElement("span");
-    this.filterQLabel.innerHTML = "q";   
-    this.filterQ.appendChild(this.filterQKnob);      
-    this.filterQ.appendChild(this.filterQLabel);       
-    //this.filterQ.innerHTML = "filterQ";
+    this.filterHighpass = document.createElement("osc-filter-highpass");
+    this.filterHighpassKnob = document.createElement("polygam-knob");
+    this.filterHighpassKnob.setAttribute("profile","antilog"); 
+    this.filterHighpassKnob.knobEvent = this.knobChange.bind(this);
+    this.filterHighpassKnob.name = "highpass";
+    this.filterHighpassKnob.initKnob(0);
+    this.filterHighpassLabel = document.createElement("div");
+    this.filterHighpassLabel.innerHTML = "highpass";  
+    this.filterHighpass.appendChild(this.filterHighpassKnob);  
+    this.filterHighpass.appendChild(this.filterHighpassLabel);    
 
     this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetune);
-    this.container.appendChild(this.wavetranspose);
-    this.container.appendChild(this.filterShape);
-    this.container.appendChild(this.filterFreq);
-    this.container.appendChild(this.filterQ);   
-
-
-    
-    let waveShapeTitle = document.createElement("div");
-    waveShapeTitle.setAttribute("class","wave-shape-title"); 
-    waveShapeTitle.innerHTML = "waveform";
-
-    let filterShapeTitle = document.createElement("div");
-    filterShapeTitle.setAttribute("class","filter-shape-title"); 
-    filterShapeTitle.innerHTML = "filter";
-
-    this.container.appendChild(waveShapeTitle);   
-    this.container.appendChild(filterShapeTitle);   
+    this.container.appendChild(this.waveTranspose);
+    this.container.appendChild(this.filterLowpass);
+    this.container.appendChild(this.filterHighpass);   
 
     this.ready = true;
+
+    // Update knobs once
+    this.knobChange(this.waveDetuneKnob);
+    this.knobChange(this.waveTransposeKnob);
+    this.knobChange(this.filterLowpassKnob);
+    this.knobChange(this.filterHighpassKnob);
+    this.waveShape.querySelector("input[value='sine']").checked = true;
+    setTimeout( () => this.oscillatorEvent("waveform", "sine", this.oscId), 500);
          
   } // end of constructor
 
   // Callback
-  oscillatorEvent(property, value){};
+  oscillatorEvent(property, value, oscId){};
 
   radioButtonChange(event)
   {
+    if(!this.ready) return;
     let button = event.target;
-    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"));
+    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"), this.oscId);
   }
 
   knobChange(iKnob)
   {
     if(!this.ready) return;
 
-    this.oscillatorEvent(iKnob.name, iKnob.value);
+    this.oscillatorEvent(iKnob.name, iKnob.value, this.oscId);
+    
     switch(iKnob.name)
     {          
         case "detune" :
@@ -232,15 +182,16 @@ customElements.define("polygam-oscillator", class extends HTMLElement
           break;
             
         case "transpose" :
-            this.wavetransposeLabel.innerHTML = `transpose<br>${iKnob.value.toFixed(0)}`;   
+            let value = (iKnob.value >= 0 ? Math.floor(iKnob.value) : Math.ceil(iKnob.value))
+            this.waveTransposeLabel.innerHTML = `transpose<br>${value.toFixed(0)}`;   
           break;
   
-        case "frequency":
-            this.filterFreqLabel.innerHTML = `frequency<br>${iKnob.value.toFixed(0)}`;
+        case "lowpass":
+            this.filterLowpassLabel.innerHTML = `lowpass<br>${iKnob.value.toFixed(0)}`;
           break;
         
-        case "q" :   
-          this.filterQLabel.innerHTML = `q<br>${iKnob.value.toFixed(3)}`;   
+        case "highpass" :   
+          this.filterHighpassLabel.innerHTML = `highpass<br>${iKnob.value.toFixed(0)}`;   
           break;
 
         default : console.error("Unknown knob name");

@@ -11,10 +11,40 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volume = 50;
     this.tempo = 120;
     this.isPlaying = false;
-    this.synth = new Tone.PolySynth(10, Tone.Synth);
-    this.synth.volume.value = -50;
-    this.filter = new Tone.Filter();
-    this.synth.chain(this.filter, Tone.Master);
+
+    // Tone.js nodes
+    this.synth1 = new Tone.PolySynth(10, Tone.Synth);
+    this.synth1.volume.value = -6;
+
+    this.synth2 = new Tone.PolySynth(10, Tone.Synth);
+    this.synth2.volume.value = -6;
+
+    this.synths = 
+    [
+      this.synth1, 
+      this.synth2
+    ];
+
+    this.filter1LP = new Tone.Filter(20000, "lowpass", -24);
+    this.filter1HP = new Tone.Filter(20, "highpass", -24);
+    this.filter2LP = new Tone.Filter(20000, "lowpass", -24);
+    this.filter2HP = new Tone.Filter(20, "highpass", -24);
+
+    this.filters = 
+    [
+      {
+        "lowpass" : this.filter1LP, 
+        "highpass" : this.filter1HP
+      },
+      {
+        "lowpass" : this.filter2LP, 
+        "highpass" : this.filter2HP
+      }
+    ];
+    
+    // Nodes connection
+    this.synth1.chain(this.filter1HP, this.filter1LP, Tone.Master)
+    this.synth2.chain(this.filter2HP, this.filter2LP, Tone.Master)
     
     //--------------------------------------------------------
     // CSS style
@@ -119,7 +149,7 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volumeLabel.innerHTML = "VOL";
     this.container.appendChild(this.volumeLabel);
     
-    this.volumeKnob.initKnob();
+    this.volumeKnob.initKnob(0.25);
 
     // Tempo knob
     this.tempoKnob = document.createElement("polygam-knob");
@@ -138,7 +168,9 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoLabel.innerHTML = "TEMPO";
     this.container.appendChild(this.tempoLabel);
     
-    this.tempoKnob.initKnob();
+    this.tempoKnob.initKnob(0.470);
+
+    this.isReady = true;
 
   } // end of constructor
         
@@ -165,7 +197,7 @@ customElements.define("polygam-player", class extends HTMLElement
   {
     this.volume = iVolumeKnob.value;
     this.volumeValue.innerHTML = iVolumeKnob.value.toFixed(2) + " dB";
-    this.synth.volume.value = iVolumeKnob.value;
+    Tone.Master.volume.value = iVolumeKnob.value;
   }
   
   tempoEvent(iTempoKnob)
@@ -180,51 +212,51 @@ customElements.define("polygam-player", class extends HTMLElement
 
   playNotes(iNotesArray)
   {
+    if(!this.isReady) return;
+
     // attackrelease with Tone.js    
     if(!iNotesArray.some(n => n != null)) { return; }
     let notesToPlay = iNotesArray.filter(n => n != null);
 
-    this.synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
+    this.synths.forEach( synth =>
+    {
+      synth.triggerAttackRelease(notesToPlay.map(n => Tone.Frequency(n, "midi")), 60 / (this.tempo * 4));  
+    });
   }
 
-  setOscillatorProperties(iProperties)
+  setOscillatorProperties(iProperties, iSynthId = 0)
   {
-    //console.log(iProperties);
-    //this.synth.set(iProperties);
+    let synth = this.synths[iSynthId];
+
     for(let iProperty in iProperties)
     {
       switch(iProperty)
       {
         case "type" :
-          this.synth.set({oscillator: {type: iProperties[iProperty] }});
+          synth.set({oscillator: {type: iProperties[iProperty] }});
           break;
         case "detune" :
-          this.synth.detune.value = iProperties[iProperty];
+          synth.detune.value = iProperties[iProperty];
           break;
         default :
           console.log("Invalid synth property")
           break;
       }
     }
-
-
-
   }
 
-  setFilterProperties(iProperties)
+  setFilterProperties(iProperties, iOscId = 0, iFilterType)
   {
+    let filter = this.filters[iOscId];
+    console.log(iProperties);
+    //console.log(filter);
+
     for(let iProperty in iProperties)
     {
       switch(iProperty)
       {
-        case "type" :
-          this.filter.type = iProperties[iProperty];
-          break;
-        case "Q" :
-          this.filter.Q.value = iProperties[iProperty];
-          break;
         case "frequency" :
-          this.filter.frequency.value = iProperties[iProperty];
+          filter[iFilterType].frequency.value = iProperties[iProperty];
           break;
         default :
           console.log("Invalid filter property")
