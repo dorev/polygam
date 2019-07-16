@@ -9,7 +9,7 @@ customElements.define("polygam-player", class extends HTMLElement
     //--------------------------------------------------------    
 
     this.volume = 50;
-    this.tempo = 120;
+    this.tempo = 128;
     this.isPlaying = false;
 
     // Tone.js nodes
@@ -58,7 +58,7 @@ customElements.define("polygam-player", class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(5, auto);
       grid-template-rows:    auto auto auto;
       height: 100px;
       place-items: stretch;
@@ -113,6 +113,48 @@ customElements.define("polygam-player", class extends HTMLElement
       place-self: center;
     }
 
+    .player-reverb
+    {
+      grid-column : 4/5;
+      grid-row    : 1/2;
+      place-self: center;
+    }
+
+    .player-reverb-value
+    {
+      grid-column : 4/5;
+      grid-row    : 2/3;
+      place-self: center;
+    }
+
+    .player-reverb-label
+    {
+      grid-column : 4/5;
+      grid-row    : 3/4;
+      place-self: center; 
+    }
+
+    .player-delay
+    {
+      grid-column : 5/6;
+      grid-row    : 1/2;
+      place-self: center;
+    }
+
+    .player-delay-value
+    {
+      grid-column : 5/6;
+      grid-row    : 2/3;
+      place-self: center;
+    }
+
+    .player-delay-label
+    {
+      grid-column : 5/6;
+      grid-row    : 3/4;
+      place-self: center; 
+    }
+
 
     `;  
     
@@ -146,7 +188,7 @@ customElements.define("polygam-player", class extends HTMLElement
     
     this.volumeLabel = document.createElement("div");
     this.volumeLabel.setAttribute("class","player-volume-label");  
-    this.volumeLabel.innerHTML = "VOL";
+    this.volumeLabel.innerHTML = "vol";
     this.container.appendChild(this.volumeLabel);
     
     this.volumeKnob.initKnob(0.25);
@@ -165,10 +207,44 @@ customElements.define("polygam-player", class extends HTMLElement
     
     this.tempoLabel = document.createElement("div");
     this.tempoLabel.setAttribute("class","player-tempo-label");  
-    this.tempoLabel.innerHTML = "TEMPO";
+    this.tempoLabel.innerHTML = "tem";
     this.container.appendChild(this.tempoLabel);
     
     this.tempoKnob.initKnob(0.470);
+
+    // Reverb knob
+    this.reverbKnob = document.createElement("polygam-knob");
+    this.reverbKnob.setAttribute("class","player-reverb");  
+    this.reverbKnob.knobEvent = this.reverbEvent.bind(this);
+    this.container.appendChild(this.reverbKnob);
+    
+    this.reverbValue = document.createElement("div");
+    this.reverbValue.setAttribute("class","player-reverb-value");  
+    this.reverbValue.innerHTML = "0";  
+    this.container.appendChild(this.reverbValue);
+    
+    this.reverbLabel = document.createElement("div");
+    this.reverbLabel.setAttribute("class","player-reverb-label");  
+    this.reverbLabel.innerHTML = "rev";
+    this.container.appendChild(this.reverbLabel);    
+    this.reverbKnob.initKnob(0.20);
+
+    // Delay knob
+    this.delayKnob = document.createElement("polygam-knob");
+    this.delayKnob.setAttribute("class","player-delay"); 
+    this.delayKnob.knobEvent = this.delayEvent.bind(this);
+    this.container.appendChild(this.delayKnob);
+    
+    this.delayValue = document.createElement("div");
+    this.delayValue.setAttribute("class","player-delay-value");  
+    this.delayValue.innerHTML = "0";  
+    this.container.appendChild(this.delayValue);
+    
+    this.delayLabel = document.createElement("div");
+    this.delayLabel.setAttribute("class","player-delay-label");  
+    this.delayLabel.innerHTML = "del";
+    this.container.appendChild(this.delayLabel);    
+    this.delayKnob.initKnob(0.20);
 
     this.isReady = true;
 
@@ -207,6 +283,16 @@ customElements.define("polygam-player", class extends HTMLElement
     
     // Callback
     this.playerEvent({type:"tempo", value:this.tempo});
+  }
+
+  reverbEvent(iReverbKnob)
+  {
+
+  }
+
+  delayEvent(iDelayKnob)
+  {
+
   }
 
 

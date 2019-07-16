@@ -40,7 +40,7 @@ customElements.define("polygam-app", class extends HTMLElement
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: auto; 
-      grid-template-rows: auto auto auto auto auto 100px;
+      grid-template-rows: repeat(6, auto);
       place-items: stretch;
     }
 
@@ -188,8 +188,6 @@ customElements.define("polygam-app", class extends HTMLElement
 
   oscillatorEvent(iProperty, iValue, iOscId = 0)
   {
-    console.log(`${iProperty}\t${iValue}\t${iOscId}`);
-
     switch(iProperty)
     {
       case "waveform" :
