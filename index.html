@@ -16,18 +16,9 @@
     <div class="app">
     </div>
     
-    <div class="blog">  
+    <div class="info">  
         <br>  
-        dev order <br>
-        X progression <br>
-        X player <br>
-        X sequencer <br>
-        X graph with initial menu highlighting <br>
-        X add app-loader <br>
-        X graph tonnetze logic <br>
-        X complete connections between elements for chord propagation<br>
-        X refactor chords (add highlights) <br>
-        X single osc feeding polysynth properties <br>
+        to do :<br>
         # UI design <br>
         | write readme.md
         <br><br><br>   
@@ -36,10 +27,9 @@
 
 <script>    
 
-    let dev = true;
     let srcs = [];
 
-    if(dev)
+    if(false) // true for dev
     {
         srcs = [
         "resources/d3.v5.js",       
@@ -84,7 +74,7 @@
 
     let timestamp;    
     let head = document.querySelector("head");
-    let blog = document.querySelector(".blog");
+    let info = document.querySelector(".info");
 
     function init(sources, callback)
     {
@@ -97,7 +87,7 @@
         let source = sources.shift();    
         timestamp = Date.now();
         
-        blog.innerHTML += `Loading ${source}`;
+        info.innerHTML += `Loading ${source}`;
         let e = document.createElement("script");
         e.setAttribute("src", source);
         e.setAttribute("type", "text/javascript");
@@ -105,17 +95,17 @@
         
         e.addEventListener('load', () => 
         {
-            blog.innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
+            info.innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
             init(sources, callback);
         });
     }
     
     function isLoaded()
     {
-        blog.innerHTML += "Init complete!";
+        info.innerHTML += "Init complete!";
         document.querySelector(".app").appendChild(document.createElement("polygam-app"));
-        blog.style.height = 0;
-        blog.style.overflow = "hidden";
+        info.style.height = 0;
+        info.style.overflow = "hidden";
     }
     
     window.onload = init(srcs, isLoaded);    
