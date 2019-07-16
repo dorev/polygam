@@ -74,7 +74,7 @@ customElements.define("polygam-app", class extends HTMLElement
       grid-row : 5/6;
     }
 
-    .app-oscillator0
+    .app-oscillator1
     {   
       place-self: stretch; 
       grid-row : 6/7;

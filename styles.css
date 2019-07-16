@@ -15,36 +15,22 @@ body
 {
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: 3.6em auto auto auto;
+  grid-template-rows: 3.6em auto;
   place-items: stretch;
-  grid-template-areas: 
-  "header"
-  "welcome"
-  "app"
-  "info";
 }
 
 
 .header 
 {
-  grid-area : header;
+  grid-column : 1/2;
+  grid-row : 1/2;
   text-align: center;
-}
-
-
-.welcome 
-{
-  grid-area : welcome;
 }
 
 .app 
 {
-  grid-area : app;
-}
-
-.blog 
-{
-  grid-area : info;
+  grid-column : 1/2;
+  grid-row : 2/3;
 }
 
 :root
