@@ -9,7 +9,7 @@ customElements.define("polygam-player", class extends HTMLElement
     //--------------------------------------------------------    
 
     this.volume = 50;
-    this.tempo = 120;
+    this.tempo = 128;
     this.isPlaying = false;
 
     // Tone.js nodes
@@ -43,8 +43,8 @@ customElements.define("polygam-player", class extends HTMLElement
     ];
     
     // Nodes connection
-    this.synth1.chain(this.filter1HP, this.filter1LP, Tone.Master)
-    this.synth2.chain(this.filter2HP, this.filter2LP, Tone.Master)
+    this.synth1.chain(this.filter1HP, this.filter1LP, Tone.Master);
+    this.synth2.chain(this.filter2HP, this.filter2LP, Tone.Master);
     
     //--------------------------------------------------------
     // CSS style
@@ -58,7 +58,7 @@ customElements.define("polygam-player", class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, auto);
       grid-template-rows:    auto auto auto;
       height: 100px;
       place-items: stretch;
@@ -112,8 +112,6 @@ customElements.define("polygam-player", class extends HTMLElement
       grid-row    : 3/4;
       place-self: center;
     }
-
-
     `;  
     
     //--------------------------------------------------------
@@ -146,7 +144,7 @@ customElements.define("polygam-player", class extends HTMLElement
     
     this.volumeLabel = document.createElement("div");
     this.volumeLabel.setAttribute("class","player-volume-label");  
-    this.volumeLabel.innerHTML = "VOL";
+    this.volumeLabel.innerHTML = "vol";
     this.container.appendChild(this.volumeLabel);
     
     this.volumeKnob.initKnob(0.25);
@@ -165,7 +163,7 @@ customElements.define("polygam-player", class extends HTMLElement
     
     this.tempoLabel = document.createElement("div");
     this.tempoLabel.setAttribute("class","player-tempo-label");  
-    this.tempoLabel.innerHTML = "TEMPO";
+    this.tempoLabel.innerHTML = "tem";
     this.container.appendChild(this.tempoLabel);
     
     this.tempoKnob.initKnob(0.470);
@@ -209,7 +207,6 @@ customElements.define("polygam-player", class extends HTMLElement
     this.playerEvent({type:"tempo", value:this.tempo});
   }
 
-
   playNotes(iNotesArray)
   {
     if(!this.isReady) return;
@@ -248,9 +245,7 @@ customElements.define("polygam-player", class extends HTMLElement
   setFilterProperties(iProperties, iOscId = 0, iFilterType)
   {
     let filter = this.filters[iOscId];
-    console.log(iProperties);
-    //console.log(filter);
-
+    
     for(let iProperty in iProperties)
     {
       switch(iProperty)
