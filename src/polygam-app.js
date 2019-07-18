@@ -160,6 +160,14 @@ customElements.define("polygam-app", class extends HTMLElement
         break;
 
       case "graph" :
+        if(caller.progression.length === 0)
+        {
+          
+          this.player.playStopEvent(null, "stop")
+          this.progression.clearProgression();
+          break;
+        }
+
         let lastChord = caller.progression[caller.progression.length - 1];
         this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:4});
         break;

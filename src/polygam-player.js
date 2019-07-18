@@ -175,8 +175,15 @@ customElements.define("polygam-player", class extends HTMLElement
   // Callback
   playerEvent(){};
 
-  playStopEvent(iButton)
+  playStopEvent(iButton, iForcedStatus = "none")
   {
+    if(iForcedStatus !== "none" && (iForcedStatus === "play" || iForcedStatus === "stop"))
+    {
+      this.playerEvent({type:iForcedStatus});
+      this.playStop.click(iForcedStatus === "play");
+      return;
+    }
+
     this.isPlaying = iButton.isPlaying;
     
     if(this.isPlaying)

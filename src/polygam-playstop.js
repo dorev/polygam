@@ -94,9 +94,13 @@ customElements.define("polygam-playstop", class extends HTMLElement
   // Callback
   buttonEvent() {}  
   
-  click()
+  click(iForcedState = null)
   {
     this.isPlaying = !(this.isPlaying);   
+    if(iForcedState !== null)
+    {
+      this.isPlaying = iForcedState;
+    }
     this.stopIcon.setAttribute("visibility", this.isPlaying ? "visible" : "hidden"); 
     this.playIcon.setAttribute("visibility", this.isPlaying ? "hidden" : "visible");
     

@@ -230,7 +230,15 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
   updateNoteLabels()
   {
-    if(!this.progression.length) { return; }
+    if(!this.progression.length) 
+    {
+      for(let i = 9; i >= 0; --i)
+      {
+        this.noteLabels[i].innerHTML = "";;
+      }
+       return; 
+    }
+
     for(let i = 9; i >= 0; --i)
     {
       this.noteLabels[i].innerHTML = 
@@ -252,5 +260,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     }
     this.updateNoteLabels();
   }
+
+
+  
   
 });

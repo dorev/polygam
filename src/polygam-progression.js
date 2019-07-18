@@ -172,4 +172,15 @@ customElements.define("polygam-progression",class extends HTMLElement
     this.chords[iChordIndex].parentNode.style.background = "rgb(200,200,200)";
   }
 
+  clearProgression()
+  {
+    while(this.chords.length !== 0)
+    {
+      this.chordManipulation(this.chords[0], "delete");
+    }
+
+    // Callback
+    this.progressionChanged(this);
+  }
+
 });
