@@ -10,19 +10,12 @@
 <div class="container">
     
     <div class="header">
-        <span class="polygram-bw">polygam</span><span class="polygram-bw-version">alpha</span>
+        <span class="polygam-bw">polygam</span><span class="polygam-bw-version">alpha</span>
     </div>
     
-    <div class="app">
+    <div class="content">
+        loading
     </div>
-    
-    <div class="info">  
-        <br>  
-        to do :<br>
-        # UI design <br>
-        | write readme.md
-        <br><br><br>   
-    </div> 
 </div>
 
 <script>    
@@ -50,7 +43,7 @@
         "src/polygam-app.js"
         ];  
 
-        document.querySelector(".polygram-bw-version").innerHTML = "dev"
+        document.querySelector(".polygam-bw-version").innerHTML = "dev"
     }
     else
     {
@@ -76,7 +69,7 @@
 
     let timestamp;    
     let head = document.querySelector("head");
-    let info = document.querySelector(".info");
+    let content = document.querySelector(".content");
 
     function init(sources, callback)
     {
@@ -89,7 +82,7 @@
         let source = sources.shift();    
         timestamp = Date.now();
         
-        info.innerHTML += `Loading ${source}`;
+        //content.innerHTML += `Loading ${source}`;
         let e = document.createElement("script");
         e.setAttribute("src", source);
         e.setAttribute("type", "text/javascript");
@@ -97,17 +90,16 @@
         
         e.addEventListener('load', () => 
         {
-            info.innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
+            //content.innerHTML += ` (${Date.now() - timestamp}ms)<br>`;
+            content.innerHTML += ".";
             init(sources, callback);
         });
     }
     
     function isLoaded()
     {
-        info.innerHTML += "Init complete!";
-        document.querySelector(".app").appendChild(document.createElement("polygam-app"));
-        info.style.height = 0;
-        info.style.overflow = "hidden";
+        content.innerHTML = "";
+        document.querySelector(".content").appendChild(document.createElement("polygam-app"));
     }
     
     window.onload = init(srcs, isLoaded);    

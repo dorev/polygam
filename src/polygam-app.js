@@ -39,45 +39,52 @@ customElements.define("polygam-app", class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: auto; 
-      grid-template-rows: repeat(6, auto);
+      grid-template-columns: repeat(3, 1fr); 
+      grid-template-rows: repeat(6, 15vh);
       place-items: stretch;
+      overflow : hidden;
     }
 
     .app-graph
     {     
       place-self: stretch;
-      grid-row : 1/2;
+      grid-row : 1/4;
+      grid-column : 1/2
     }
 
     .app-progression
     {      
       place-self: stretch;
-      grid-row : 2/3;
-    }
-
-    .app-player
-    {   
-      place-self: stretch; 
-      grid-row : 3/4;
+      grid-row : 1/2;
+      grid-column : 2/4
     }
 
     .app-sequencer
     {   
       place-self: stretch; 
-      grid-row : 4/5;
+      grid-row : 4/6;
+      grid-column : 1/4
     }
-
+    
     .app-oscillator0
     {   
       place-self: stretch; 
-      grid-row : 5/6;
+      grid-row : 2/3;
+      grid-column : 2/4
     }
-
+    
     .app-oscillator1
     {   
       place-self: stretch; 
+      grid-row : 3/4;
+      grid-column : 2/4
+    }
+    
+    .app-player
+    {   
+      place-self: stretch; 
       grid-row : 6/7;
+      grid-column : 1/4
     }
     `;  
     

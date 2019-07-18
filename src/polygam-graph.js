@@ -28,6 +28,7 @@ customElements.define("polygam-graph", class extends HTMLElement
       place-self : stretch;
       min-height: 400px;
       border : dotted 1px silver;
+      overflow : hidden;
     }
 
     .node {

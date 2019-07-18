@@ -30,6 +30,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       place-items : stretch;
       min-height : 100px;
       grid-auto-flow: column;
+      overflow : hidden;
     }
 
     .sequencer-beat

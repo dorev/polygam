@@ -20,6 +20,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       display: grid;
       grid-template-columns : repeat(5, 1fr);
       grid-gap : 2px;
+      overflow : hidden;
     }
 
     osc-wave-shape

@@ -62,6 +62,7 @@ customElements.define("polygam-player", class extends HTMLElement
       grid-template-rows:    auto auto auto;
       height: 100px;
       place-items: stretch;
+      overflow : hidden;
     }
 
     .player-playStop
