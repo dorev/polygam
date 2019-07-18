@@ -94,7 +94,7 @@ customElements.define("polygam-graph", class extends HTMLElement
       // Setup reset button
       this.resetButton = document.createElement("div");
       this.resetButton.addEventListener("click", this.resetGraph.bind(this));
-      this.resetButton.appendChild(trashBinIcon);
+      this.resetButton.appendChild(newIcon("trash"));
       this.container.appendChild(this.resetButton);
 
     }
