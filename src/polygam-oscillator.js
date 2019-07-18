@@ -100,7 +100,8 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetuneKnob.setAttribute("min","-100");  
     this.waveDetuneKnob.setAttribute("max","100");     
     this.waveDetuneKnob.knobEvent = this.knobChange.bind(this);
-    this.waveDetuneKnob.name = "detune";
+    this.waveDetuneKnob.label = "detune";
+    this.waveDetuneKnob.formatLabel = (iValue) => { return iValue.toFixed(0) };
     this.waveDetuneKnob.initKnob(0.5);
     this.waveDetuneLabel = document.createElement("span");
     this.waveDetuneLabel.innerHTML = "detune";
@@ -112,7 +113,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveTransposeKnob.setAttribute("min","-12");  
     this.waveTransposeKnob.setAttribute("max","12");   
     this.waveTransposeKnob.knobEvent = this.knobChange.bind(this);
-    this.waveTransposeKnob.name = "transpose";    
+    this.waveTransposeKnob.label = "transpose";    
     this.waveTransposeKnob.initKnob(0.5);
     this.waveTransposeLabel = document.createElement("span");
     this.waveTransposeLabel.innerHTML = "transpose";  
@@ -123,7 +124,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterLowpassKnob = document.createElement("polygam-knob");
     this.filterLowpassKnob.setAttribute("profile","antilog"); 
     this.filterLowpassKnob.knobEvent = this.knobChange.bind(this);
-    this.filterLowpassKnob.name = "lowpass";
+    this.filterLowpassKnob.label = "lowpass";
     this.filterLowpassKnob.initKnob(1);
     this.filterLowpassLabel = document.createElement("div");
     this.filterLowpassLabel.innerHTML = "lowpass";  
@@ -134,7 +135,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterHighpassKnob = document.createElement("polygam-knob");
     this.filterHighpassKnob.setAttribute("profile","antilog"); 
     this.filterHighpassKnob.knobEvent = this.knobChange.bind(this);
-    this.filterHighpassKnob.name = "highpass";
+    this.filterHighpassKnob.label = "highpass";
     this.filterHighpassKnob.initKnob(0);
     this.filterHighpassLabel = document.createElement("div");
     this.filterHighpassLabel.innerHTML = "highpass";  
@@ -173,9 +174,9 @@ customElements.define("polygam-oscillator", class extends HTMLElement
   {
     if(!this.ready) return;
 
-    this.oscillatorEvent(iKnob.name, iKnob.value, this.oscId);
+    this.oscillatorEvent(iKnob.label, iKnob.value, this.oscId);
     
-    switch(iKnob.name)
+    switch(iKnob.label)
     {          
         case "detune" :
           this.waveDetuneLabel.innerHTML = `detune<br>${iKnob.value.toFixed(0)}`;   

@@ -19,22 +19,39 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.value = 0;
     this.min;
     this.max;
-    this.name = "";
+    this.label = "null";
     this.updateFunc = () => {};
-
-    this.initKnob();
 
     //--------------------------------------------------------
     // CSS style
     //--------------------------------------------------------
     let style = document.createElement('style');
     style.textContent =`
+
     .knob-container
     {   
-      margin : 0; padding : 0;
       display: grid;
+      margin : 0; 
+      padding : 0;
+      grid-template-rows: repeat(3, auto);
+      place-items : center;
+    }
+
+    .knob-svg-container
+    {   
+      grid-row : 1/2;
       width: ${this.size}px;
       height: ${this.size}px;
+    }
+
+    .knob-label
+    {   
+      grid-row : 2/3;
+    }
+
+    .knob-value
+    {   
+      grid-row : 3/4;
     }
     `;  
     
@@ -49,12 +66,15 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.container.setAttribute("class","knob-container");    
     shadow.appendChild(this.container);
 
+    this.knob = document.createElement("div");
+    this.knob.setAttribute("class","knob-svg-container");   
+
     // Create SVG
     let s = this.size;
     this.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
     this.svg.setAttribute("width", s);
     this.svg.setAttribute("height", s);
-    this.container.appendChild(this.svg);
+    this.knob.appendChild(this.svg);
     
     // Knob body
     this.knobBody = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
@@ -74,6 +94,17 @@ customElements.define("polygam-knob", class extends HTMLElement
     this.knobCursor.setAttribute("fill","#000");   
     this.svg.appendChild(this.knobCursor);
 
+    this.container.appendChild(this.knob);
+
+    // Knob label    
+    this.knobLabel = document.createElement("div");
+    this.knobLabel.setAttribute("class","knob-label");    
+    this.container.appendChild(this.knobLabel);
+
+    // Knob value    
+    this.knobValue = document.createElement("div");
+    this.knobValue.setAttribute("class","knob-value");    
+    this.container.appendChild(this.knobValue);
 
     // Bind events
     this.addEventListener("mousedown", (e) => 
@@ -108,6 +139,7 @@ customElements.define("polygam-knob", class extends HTMLElement
   {
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;    
     this.profile = this.hasAttribute("profile") ? this.getAttribute("profile") : "equalrange";   
+    this.label = this.hasAttribute("label") ? this.getAttribute("label") : this.label;   
 
     switch(this.profile)
     {
@@ -118,7 +150,10 @@ customElements.define("polygam-knob", class extends HTMLElement
 
         this.updateFunc = () => 
         { 
-          return (this.max - this.min) * this.rotationPercentage() + this.min;
+          let value =  (this.max - this.min) * this.rotationPercentage() + this.min;
+          if(value < this.min) return this.min;
+          if(value > this.max) return this.max;
+          return value;
         }
         break;
 
@@ -146,6 +181,8 @@ customElements.define("polygam-knob", class extends HTMLElement
           }
           break;
     }
+
+    this.knobLabel.innerHTML = this.label;
 
     if(iInitialPosition != undefined)
     {
@@ -190,10 +227,15 @@ customElements.define("polygam-knob", class extends HTMLElement
     return rotation;
   }
 
+  formatLabel(iValue)
+  {
+    return iValue;
+  }
+
   updateValue()
   {
     this.value = this.updateFunc();
-    
+    this.knobValue.innerHTML = this.formatLabel(this.value);
     // Callback
     this.knobEvent(this);
   }
