@@ -1,5 +1,5 @@
 # Polygam
-*Polygam* is a sequencer taking chords as input. The chords evolving in the graph are harmonically related to ease the exploration of different chord progressions.
+[*Polygam*](dorev.github.io/polygam) is a sequencer taking chords as input. The chords evolving in the graph are harmonically related to ease the exploration of different chord progressions.
 
 ## How to use
 1. Select some chords in the graph (top left thing with letters in bubbles)
