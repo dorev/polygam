@@ -39,52 +39,72 @@ customElements.define("polygam-app", class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(3, 1fr); 
-      grid-template-rows: repeat(6, 15vh);
+      grid-template-columns: 39vw 30vw 30vw; 
+      grid-template-rows: 16vh 16vh 16vh 15vh 15vh 12vh;
       place-items: stretch;
-      overflow : hidden;
+      position: relative;
+      overflow: hidden;
+      border : 1px solid green;
     }
 
     .app-graph
     {     
+      display : grid;
+      place-items: stretch;
       place-self: stretch;
       grid-row : 1/4;
-      grid-column : 1/2
+      grid-column : 1/2;
+      border : 1px solid red;
     }
 
     .app-progression
-    {      
+    {     
+      display : grid;
+      place-items: stretch; 
       place-self: stretch;
       grid-row : 1/2;
-      grid-column : 2/4
+      grid-column : 2/4;
+      border : 1px solid red;
     }
 
     .app-sequencer
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
       grid-row : 4/6;
-      grid-column : 1/4
+      grid-column : 1/4;
+      border : 1px solid red;
     }
     
     .app-oscillator0
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
       grid-row : 2/3;
-      grid-column : 2/4
+      grid-column : 2/4;
+      border : 1px solid red;
     }
     
     .app-oscillator1
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
       grid-row : 3/4;
-      grid-column : 2/4
+      grid-column : 2/4;
+      border : 1px solid red;
     }
     
     .app-player
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
       grid-row : 6/7;
-      grid-column : 1/4
+      grid-column : 1/4;
+      border : 1px solid red;
     }
     `;  
     

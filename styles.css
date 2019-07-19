@@ -22,9 +22,8 @@ body
 .container 
 {
   display: grid;
-  grid-template-rows: 3.6em 1fr;
+  grid-template-rows: 5vh 95vh;
   place-items: stretch;
-  overflow : hidden;
 }
 
 

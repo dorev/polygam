@@ -54,15 +54,14 @@ customElements.define("polygam-player", class extends HTMLElement
     .player-container
     {   
       margin : 0; padding : 0;
-      place-self: center;
       display: grid;
       padding: 2px;
       grid-gap: 4px;
       grid-template-columns: repeat(3, auto);
       grid-template-rows:    auto auto auto;
-      height: 100px;
       place-items: stretch;
-      overflow : hidden;
+      position: relative;
+      border : 1px dotted silver;
     }
 
     .player-playStop

@@ -20,7 +20,8 @@ customElements.define("polygam-oscillator", class extends HTMLElement
       display: grid;
       grid-template-columns : repeat(5, 1fr);
       grid-gap : 2px;
-      overflow : hidden;
+      border : 1px dotted silver;
+      position: relative;
     }
 
     osc-wave-shape
@@ -102,7 +103,11 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.waveDetuneKnob.setAttribute("max","100");     
     this.waveDetuneKnob.knobEvent = this.knobChange.bind(this);
     this.waveDetuneKnob.label = "detune";
-    this.waveDetuneKnob.formatLabel = (iValue) => { return iValue.toFixed(0) };
+    this.waveDetuneKnob.formatLabel = (iValue) => 
+    { 
+      
+      return iValue.toFixed(0) 
+    };
     this.waveDetuneKnob.initKnob(0.5);
     this.waveDetuneLabel = document.createElement("span");
     this.waveDetuneLabel.innerHTML = "detune";

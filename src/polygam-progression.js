@@ -26,8 +26,9 @@ customElements.define("polygam-progression",class extends HTMLElement
       grid-template-columns: auto;
       grid-template-rows: auto;
       place-items: center;
-      grid-template-areas: "";
-      overflow : hidden;
+      position: relative;
+      border : 1px dotted silver;
+      overflow : auto;
     }      
 
     .progression-chord-container

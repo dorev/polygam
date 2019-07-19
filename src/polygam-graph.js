@@ -28,7 +28,7 @@ customElements.define("polygam-graph", class extends HTMLElement
       place-self : stretch;
       min-height: 400px;
       border : dotted 1px silver;
-      overflow : hidden;
+      position: relative;
     }
 
     .node {
@@ -60,6 +60,12 @@ customElements.define("polygam-graph", class extends HTMLElement
       stroke: none;
       font-family: "Polygam", sans-serif;
       font-size: 0.8em;
+    }
+
+    .graph-reset {
+      position : absolute;
+      top: 0;
+      float : left;
     }
     
     `;  
@@ -94,6 +100,7 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       // Setup reset button
       this.resetButton = document.createElement("div");
+      this.resetButton.setAttribute("class", "graph-reset");
       this.resetButton.addEventListener("click", this.resetGraph.bind(this));
       this.resetButton.appendChild(newIcon("trash"));
       this.container.appendChild(this.resetButton);

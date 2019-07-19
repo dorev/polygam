@@ -36,7 +36,7 @@ customElements.define("polygam-chord",class extends HTMLElement
     
     div
     {
-      border: solid black 1px;
+      border: dotted silver 1px;
       text-align: center;
     }
     
@@ -44,13 +44,12 @@ customElements.define("polygam-chord",class extends HTMLElement
     .chord-container
     {   
       margin : 0; padding : 0;
-      place-self: center;
       display: grid;
-      padding: 2px;
-      grid-gap: 4px;
-      grid-template-rows:    repeat(6, 1fr);
+      padding: 0.1em;
+      grid-gap: 0.2em;
+      grid-template-rows:    repeat(6, auto);
       grid-template-column:    repeat(3, 1fr);
-      width: 100px;
+      width: 5.5em;
       place-items: stretch;
     }
     

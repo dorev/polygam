@@ -25,12 +25,11 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       margin : 0; padding : 0;
       display : grid;
-      grid-template-columns : 2em repeat(16, 1fr);
-      grid-template-rows : repeat(11, 1fr);
+      grid-template-columns : 24px 2em repeat(16, 1fr);
+      grid-template-rows : repeat(10, 1fr);
       place-items : stretch;
-      min-height : 100px;
       grid-auto-flow: column;
-      overflow : hidden;
+      border : 1px dotted silver;
     }
 
     .sequencer-beat
@@ -66,9 +65,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
     .sequencer-reset-button
     {
-      grid-row : 11/12;
       grid-column : 1/2;
-      min-height : 25px;
+      grid-row : 1/11;
       place-self : center;
     }
     `;  
