@@ -199,16 +199,20 @@ customElements.define("polygam-knob", class extends HTMLElement
   rotate()
   {
     let newRotation = (this.initialRotation + this.initialMouseY - this.mouseY); 
-    if(newRotation < -151)
+    if(newRotation < -150)
     {
-      this.rotation = -151;
+      this.rotation = -150;
+      this.svg.style.transform = `rotate(-150deg)`;
       this.value = this.min;
+      this.knobValue.innerHTML = this.formatLabel(this.value);
       this.knobEvent(this);
     }
-    else if(newRotation > 151)
+    else if(newRotation > 150)
     {
-      this.rotation = 151;
+      this.rotation = 150;
+      this.svg.style.transform = `rotate(150deg)`;
       this.value = this.max;
+      this.knobValue.innerHTML = this.formatLabel(this.value);
       this.knobEvent(this);
     }
     else

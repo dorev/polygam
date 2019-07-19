@@ -27,7 +27,6 @@ customElements.define("polygam-progression",class extends HTMLElement
       grid-template-rows: auto;
       place-items: center;
       position: relative;
-      border : 1px dotted silver;
       overflow : auto;
     }      
 

@@ -57,60 +57,34 @@ customElements.define("polygam-player", class extends HTMLElement
       display: grid;
       padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: repeat(3, auto);
-      grid-template-rows:    auto auto auto;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
       place-items: stretch;
       position: relative;
-      border : 1px dotted silver;
     }
 
     .player-playStop
     {
       grid-column : 1/2;
       grid-row    : 1/2;
-      place-self: center;
+      aligh-self: top;
+      justify-self : center;
     }
 
     .player-volume
     {
       grid-column : 2/3;
       grid-row    : 1/2;
-      place-self: center;
+      aligh-self: top;
+      justify-self : center;
     }
 
     .player-tempo
     {
       grid-column : 3/4;
       grid-row    : 1/2;
-      place-self: center;
-    }
-
-    .player-volume-label
-    {
-      grid-column : 2/3;
-      grid-row    : 3/4;
-      place-self: center;
-    }
-
-    .player-volume-value
-    {
-      grid-column : 2/3;
-      grid-row    : 2/3;
-      place-self: center;
-    }
-
-    .player-tempo-value
-    {
-      grid-column : 3/4;
-      grid-row    : 2/3;
-      place-self: center;
-    }
-
-    .player-tempo-label
-    {
-      grid-column : 3/4;
-      grid-row    : 3/4;
-      place-self: center;
+      aligh-self: top;
+      justify-self : center;
     }
     `;  
     
@@ -134,18 +108,11 @@ customElements.define("polygam-player", class extends HTMLElement
     // Volume knob
     this.volumeKnob = document.createElement("polygam-knob");
     this.volumeKnob.setAttribute("class","player-volume"); 
-    this.volumeKnob.setAttribute("profile","10log2");  
+    this.volumeKnob.setAttribute("profile","10log2");
+    this.volumeKnob.label = "volume"
+    this.volumeKnob.formatLabel = iValue => iValue.toFixed(1) + " dB";
     this.volumeKnob.knobEvent = this.volumeEvent.bind(this);
     this.container.appendChild(this.volumeKnob);
-    
-    this.volumeValue = document.createElement("div");
-    this.volumeValue.setAttribute("class","player-volume-value");  
-    this.container.appendChild(this.volumeValue);
-    
-    this.volumeLabel = document.createElement("div");
-    this.volumeLabel.setAttribute("class","player-volume-label");  
-    this.volumeLabel.innerHTML = "vol";
-    this.container.appendChild(this.volumeLabel);
     
     this.volumeKnob.initKnob(0.25);
 
@@ -154,17 +121,10 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoKnob.setAttribute("class","player-tempo");  
     this.tempoKnob.setAttribute("min","30");  
     this.tempoKnob.setAttribute("max","240");  
+    this.tempoKnob.label = "tempo";  
+    this.tempoKnob.formatLabel = iValue => Math.floor(iValue).toFixed(0);
     this.tempoKnob.knobEvent = this.tempoEvent.bind(this);
     this.container.appendChild(this.tempoKnob);
-    
-    this.tempoValue = document.createElement("div");
-    this.tempoValue.setAttribute("class","player-tempo-value");  
-    this.container.appendChild(this.tempoValue);
-    
-    this.tempoLabel = document.createElement("div");
-    this.tempoLabel.setAttribute("class","player-tempo-label");  
-    this.tempoLabel.innerHTML = "tem";
-    this.container.appendChild(this.tempoLabel);
     
     this.tempoKnob.initKnob(0.470);
 
@@ -201,14 +161,12 @@ customElements.define("polygam-player", class extends HTMLElement
   volumeEvent(iVolumeKnob)
   {
     this.volume = iVolumeKnob.value;
-    this.volumeValue.innerHTML = iVolumeKnob.value.toFixed(2) + " dB";
     Tone.Master.volume.value = iVolumeKnob.value;
   }
   
   tempoEvent(iTempoKnob)
   {
     this.tempo = Math.floor(iTempoKnob.value);
-    this.tempoValue.innerHTML = this.tempo;
     
     // Callback
     this.playerEvent({type:"tempo", value:this.tempo});

@@ -37,14 +37,17 @@ customElements.define("polygam-app", class extends HTMLElement
     {   
       margin : 0; padding : 0;
       display: grid;
-      padding: 2px;
       grid-gap: 4px;
       grid-template-columns: 39vw 30vw 30vw; 
-      grid-template-rows: 16vh 16vh 16vh 15vh 15vh 12vh;
+      grid-template-rows: 16vh 16vh 16vh 16vh 16vh 10vh;
       place-items: stretch;
       position: relative;
       overflow: hidden;
-      border : 1px solid green;
+    }
+
+    .app-container * {      
+      border : 1px dotted silver;
+      border-radius : 5px;
     }
 
     .app-graph
@@ -54,7 +57,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch;
       grid-row : 1/4;
       grid-column : 1/2;
-      border : 1px solid red;
     }
 
     .app-progression
@@ -64,7 +66,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch;
       grid-row : 1/2;
       grid-column : 2/4;
-      border : 1px solid red;
     }
 
     .app-sequencer
@@ -74,7 +75,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch; 
       grid-row : 4/6;
       grid-column : 1/4;
-      border : 1px solid red;
     }
     
     .app-oscillator0
@@ -84,7 +84,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch; 
       grid-row : 2/3;
       grid-column : 2/4;
-      border : 1px solid red;
     }
     
     .app-oscillator1
@@ -94,7 +93,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch; 
       grid-row : 3/4;
       grid-column : 2/4;
-      border : 1px solid red;
     }
     
     .app-player
@@ -104,7 +102,6 @@ customElements.define("polygam-app", class extends HTMLElement
       place-self: stretch; 
       grid-row : 6/7;
       grid-column : 1/4;
-      border : 1px solid red;
     }
     `;  
     

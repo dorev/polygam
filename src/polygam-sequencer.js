@@ -29,7 +29,6 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       grid-template-rows : repeat(10, 1fr);
       place-items : stretch;
       grid-auto-flow: column;
-      border : 1px dotted silver;
     }
 
     .sequencer-beat
