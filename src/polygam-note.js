@@ -54,4 +54,10 @@ customElements.define("polygam-note", class extends HTMLElement
     this.container.style.background = this.isSelected ? "silver" : "none";
   }
 
+  forceUpdate(iForcedState)
+  {
+    this.isSelected = iForcedState;
+    this.container.style.background = this.isSelected ? "silver" : "none";
+  }
+
 });

@@ -96,12 +96,35 @@ customElements.define("polygam-playstop", class extends HTMLElement
   
   click()
   {
-    this.isPlaying = !(this.isPlaying);   
-    this.stopIcon.setAttribute("visibility", this.isPlaying ? "visible" : "hidden"); 
-    this.playIcon.setAttribute("visibility", this.isPlaying ? "hidden" : "visible");
+    this.isPlaying = !(this.isPlaying);       
+    this.updateIcon();
     
     // Callback
     this.buttonEvent(this);
+  }
+
+  forceUpdate(iForcedState)
+  {
+    switch(iForcedState)
+    {
+      case "play":
+        this.isPlaying = true;
+        break;
+
+      case "stop":
+        this.isPlaying = false;
+        break;
+
+      default : break;
+    }       
+
+    this.updateIcon();  
+  }
+
+  updateIcon()
+  {    
+    this.stopIcon.setAttribute("visibility", this.isPlaying ? "visible" : "hidden"); 
+    this.playIcon.setAttribute("visibility", this.isPlaying ? "hidden" : "visible");
   }
 
   

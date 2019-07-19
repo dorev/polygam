@@ -27,7 +27,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     {   
       place-self : stretch;
       min-height: 400px;
-      border : dotted 1px silver;
+      position: relative;
     }
 
     .node {
@@ -60,6 +60,12 @@ customElements.define("polygam-graph", class extends HTMLElement
       font-family: "Polygam", sans-serif;
       font-size: 0.8em;
     }
+
+    .graph-reset {
+      position : absolute;
+      top: 0;
+      float : left;
+    }
     
     `;  
     
@@ -76,7 +82,6 @@ customElements.define("polygam-graph", class extends HTMLElement
 
     // temporary loadtime patch
     setTimeout(()=>{this.initGraph()},500);
-   
 
          
   } // end of constructor
@@ -84,11 +89,22 @@ customElements.define("polygam-graph", class extends HTMLElement
   // Callback
   progressionChanged(){}
 
-  initGraph()
+  initGraph(isReset = false)
   {
-    this.graph = new D3Graph(this.container);
-    //this.graph.debug = true;
-    this.graph.nodeClick = this.nodeClicked.bind(this);
+    if(!isReset)
+    {
+      this.graph = new D3Graph(this.container);
+      //this.graph.debug = true;
+      this.graph.nodeClick = this.nodeClicked.bind(this);
+
+      // Setup reset button
+      this.resetButton = document.createElement("div");
+      this.resetButton.setAttribute("class", "graph-reset");
+      this.resetButton.addEventListener("click", this.resetGraph.bind(this));
+      this.resetButton.appendChild(newIcon("trash"));
+      this.container.appendChild(this.resetButton);
+
+    }
 
     this.graph.simulation.alpha(3);
     
@@ -114,7 +130,15 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       })
     });
+  }
 
+  resetGraph()
+  {
+    this.state = "uninit";
+    this.clearGraph();
+    this.initGraph(true);
+    this.setProgression([]);
+    this.progressionChanged(this);
   }
 
   queueTask(iAction)
@@ -151,9 +175,7 @@ customElements.define("polygam-graph", class extends HTMLElement
   {    
     this.state = "init";
     setTimeout(() =>(this.graph.simulation.alphaTarget(0)),2000);
-  }
-
-  
+  }  
 
   nodeClicked(iNode)
   { 
@@ -165,10 +187,8 @@ customElements.define("polygam-graph", class extends HTMLElement
     if( this.state !== "uninit" && this.state !== "init")
     {
       this.updateHighlighting();
-    }
-    
+    }    
   }
-
   
   updateHighlighting()
   {    
@@ -215,9 +235,9 @@ customElements.define("polygam-graph", class extends HTMLElement
     }
   }
   
-  clearGraph(exceptionId = -1)
+  clearGraph()
   {
-    let tempoAcceleration = 5;
+    let tempoAcceleration = 2;
     this.queueTask(() => { this.taskTempo /= tempoAcceleration; });
 
     // Remove all links
@@ -227,7 +247,7 @@ customElements.define("polygam-graph", class extends HTMLElement
     });  
 
     // Remove all nodes
-    this.graph.nodesData.map(n => n.id).filter(id => id != exceptionId).forEach(id =>
+    this.graph.nodesData.map(n => n.id).forEach(id =>
     {      
       this.queueTask(() => { this.graph.removeNode(id); });
     });  
@@ -399,9 +419,6 @@ customElements.define("polygam-graph", class extends HTMLElement
         });
 
       });        
-
-      //console.log(graphScales.map(s => s.name))
-
       //
       // Decide what nodes should be big
       //
@@ -413,14 +430,8 @@ customElements.define("polygam-graph", class extends HTMLElement
       majorBigNodes.forEach(node =>
       {
         let nodeId = findChordTonnetzeId(node.root, node.voicing);
-
-        //console.log(node);
-
         [0,5,7].forEach(majorRoot =>
           {
-            //console.log("this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12)")
-            //console.log(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12))
-
             if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + majorRoot % 12))
             {
               ++majorScore;
@@ -429,8 +440,6 @@ customElements.define("polygam-graph", class extends HTMLElement
     
           [2,4,9].forEach(minorRoot =>
           {
-            //console.log("this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12)")
-            //console.log(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12))
             if(this.progression.map(c => c.root).includes(tonnetze[nodeId].root + minorRoot % 12))
             {
               ++minorScore;
@@ -442,7 +451,6 @@ customElements.define("polygam-graph", class extends HTMLElement
           {
             // Find minor relative of node
             nodeToGrow = tonnetze[nodeId].edges["-y"];
-            //console.log(`Minor relative is ${nodeToGrow}`);
           }
 
           finalBigNodes.push(tonnetze[nodeToGrow]);
@@ -451,16 +459,6 @@ customElements.define("polygam-graph", class extends HTMLElement
 
       this.setBigNodes(finalBigNodes);
     } // end of switch(this.progression.length) 
-    
-        
-    this.queueTask(() => 
-    { 
-    // DUPLICATED LINK IS ADDED!!!
-    //console.log(this.currentGraph);
-    });
-
-    // Send update to chord progression
-    //this.progressionChanged(this);
 
   } // end of updateGraph()
 
@@ -504,8 +502,6 @@ customElements.define("polygam-graph", class extends HTMLElement
 
     this.currentBigNodes = iScales;
   }
-
-
   
   setProgression(iProgression)
   {

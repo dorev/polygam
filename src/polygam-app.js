@@ -37,47 +37,71 @@ customElements.define("polygam-app", class extends HTMLElement
     {   
       margin : 0; padding : 0;
       display: grid;
-      padding: 2px;
       grid-gap: 4px;
-      grid-template-columns: auto; 
-      grid-template-rows: repeat(6, auto);
+      grid-template-columns: 39vw 30vw 30vw; 
+      grid-template-rows: 16vh 16vh 16vh 16vh 16vh 10vh;
       place-items: stretch;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-container * {      
+      border : 1px dotted silver;
+      border-radius : 5px;
     }
 
     .app-graph
     {     
+      display : grid;
+      place-items: stretch;
       place-self: stretch;
-      grid-row : 1/2;
+      grid-row : 1/4;
+      grid-column : 1/2;
     }
 
     .app-progression
-    {      
+    {     
+      display : grid;
+      place-items: stretch; 
       place-self: stretch;
-      grid-row : 2/3;
-    }
-
-    .app-player
-    {   
-      place-self: stretch; 
-      grid-row : 3/4;
+      grid-row : 1/2;
+      grid-column : 2/4;
     }
 
     .app-sequencer
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
-      grid-row : 4/5;
+      grid-row : 4/6;
+      grid-column : 1/4;
     }
-
+    
     .app-oscillator0
     {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
-      grid-row : 5/6;
+      grid-row : 2/3;
+      grid-column : 2/4;
     }
-
+    
     .app-oscillator1
     {   
+      display : grid;
+      place-items: stretch;
+      place-self: stretch; 
+      grid-row : 3/4;
+      grid-column : 2/4;
+    }
+    
+    .app-player
+    {   
+      display : grid;
+      place-items: stretch;
       place-self: stretch; 
       grid-row : 6/7;
+      grid-column : 1/4;
     }
     `;  
     
@@ -160,6 +184,14 @@ customElements.define("polygam-app", class extends HTMLElement
         break;
 
       case "graph" :
+        if(caller.progression.length === 0)
+        {
+          
+          this.player.playStopEvent(null, "stop")
+          this.progression.clearProgression();
+          break;
+        }
+
         let lastChord = caller.progression[caller.progression.length - 1];
         this.progression.addChord({root:lastChord.root, voicing:lastChord.voicing, octave:4});
         break;

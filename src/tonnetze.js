@@ -15,8 +15,8 @@ const tonnetze = JSON.parse("[{\"edges\":{\"+x\":7,\"+y\":4,\"+z\":9,\"-x\":5,\"
 // Freeze tonnetze
 tonnetze.forEach(node => Object.freeze(node.edges));
 Object.freeze(tonnetze);
-console.log(`~=~ TONNETZE ~=~`);
-console.log(tonnetze);
+//console.log(`~=~ TONNETZE ~=~`);
+//console.log(tonnetze);
 
 const noteNamesFlat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 const noteNamesSharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];

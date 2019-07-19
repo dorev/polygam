@@ -25,10 +25,9 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       margin : 0; padding : 0;
       display : grid;
-      grid-template-columns : 2em repeat(16, 1fr);
+      grid-template-columns : 24px 2em repeat(16, 1fr);
       grid-template-rows : repeat(10, 1fr);
       place-items : stretch;
-      min-height : 100px;
       grid-auto-flow: column;
     }
 
@@ -51,6 +50,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       background : none;
     }
+
     .sequencer-note-label
     {
       place-self : stretch;
@@ -60,6 +60,13 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       color: black;
       text-align: center;
       margin: 0.4em;
+    }
+
+    .sequencer-reset-button
+    {
+      grid-column : 1/2;
+      grid-row : 1/11;
+      place-self : center;
     }
     `;  
     
@@ -74,8 +81,8 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     this.container.setAttribute("class","sequencer-container");    
     shadow.appendChild(this.container);
 
-    // Build sequencer
 
+    // Build sequencer
     for(let l = 0; l < 10; ++l)
     {
       // Beat setup
@@ -115,6 +122,14 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
     this.noteLabels = this.container.querySelectorAll(".sequencer-note-label");    
     this.updateNoteLabels();
+
+    // Setup reset button
+    this.resetButton = document.createElement("div");
+    this.resetButton.setAttribute("class", "sequencer-reset-button");
+    this.resetButton.addEventListener("click", this.clearSequencer.bind(this));
+    this.resetButton.appendChild(newIcon("trash"));
+    this.container.appendChild(this.resetButton);
+
   } // end of constructor
   
   // Callback
@@ -230,7 +245,15 @@ customElements.define("polygam-sequencer", class extends HTMLElement
 
   updateNoteLabels()
   {
-    if(!this.progression.length) { return; }
+    if(!this.progression.length) 
+    {
+      for(let i = 9; i >= 0; --i)
+      {
+        this.noteLabels[i].innerHTML = "";;
+      }
+       return; 
+    }
+
     for(let i = 9; i >= 0; --i)
     {
       this.noteLabels[i].innerHTML = 
@@ -252,5 +275,25 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     }
     this.updateNoteLabels();
   }
+
+  clearSequencer()
+  {
+    for(let beat = 0; beat < 16; ++beat)
+    {
+      for(let note = 0; note < 10; ++note)
+      {
+        this.beats[beat][note] = false;
+      }      
+    }
+
+    let allNotes = this.container.querySelectorAll("polygam-note");
+    if(allNotes)
+    {
+      allNotes.forEach(note => { note.forceUpdate(false); });
+    }
+  }
+
+
+  
   
 });

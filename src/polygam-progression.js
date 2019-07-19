@@ -26,7 +26,8 @@ customElements.define("polygam-progression",class extends HTMLElement
       grid-template-columns: auto;
       grid-template-rows: auto;
       place-items: center;
-      grid-template-areas: "";
+      position: relative;
+      overflow : auto;
     }      
 
     .progression-chord-container
@@ -170,6 +171,17 @@ customElements.define("polygam-progression",class extends HTMLElement
 
     if(iChordIndex < 0) { return; }
     this.chords[iChordIndex].parentNode.style.background = "rgb(200,200,200)";
+  }
+
+  clearProgression()
+  {
+    while(this.chords.length !== 0)
+    {
+      this.chordManipulation(this.chords[0], "delete");
+    }
+
+    // Callback
+    this.progressionChanged(this);
   }
 
 });
