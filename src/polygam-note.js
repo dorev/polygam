@@ -19,13 +19,10 @@ customElements.define("polygam-note", class extends HTMLElement
     let style = document.createElement('style');
     style.textContent =`
     .note-container
-    {   
-      place-self : stretch;
-      min-height : 1em;
-      border : solid 0.1em black;
-      border-radius: 0.25em;
-      margin: 0.1em;
-
+    { 
+      height : 100%;
+      border : dotted 0.01em silver;
+      border-radius : 0.25em;
     }
     `;  
     
@@ -51,13 +48,13 @@ customElements.define("polygam-note", class extends HTMLElement
   click()
   {
     this.isSelected = !this.isSelected;
-    this.container.style.background = this.isSelected ? "silver" : "none";
+    this.container.style.background = this.isSelected ? "#DDD" : "none";
   }
 
   forceUpdate(iForcedState)
   {
     this.isSelected = iForcedState;
-    this.container.style.background = this.isSelected ? "silver" : "none";
+    this.container.style.background = this.isSelected ? "#DDD" : "none";
   }
 
 });

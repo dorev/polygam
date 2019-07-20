@@ -214,6 +214,10 @@ customElements.define("polygam-app", class extends HTMLElement
       case "tempo" :
         this.sequencer.setTempo(iEvent.value);
         break;
+
+      case "midi" :      
+        this.player.midiData(this.progression.progression, this.sequencer.beats);
+        break;
     }
 
   }

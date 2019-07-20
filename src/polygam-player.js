@@ -67,7 +67,7 @@ customElements.define("polygam-player", class extends HTMLElement
     {
       grid-column : 1/2;
       grid-row    : 1/2;
-      aligh-self: top;
+      align-self: top;
       justify-self : center;
     }
 
@@ -75,7 +75,6 @@ customElements.define("polygam-player", class extends HTMLElement
     {
       grid-column : 2/3;
       grid-row    : 1/2;
-      aligh-self: top;
       justify-self : center;
     }
 
@@ -83,9 +82,28 @@ customElements.define("polygam-player", class extends HTMLElement
     {
       grid-column : 3/4;
       grid-row    : 1/2;
-      aligh-self: top;
       justify-self : center;
     }
+
+    .player-midi-button
+    {
+      display : grid;
+      place-items : center;
+      grid-column : 4/5;
+      grid-row    : 1/2;
+      justify-self : center;
+      border : solid 1px black;
+      border-radius : 20px;
+      margin : 3px 0 0 0;
+      height : 42px;
+      width : 120px;
+    }
+
+    .player-midi-button:active
+    {
+      background : #EEE;
+    }
+
     `;  
     
     //--------------------------------------------------------
@@ -112,9 +130,8 @@ customElements.define("polygam-player", class extends HTMLElement
     this.volumeKnob.label = "volume"
     this.volumeKnob.formatLabel = iValue => iValue.toFixed(1) + " dB";
     this.volumeKnob.knobEvent = this.volumeEvent.bind(this);
-    this.container.appendChild(this.volumeKnob);
-    
     this.volumeKnob.initKnob(0.25);
+    this.container.appendChild(this.volumeKnob);    
 
     // Tempo knob
     this.tempoKnob = document.createElement("polygam-knob");
@@ -124,9 +141,23 @@ customElements.define("polygam-player", class extends HTMLElement
     this.tempoKnob.label = "tempo";  
     this.tempoKnob.formatLabel = iValue => Math.floor(iValue).toFixed(0);
     this.tempoKnob.knobEvent = this.tempoEvent.bind(this);
-    this.container.appendChild(this.tempoKnob);
-    
     this.tempoKnob.initKnob(0.470);
+    this.container.appendChild(this.tempoKnob);    
+
+    // Save to MIDI button
+    this.saveToMidiButton = document.createElement("div");
+    this.saveToMidiButton.setAttribute("class","player-midi-button");  
+    this.saveToMidiButton.addEventListener("click", this.requestMidi.bind(this));
+    
+    this.saveToMidiLabel = document.createElement("div"); 
+    this.saveToMidiLabel.innerHTML = "Export MIDI";
+    this.saveToMidiButton.appendChild(this.saveToMidiLabel);    
+
+
+
+    this.container.appendChild(this.saveToMidiButton);    
+
+
 
     this.isReady = true;
 
@@ -225,4 +256,23 @@ customElements.define("polygam-player", class extends HTMLElement
     }
   }
   
+  requestMidi()
+  {    
+    this.playerEvent({type:"midi"});
+  }
+
+  midiData(iChords, iBeats)
+  {
+    console.log(iChords);
+    console.log(iBeats);
+
+    if(!iChords.length)
+    {
+      console.error("No chords in progression, nothing to export");
+    }
+
+    
+
+  }
+
 });

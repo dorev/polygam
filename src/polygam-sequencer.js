@@ -25,25 +25,27 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     {
       margin : 0; padding : 0;
       display : grid;
-      grid-template-columns : 24px 2em repeat(16, 1fr);
       grid-template-rows : repeat(10, 1fr);
-      place-items : stretch;
+      grid-template-columns : 24px 2em repeat(16, 1fr);
       grid-auto-flow: column;
+      place-items : stretch;
+      grid-gap : 2px;
     }
 
     .sequencer-beat
     {
-      margin : 0; 
-      padding : 0;
+      grid-gap : 5px;
+      margin : 0; padding : 0;
+      place-self: stretch;
       grid-row : 1/11;
       display: grid;
-      place-items: stretch;
       grid-template-rows : repeat(10, 1fr);
+      place-items: stretch;
     }
     
     .sequencer-beat[highlight="true"]
     {
-      background : #DDD;
+      background : #EEE;
     }
     
     .sequencer-beat[highlight="false"]
