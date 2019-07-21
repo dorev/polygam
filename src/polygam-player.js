@@ -262,17 +262,97 @@ customElements.define("polygam-player", class extends HTMLElement
   }
 
   midiData(iChords, iBeats)
-  {
+  {/*
     console.log(iChords);
     console.log(iBeats);
 
-    if(!iChords.length)
-    {
-      console.error("No chords in progression, nothing to export");
-    }
+    //if(!iChords.length)
+    //{
+    //  console.error("No chords in progression, nothing to export");
+    //}
+
+    let midiFile = new Midi.File();
+    let track = new Midi.Track();
+    midiFile.addTrack(track);
+
+    for(let chord = 0; chord < iChords.length; ++chord)
+    {      
+      for(let beat = 0; beat < iBeats.length; ++beat)
+      
+      {       
+        if(iBeats[beat].some(b => b)) 
+        {          
+          // Get active notes indexes
+          let activeNotesIndex = [];
+          for(let i = 0; i < iBeats[beat].length; ++i)
+          {
+            if(iBeats[beat][i]) { activeNotesIndex.push(i); }
+          }
+          
+          let activeNotes = [];
+          activeNotesIndex.forEach(index => 
+          {
+            if(index < 3)
+            {
+              activeNotes.push(iChords[chord][index] - 12);
+            }
+            else if(index < 6)
+            {
+              activeNotes.push(iChords[chord][index % 3]);
+            }
+            else if(index < 9)
+            {
+              activeNotes.push(iChords[chord][index % 3]) + 12;
+            }
+            else if(index === 10)
+            {
+              activeNotes.push(iChords[chord][index % 3]) + 24;
+            }
+            else
+            {
+              console.error("Note index invalid for midi conversion")
+            }
+          });
+
+          console.log(activeNotes);
+
+          for(let i = 0; i < activeNotes.length; ++i)
+          {
+            if(!i) { track.noteOn(0, activeNotes[i], 0); }
+            else   { track.noteOn(0, activeNotes[i]); }
+          }
+
+          for(let i = 0; i < activeNotes.length; ++i)
+          {
+            if(!i) { track.noteOff(0, activeNotes[i], 32); }
+            else   { track.noteOff(0, activeNotes[i]); }
+          }
+        }
+        else
+        {
+          track.noteOff(0, '', 32);
+        }
+      }      
+    }*/
 
     
+    let myFile = new Midi.File();
+    var myTrack = new Midi.Track();
+    myFile.addTrack(myTrack);
 
+    myTrack.addNote(0, 'c4', 64);
+    myTrack.addNote(0, 'd4', 64);
+    myTrack.addNote(0, 'e4', 64);
+    myTrack.addNote(0, 'f4', 64);
+    myTrack.addNote(0, 'g4', 64);
+    myTrack.addNote(0, 'a4', 64);
+    myTrack.addNote(0, 'b4', 64);
+    myTrack.addNote(0, 'c5', 64);
+
+    // Save MIDI file
+    var blob = new Blob([myFile.toBytes()], {type: "audio/midi"});
+    saveAs(blob, "test.mid");
+    
   }
 
 });
