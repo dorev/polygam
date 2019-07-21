@@ -351,7 +351,7 @@ customElements.define("polygam-player", class extends HTMLElement
 
     // Save MIDI file
     var blob = new Blob([myFile.toBytes()], {type: "audio/midi"});
-    saveAs(blob, "test.mid");
+    saveAs(blob);
     
   }
 

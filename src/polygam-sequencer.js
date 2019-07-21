@@ -32,6 +32,17 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       grid-gap : 2px;
     }
 
+    
+    .sequencer-beat:nth-child(4n-2)
+    {
+      border-right: 1px solid gray;
+    }
+
+    .sequencer-beat:nth-child(13n)
+    {
+      border-right: none;
+    }
+
     .sequencer-beat
     {
       grid-gap : 5px;
