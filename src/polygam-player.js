@@ -262,14 +262,12 @@ customElements.define("polygam-player", class extends HTMLElement
   }
 
   midiData(iChords, iBeats)
-  {/*
-    console.log(iChords);
-    console.log(iBeats);
-
-    //if(!iChords.length)
-    //{
-    //  console.error("No chords in progression, nothing to export");
-    //}
+  {
+    if(!iChords.length)
+    {
+      console.error("No chords in progression, nothing to export");
+      return;
+    }
 
     let midiFile = new Midi.File();
     let track = new Midi.Track();
@@ -277,8 +275,7 @@ customElements.define("polygam-player", class extends HTMLElement
 
     for(let chord = 0; chord < iChords.length; ++chord)
     {      
-      for(let beat = 0; beat < iBeats.length; ++beat)
-      
+      for(let beat = 0; beat < iBeats.length; ++beat)      
       {       
         if(iBeats[beat].some(b => b)) 
         {          
@@ -302,19 +299,17 @@ customElements.define("polygam-player", class extends HTMLElement
             }
             else if(index < 9)
             {
-              activeNotes.push(iChords[chord][index % 3]) + 12;
+              activeNotes.push(iChords[chord][index % 3] + 12);
             }
-            else if(index === 10)
+            else if(index < 12)
             {
-              activeNotes.push(iChords[chord][index % 3]) + 24;
+              activeNotes.push(iChords[chord][index % 3] + 24);
             }
             else
             {
               console.error("Note index invalid for midi conversion")
             }
           });
-
-          console.log(activeNotes);
 
           for(let i = 0; i < activeNotes.length; ++i)
           {
@@ -333,35 +328,15 @@ customElements.define("polygam-player", class extends HTMLElement
           track.noteOff(0, '', 32);
         }
       }      
-    }*/
+    }
 
-    
-    let myFile = new Midi.File();
-    var myTrack = new Midi.Track();
-    myFile.addTrack(myTrack);
-
-    myTrack.addNote(0, 'c4', 64);
-    myTrack.addNote(0, 'd4', 64);
-    myTrack.addNote(0, 'e4', 64);
-    myTrack.addNote(0, 'f4', 64);
-    myTrack.addNote(0, 'g4', 64);
-    myTrack.addNote(0, 'a4', 64);
-    myTrack.addNote(0, 'b4', 64);
-    myTrack.addNote(0, 'c5', 64);
-
-    // Save MIDI file
-    //var blob = new Blob([myFile.toBytes()], {type: "audio/midi"});
-    //saveAs(blob);
-
-    let bytes = myFile.toBytes();
-    let b64 = btoa(bytes);
-    let uri = "data:audio/midi;base64," + b64;
-    let link = document.createElement("a");
-    
+    // Download generated file (create, click and remove link)
+    let uri = "data:audio/midi;base64," + btoa( midiFile.toBytes());
+    let link = document.createElement("a");    
     link.href = uri;
-    link.download = "music.mid";
+    link.download = "polygam.mid";
     this.appendChild(link);
-    link.click(); // this will start a download of the MIDI byte string
+    link.click();
     link.parentNode.removeChild(link);
     
   }
