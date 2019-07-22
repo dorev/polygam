@@ -350,8 +350,19 @@ customElements.define("polygam-player", class extends HTMLElement
     myTrack.addNote(0, 'c5', 64);
 
     // Save MIDI file
-    var blob = new Blob([myFile.toBytes()], {type: "audio/midi"});
-    saveAs(blob);
+    //var blob = new Blob([myFile.toBytes()], {type: "audio/midi"});
+    //saveAs(blob);
+
+    let bytes = myFile.toBytes();
+    let b64 = btoa(bytes);
+    let uri = "data:audio/midi;base64," + b64;
+    let link = document.createElement("a");
+    
+    link.href = uri;
+    link.download = "music.mid";
+    this.appendChild(link);
+    link.click(); // this will start a download of the MIDI byte string
+    link.parentNode.removeChild(link);
     
   }
 
