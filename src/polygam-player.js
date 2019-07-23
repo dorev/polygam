@@ -340,5 +340,4 @@ customElements.define("polygam-player", class extends HTMLElement
     link.parentNode.removeChild(link);
     
   }
-
 });

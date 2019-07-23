@@ -129,20 +129,35 @@ customElements.define("polygam-chord",class extends HTMLElement
     this.invButtonUp.innerHTML = "+";
     this.swapLeftButton.innerHTML = "<";
     this.swapRightButton.innerHTML = ">";
-    this.deleteButton.innerHTML = "x";
+
+    this.deleteButton.appendChild(newIcon("trash", 0.8));
 
     //--------------------------------------------------------
     // Setup events
     //--------------------------------------------------------
+    
+    this.container      .addEventListener("mouseover", this.mouseOver.bind(this)); 
+    this.container      .addEventListener("mouseout", this.mouseOut.bind(this)); 
     this.invButtonUp    .addEventListener("click", this.inversionUp.bind(this)); 
     this.invButtonDown  .addEventListener("click", this.inversionDown.bind(this));
     this.swapLeftButton .addEventListener("click", this.swapLeft.bind(this)); 
     this.swapRightButton.addEventListener("click", this.swapRight.bind(this));
     this.deleteButton   .addEventListener("click", this.delete.bind(this)); 
+    this.deleteButton.style.visibility = "hidden";
 
     //setChord(properties);
 
   } // end of constructor
+
+  mouseOver()
+  {
+    this.deleteButton.style.visibility = "visible";
+  }
+
+  mouseOut()
+  {
+    this.deleteButton.style.visibility = "hidden";
+  }
 
   setChord(properties)
   {

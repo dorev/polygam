@@ -35,7 +35,7 @@ customElements.define("polygam-sequencer", class extends HTMLElement
     
     .sequencer-beat:nth-child(4n-2)
     {
-      border-right: 1px solid gray;
+      border-right: 1px solid silver;
     }
 
     .sequencer-beat:nth-child(13n)
