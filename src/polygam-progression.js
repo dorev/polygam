@@ -71,20 +71,26 @@ customElements.define("polygam-progression",class extends HTMLElement
 
   addChord(iChord)
   {    
-    this.resizeProgression(this.progression.length + 1);
+    this.resizeProgression((this.progression.length * 2) + 1);
 
     // Create chord element
     let newChord = document.createElement("polygam-chord");
     let chordContainer = document.createElement("progression-chord-container");
-
-    chordContainer.setAttribute("style", `grid-area: pos${this.progression.length + 1}`);
-
+    chordContainer.setAttribute("style", `grid-area: pos${(this.progression.length * 2) + 1}`);
     chordContainer.appendChild(newChord);
     
     // Add chord element
     this.container.appendChild(chordContainer);
     newChord.setChord(iChord);
     newChord.setPosition(this.chords.length);
+
+    // Create swap icon
+    if(this.progression.length)
+    {
+      let swapIcon = newIcon("swap");
+      swapIcon.setAttribute("style", `grid-area: pos${(this.progression.length * 2)}`);
+      this.container.appendChild(swapIcon);
+    }   
 
     // Set callbacks
     newChord.chordChanged = this.chordChanged.bind(this);
