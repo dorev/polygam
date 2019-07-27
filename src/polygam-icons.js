@@ -29,6 +29,62 @@ function newIcon(iIcon, iScale = 1)
 
       return trashBin;
 
+      case "saw" :
+        let sawPath = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
+        sawPath.setAttribute("d", "M 1.0101002,16.023404 14.61972,2.413778 v 27.219256 l 13.609631,-13.60963");
+        sawPath.setAttribute("style","fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" );
+        sawPath.setAttribute("transform", `scale(${iScale})`);
+
+        let saw = document.createElementNS("http://www.w3.org/2000/svg", "svg"); 
+        saw.setAttribute("height", 35 * iScale);
+        saw.setAttribute("width", 35 * iScale);
+        saw.appendChild(sawPath);
+        return saw;
+
+      case "sine" :
+        let sinePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
+        sinePath.setAttribute("d", "m 6.7671069,22.06957 c 0,0 7.1761601,-29.5278369 14.3523171,0 7.17615,29.527827 14.35231,0 14.35231,0");
+        sinePath.setAttribute("style", "fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1");
+        sinePath.setAttribute("transform", `scale(${iScale})`);
+
+        let sineCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
+        sineCircle.setAttribute("cx", "21.166668");
+        sineCircle.setAttribute("cy", "21.171869");
+        sineCircle.setAttribute("r", "21.068539");
+        sineCircle.setAttribute("style", "fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1");
+        sineCircle.setAttribute("transform", `scale(${iScale})`);
+
+        let sine = document.createElementNS("http://www.w3.org/2000/svg", "svg"); 
+        sine.setAttribute("height", 50);
+        sine.setAttribute("width", 50);
+        sine.appendChild(sineCircle);
+        sine.appendChild(sinePath);
+        return sine;
+
+      case "square" :
+        let squarePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
+        squarePath.setAttribute("d", "M 0.99299172,14.579069 V 0.97062462 H 14.651321 V 28.187509 H 28.30966 v -13.60844");
+        squarePath.setAttribute("style", "fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1");
+        squarePath.setAttribute("transform", `scale(${iScale})`);
+
+        let square = document.createElementNS("http://www.w3.org/2000/svg", "svg"); 
+        square.setAttribute("height", 38 * iScale);
+        square.setAttribute("width", 38 * iScale);
+        square.appendChild(squarePath);
+        return square;
+
+      case "triangle" :
+        let trianglePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); 
+        trianglePath.setAttribute("d", "M 1.0381963,15.882691 7.843006,2.2730653 21.452636,29.492321 28.257447,15.882691");
+        trianglePath.setAttribute("style", "fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1");
+        trianglePath.setAttribute("transform", `scale(${iScale})`);
+
+        let triangle = document.createElementNS("http://www.w3.org/2000/svg", "svg"); 
+        triangle.setAttribute("height", 38 * iScale);
+        triangle.setAttribute("width", 38 * iScale);
+        triangle.appendChild(trianglePath);
+        return triangle;
+
     default : 
       console.log("Invalid icon request");
       break;

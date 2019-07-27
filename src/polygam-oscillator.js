@@ -18,20 +18,52 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     oscillator-container
     {
       display: grid;
-      grid-template-columns : repeat(5, 1fr);
+      place-items : center;
+      grid-template-columns : repeat(8, 1fr);
       grid-gap : 2px;
       position: relative;
     }
 
-    osc-wave-shape
+    svg
+    {
+      place-self: center;
+    }
+
+    .osc-sine-shape
     {      
       grid-column : 1/2;
       place-self: center;
+      min-height : 50px;
+      min-width : 50px;
+    }
+
+    .osc-square-shape
+    {      
+      grid-column : 2/3;
+      place-self: center;
+      min-height : 50px;
+      min-width : 50px;
+    }
+
+    .osc-saw-shape
+    {      
+      grid-column : 3/4;
+      place-self: center;
+      min-height : 50px;
+      min-width : 50px;
+    }
+
+    .osc-triangle-shape
+    {      
+      grid-column : 4/5;
+      place-self: center;
+      min-height : 50px;
+      min-width : 50px;
     }
 
     .osc-wave-detune
     {
-      grid-column : 2/3;
+      grid-column : 5/6;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -40,7 +72,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     .osc-wave-transpose
     {
-      grid-column : 3/4;
+      grid-column : 6/7;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -49,7 +81,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     .osc-filter-lowpass
     {
-      grid-column : 4/5;
+      grid-column : 7/8;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -58,7 +90,7 @@ customElements.define("polygam-oscillator", class extends HTMLElement
 
     .osc-filter-highpass
     {
-      grid-column : 5/6;
+      grid-column : 8/9;
       place-self: center;
       min-height : 50px;
       min-width : 50px;
@@ -129,6 +161,27 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterHighpassKnob.label = "highpass";
     this.filterHighpassKnob.formatLabel = (iValue) => { return iValue.toFixed(0); };
     this.filterHighpassKnob.initKnob(0);
+
+
+    this.sineButton = document.createElement("div");
+    this.sineButton.setAttribute("class","osc-sine-shape"); 
+    this.sineButton.appendChild(newIcon("sine"));
+    this.container.appendChild(this.sineButton);
+    
+    this.sawButton = document.createElement("div");
+    this.sawButton.setAttribute("class","osc-saw-shape"); 
+    this.sawButton.appendChild(newIcon("saw"));
+    this.container.appendChild(this.sawButton);
+    
+    this.sineTriangle = document.createElement("div");
+    this.sineTriangle.setAttribute("class","osc-triangle-shape"); 
+    this.sineTriangle.appendChild(newIcon("triangle"));
+    this.container.appendChild(this.sineTriangle);
+    
+    this.squareButton = document.createElement("div");
+    this.squareButton.setAttribute("class","osc-square-shape"); 
+    this.squareButton.appendChild(newIcon("square"));
+    this.container.appendChild(this.squareButton);
 
     this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetuneKnob);
