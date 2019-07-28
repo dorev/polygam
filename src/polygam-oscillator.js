@@ -15,86 +15,60 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     let style = document.createElement('style');
     style.textContent =`
 
-    oscillator-container
+    .oscillator-container
     {
       display: grid;
       place-items : center;
       grid-template-columns : repeat(8, 1fr);
       grid-gap : 2px;
-      position: relative;
-    }
-
-    svg
-    {
-      place-self: center;
     }
 
     .osc-sine-shape
     {      
       grid-column : 1/2;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
     }
 
     .osc-square-shape
     {      
       grid-column : 2/3;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
     }
 
     .osc-saw-shape
     {      
       grid-column : 3/4;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
     }
 
     .osc-triangle-shape
     {      
       grid-column : 4/5;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
     }
 
     .osc-wave-detune
     {
       grid-column : 5/6;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
-      text-align: center;
     }
 
     .osc-wave-transpose
     {
       grid-column : 6/7;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
-      text-align: center;
     }
 
     .osc-filter-lowpass
     {
       grid-column : 7/8;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
-      text-align: center;
     }
 
     .osc-filter-highpass
     {
       grid-column : 8/9;
       place-self: center;
-      min-height : 50px;
-      min-width : 50px;
-      text-align: center;
     }
 
     `;  
@@ -106,27 +80,28 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     shadow.appendChild(style);  
 
     this.container = document.createElement("oscillator-container");
+    this.container.setAttribute("class","oscillator-container");
     shadow.appendChild(this.container);  
 
-    this.waveShape = document.createElement("osc-wave-shape");
-    ["sine", "square", "sawtooth", "triangle"].forEach( waveform =>
-    {
-      let radioButton = document.createElement("input");
-      radioButton.setAttribute("type", "radio");
-      radioButton.setAttribute("name", "waveform");
-      radioButton.setAttribute("value", waveform);
-      radioButton.addEventListener("change", this.radioButtonChange.bind(this));
-      
-      let buttonLabel = document.createElement("label");      
-      buttonLabel.setAttribute("for", waveform);
-      buttonLabel.innerHTML = waveform === "sine"     ? "sin" :
-                              waveform === "square"   ? "squ" :
-                              waveform === "sawtooth" ? "saw" :
-                              waveform === "triangle" ? "tri" : "NULL" ;
-
-      this.waveShape.appendChild(radioButton);
-      this.waveShape.appendChild(buttonLabel);
-    });
+    //this.waveShape = document.createElement("osc-wave-shape");
+    //["sine", "square", "sawtooth", "triangle"].forEach( waveform =>
+    //{
+    //  let radioButton = document.createElement("input");
+    //  radioButton.setAttribute("type", "radio");
+    //  radioButton.setAttribute("name", "waveform");
+    //  radioButton.setAttribute("value", waveform);
+    //  radioButton.addEventListener("change", this.radioButtonChange.bind(this));
+    //  
+    //  let buttonLabel = document.createElement("label");      
+    //  buttonLabel.setAttribute("for", waveform);
+    //  buttonLabel.innerHTML = waveform === "sine"     ? "sin" :
+    //                          waveform === "square"   ? "squ" :
+    //                          waveform === "sawtooth" ? "saw" :
+    //                          waveform === "triangle" ? "tri" : "NULL" ;
+//
+    //  this.waveShape.appendChild(radioButton);
+    //  this.waveShape.appendChild(buttonLabel);
+    //});
 
     this.waveDetuneKnob = document.createElement("polygam-knob");
     this.waveDetuneKnob.setAttribute("class","osc-wave-detune");  
@@ -163,27 +138,43 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.filterHighpassKnob.initKnob(0);
 
 
-    this.sineButton = document.createElement("div");
+    this.sineButton = document.createElement("polygam-button");
     this.sineButton.setAttribute("class","osc-sine-shape"); 
-    this.sineButton.appendChild(newIcon("sine"));
+    this.sineButton.icon = "sinePath";
+    this.sineButton.label = "sin";
+    this.sineButton.value = true;
+    this.sineButton.buttonEvent = this.buttonChange.bind(this);
+    this.sineButton.initButton();
     this.container.appendChild(this.sineButton);
     
-    this.sawButton = document.createElement("div");
-    this.sawButton.setAttribute("class","osc-saw-shape"); 
-    this.sawButton.appendChild(newIcon("saw"));
-    this.container.appendChild(this.sawButton);
-    
-    this.sineTriangle = document.createElement("div");
-    this.sineTriangle.setAttribute("class","osc-triangle-shape"); 
-    this.sineTriangle.appendChild(newIcon("triangle"));
-    this.container.appendChild(this.sineTriangle);
-    
-    this.squareButton = document.createElement("div");
+    this.squareButton = document.createElement("polygam-button");
     this.squareButton.setAttribute("class","osc-square-shape"); 
-    this.squareButton.appendChild(newIcon("square"));
+    this.squareButton.icon = "squarePath";
+    this.squareButton.label = "squ";
+    this.squareButton.value = false;
+    this.squareButton.buttonEvent = this.buttonChange.bind(this);
+    this.squareButton.initButton();
     this.container.appendChild(this.squareButton);
 
-    this.container.appendChild(this.waveShape);
+    this.sawButton = document.createElement("polygam-button");
+    this.sawButton.setAttribute("class","osc-saw-shape"); 
+    this.sawButton.icon = "sawPath";
+    this.sawButton.label = "saw";
+    this.sawButton.value = false;
+    this.sawButton.buttonEvent = this.buttonChange.bind(this);
+    this.sawButton.initButton();
+    this.container.appendChild(this.sawButton);
+    
+    this.triangleButton = document.createElement("polygam-button");
+    this.triangleButton.setAttribute("class","osc-triangle-shape"); 
+    this.triangleButton.icon = "trianglePath";
+    this.triangleButton.label = "tri";
+    this.triangleButton.value = false;
+    this.triangleButton.buttonEvent = this.buttonChange.bind(this);
+    this.triangleButton.initButton();
+    this.container.appendChild(this.triangleButton);
+
+    //this.container.appendChild(this.waveShape);
     this.container.appendChild(this.waveDetuneKnob);
     this.container.appendChild(this.waveTransposeKnob);
     this.container.appendChild(this.filterLowpassKnob);
@@ -196,27 +187,48 @@ customElements.define("polygam-oscillator", class extends HTMLElement
     this.knobChange(this.waveTransposeKnob);
     this.knobChange(this.filterLowpassKnob);
     this.knobChange(this.filterHighpassKnob);
-    this.waveShape.querySelector("input[value='sine']").checked = true;
-    setTimeout( () => this.oscillatorEvent("waveform", "sine", this.oscId), 500);
+    setTimeout( () => this.buttonChange(this.sineButton), 500);
          
   } // end of constructor
 
   // Callback
   oscillatorEvent(property, value, oscId){};
 
-  radioButtonChange(event)
-  {
-    if(!this.ready) return;
-    let button = event.target;
-    this.oscillatorEvent(button.getAttribute("name"), button.getAttribute("value"), this.oscId);
-  }
-
   knobChange(iKnob)
   {
     if(!this.ready) return;
     this.oscillatorEvent(iKnob.label, iKnob.value, this.oscId);
   }
+
+  buttonChange(iButton)
+  {
+    if(!this.ready || !iButton.value) return;
+    
+    let waveform;
+    switch(iButton.label)
+    {
+      case "sin" : waveform =  "sine";      break;
+      case "squ" : waveform =  "square";    break;
+      case "saw" : waveform =  "sawtooth";  break;
+      case "tri" : waveform =  "triangle";  break;
+      default :
+        console.log("Invalid button label")
+        return;
+    }    
+
+    this.radioButtonUpdate(iButton.label);
+    this.oscillatorEvent("waveform", waveform, this.oscId);    
+  }
   
+  radioButtonUpdate(iSelectedButton)
+  {
+    [this.sineButton, this.squareButton, this.sawButton, this.triangleButton]
+    .forEach(button => 
+    {
+        button.forceUpdate(button.label === iSelectedButton);      
+    });
+
+  }
 
   
 });

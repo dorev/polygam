@@ -11,6 +11,7 @@ customElements.define("polygam-button", class extends HTMLElement
     
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;
     this.label = "null";
+    this.value = false;
 
     //--------------------------------------------------------
     // CSS style
@@ -23,11 +24,18 @@ customElements.define("polygam-button", class extends HTMLElement
       display: grid;
       margin : 0; 
       padding : 0;
-      grid-template-rows: repeat(3, auto);
+      grid-template-rows: repeat(2, auto);
       place-items : center;
     }
 
-    .button-svg-container
+    .button-svg
+    {   
+      grid-row : 1/2;
+      width: ${this.size}px;
+      height: ${this.size}px;
+    }
+
+    .button-icon
     {   
       grid-row : 1/2;
       width: ${this.size}px;
@@ -37,11 +45,6 @@ customElements.define("polygam-button", class extends HTMLElement
     .button-label
     {   
       grid-row : 2/3;
-    }
-
-    .button-value
-    {   
-      grid-row : 3/4;
     }
     `;  
     
@@ -57,7 +60,7 @@ customElements.define("polygam-button", class extends HTMLElement
     shadow.appendChild(this.container);
 
     this.button = document.createElement("div");
-    this.button.setAttribute("class","button-svg-container");   
+    this.button.setAttribute("class","button-svg");   
 
     // Create SVG
     let s = this.size;
@@ -76,23 +79,18 @@ customElements.define("polygam-button", class extends HTMLElement
     this.buttonBody.setAttribute("fill","#FFF");
     this.svg.appendChild(this.buttonBody);
 
-
     this.container.appendChild(this.button);
 
-    // Knob label    
+    // Button label    
     this.buttonLabel = document.createElement("div");
     this.buttonLabel.setAttribute("class","button-label");    
     this.container.appendChild(this.buttonLabel);
 
     // Bind events
-    this.addEventListener("mousedown", (e) => 
+    this.addEventListener("click", (e) => 
     { 
-      this.buttonActive = true;
-    });
-
-    addEventListener("mouseup", () => 
-    { 
-      if(this.buttonActive) { this.knobActive = false; }
+      this.updateValue(!this.value);
+      this.buttonEvent(this);
     });
 
     this.initButton();
@@ -102,10 +100,10 @@ customElements.define("polygam-button", class extends HTMLElement
   // Callback
   buttonEvent() {}  
 
-  initButton(iInitialPosition)
+  initButton()
   {
     this.size = this.hasAttribute("size") ? parseInt(this.getAttribute("size")) : 50;    
-    this.icon = this.hasAttribute("icon") ? this.getAttribute("icon") : "null";   
+    this.icon = this.hasAttribute("icon") ? this.getAttribute("icon") : this.icon;   
     this.label = this.hasAttribute("label") ? this.getAttribute("label") : this.label;   
 
     switch(this.icon)
@@ -114,34 +112,27 @@ customElements.define("polygam-button", class extends HTMLElement
       case "null" :   
         break;
 
-      case "sine" :
-        break;
-
-      case "saw" :
-        break;
-
-      case "square" :
-        break;
-
-      case "triangle" :
+      case "sinePath" :        
+      case "sawPath" :
+      case "squarePath" :
+      case "trianglePath" :
+        this.svg.appendChild(newIcon(this.icon));
         break;
     }
 
-    this.knobLabel.innerHTML = this.label;
+    this.buttonLabel.innerHTML = this.label;
     this.buttonEvent(this);
   }
 
-  formatLabel(iValue)
+  forceUpdate(iForcedState)
   {
-    return iValue;
+    this.updateValue(iForcedState);
   }
 
-  updateValue()
+  updateValue(iValue)
   {
-    this.value = this.updateFunc();
-    this.knobValue.innerHTML = this.formatLabel(this.value);
-    // Callback
-    this.knobEvent(this);
+    this.value = iValue;
+    this.buttonBody.style.strokeWidth = this.size * (iValue ? 0.06 : 0.02);
   }
 
   
