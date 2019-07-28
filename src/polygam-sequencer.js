@@ -266,10 +266,10 @@ customElements.define("polygam-sequencer", class extends HTMLElement
       }
        return; 
     }
-
+    
     for(let i = 9; i >= 0; --i)
     {
-      this.noteLabels[i].innerHTML = 
+      this.noteLabels[9-i].innerHTML = 
       ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"][this.progression[this.currentBar][i % 3] % 12];
     }
   }
