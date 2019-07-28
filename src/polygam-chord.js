@@ -48,7 +48,7 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-gap: 0.2em;
       grid-template-rows:    repeat(6, auto);
       grid-template-column:    repeat(3, 1fr);
-      width: 5.5em;
+      min-width: 5.5em;
       place-items: stretch;
       border: dotted silver 1px;
       border-radius: 5px;
