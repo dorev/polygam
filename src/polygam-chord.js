@@ -36,7 +36,6 @@ customElements.define("polygam-chord",class extends HTMLElement
     
     div
     {
-      border: dotted silver 1px;
       text-align: center;
     }
     
@@ -51,6 +50,8 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-template-column:    repeat(3, 1fr);
       width: 5.5em;
       place-items: stretch;
+      border: dotted silver 1px;
+      border-radius: 5px;
     }
     
     .inversion-button-up
