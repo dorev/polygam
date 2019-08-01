@@ -66,6 +66,7 @@ customElements.define("polygam-chord",class extends HTMLElement
       grid-column : 1/4;
       font-size : 2em;
       place-self: center;
+      font-family: "Polygam", sans-serif;
     }    
     
     .inversion-button-down

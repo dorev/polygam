@@ -45,6 +45,7 @@ customElements.define("polygam-button", class extends HTMLElement
     .button-label
     {   
       grid-row : 2/3;
+      font-family: "Polygam", sans-serif;
     }
     `;  
     
