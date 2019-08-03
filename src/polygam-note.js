@@ -21,7 +21,7 @@ customElements.define("polygam-note", class extends HTMLElement
     .note-container
     { 
       height : 100%;
-      border : dotted 0.01em silver;
+      border : dotted 1px silver;
       border-radius : 0.25em;
     }
     `;  
