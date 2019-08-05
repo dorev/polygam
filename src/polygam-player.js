@@ -97,6 +97,7 @@ customElements.define("polygam-player", class extends HTMLElement
       margin : 3px 0 0 0;
       height : 42px;
       width : 120px;
+      font-family: "Polygam", sans-serif;
     }
 
     .player-midi-button:active
