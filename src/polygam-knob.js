@@ -53,6 +53,7 @@ customElements.define("polygam-knob", class extends HTMLElement
     .knob-value
     {   
       grid-row : 3/4;
+      font-family: "Polygam", sans-serif;
     }
     `;  
     
